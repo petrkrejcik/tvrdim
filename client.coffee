@@ -5,7 +5,7 @@ reducer = require './src/model/reducer/index'
 {createStore} = require 'redux'
 {Provider} = require 'react-redux'
 
-store = createStore reducer, window.__PRELOADED_STATE__
+store = createStore reducer, window.__PRELOADED_STATE__, window.devToolsExtension && window.devToolsExtension()
 
 provider =
 	React.createElement Provider, {store},

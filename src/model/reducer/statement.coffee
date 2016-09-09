@@ -1,15 +1,8 @@
-emptyState = [
-	'key': 'statement1'
-	'text': 'statement 1'
-,
-	'key': 'statement2'
-	'text': 'statement 2'
-]
-
+defaulState = require '../statementMock'
 
 module.exports =
 
-	statement: (state = emptyState, action) ->
+	statement: (state = defaulState, action) ->
 		switch action.type
 			when 'INCREMENT'
 				state++

@@ -1,0 +1,6 @@
+Root statements
+
+
+SELECT * FROM statement_tree AS st WHERE st.parent_id NOT IN (
+	SELECT child_id FROM statement_tree
+)
