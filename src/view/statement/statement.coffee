@@ -4,49 +4,58 @@ React = require 'react'
 
 
 dispatchToProps = (dispatch) ->
-	handleStatementClick: (statementId, isPos) ->
+	handleToggleChildren: (statementId, isPos) ->
 		dispatch toggleVisibility statementId, isPos
 
+
+childrenButton = React.createFactory React.createClass
+
+	displayName: 'StatementChildButton'
+
+	render: ->
+		cssClasses = ['childrenToggle']
+		cssClasses.push 'positive' if @props.isPos
+
+		React.DOM.div
+			className: cssClasses.join ' '
+			onClick: => @props.handleClick @props.id, @props.isPos
+		, "-(#{@props.childrenCount})"
+
+	getDefaultProps: ->
+		isPos: no
+		childrenCount: null
+		handleStatementClick: ->
 
 
 statement = React.createFactory React.createClass
 
 	displayName: 'Statement'
 
-	createChildBtn: (isPos = no) ->
-		cssClasses = ['childrenToggle']
-		if isPos
-			cssClasses.push 'positive' if isPos
-			childrenCount = @props['childrenPos'].length
-			text = "+(#{childrenCount})"
-			key = 'togglePos'
-		else
-			childrenCount = @props['childrenNeg'].length
-			text = "-(#{childrenCount})"
-			key = 'toggleNeg'
-
-		React.DOM.div
-			'key': key
-			'className': cssClasses.join ' '
-			'onClick': => @props['handleStatementClick'] @props.id, isPos
-		, text
-
 	render: ->
 		if @props['isPosOpened']
 			childrenPos = @props.listFactory
 				statements: @props.childrenPos
 				nestedType: 'positive'
+				key: "nestedStatementList-pos-#{@props.id}"
 		if @props['isNegOpened']
 			childrenNeg = @props.listFactory
 				statements: @props.childrenNeg
 				nestedType: 'negative'
+				key: "nestedStatementList-neg-#{@props.id}"
 
 		React.DOM.div
 			'className': 'statement'
 		, [
 			@props.text
-			@createChildBtn yes
-			@createChildBtn()
+			childrenButton
+				key: "togglePos-#{@props.id}"
+				isPos: yes
+				childrenCount: @props['childrenPos'].length
+				handleClick: => @props.handleToggleChildren @props.id, yes
+			childrenButton
+				key: "toggleNeg-#{@props.id}"
+				childrenCount: @props['childrenNeg'].length
+				handleClick: => @props.handleToggleChildren @props.id, no
 			childrenPos
 			childrenNeg
 		]
