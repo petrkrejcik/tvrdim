@@ -1,25 +1,28 @@
 update = require 'react-addons-update'
-mock = require './mock'
+# mock = require './mock'
 t = require './actionTypes'
+
+localStorage = require '../../localStorage'
+try
+	stored = localStorage.load('petrk')
+	defaultState = localStorage.load('petrk').statements ? {}
+catch e
+	defaultState = {}
 
 
 module.exports =
 
-	statement: (state = mock.createDefault(), action) ->
+	statement: (state = defaultState, action) ->
 		switch action.type
-			when t.ADD
-				console.info 'add action', action
+			when t.ADD_REQUEST
+				console.info 'action', t.ADD_REQUEST, action
 				key = if action.isPos then 'childrenPos' else 'childrenNeg'
-				changed = {}
-				i = null
-				for statement, i in state.statements
-					break if statement.id is action.statementId
-				return state unless i?
 
+				{text, isPos} = action
+				newStatement = {text, isPos}
+				newState = update state, $merge: newStatement
+				newState
 
-				changed[key] = $push: mock.create action.text, [action.statementId]
-				newState = update state, statements: $push: [action.statementId]
-				state
 			when 'DECREMENT'
 				state--
 			else

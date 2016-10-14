@@ -1,6 +1,6 @@
 React = require 'react'
 {connect} = require 'react-redux'
-{addStatement} = require '../actions'
+{addStatement} = require('../actions')()
 layoutActions = require '../../layout/actions'
 {toggleVisibility} = layoutActions
 
@@ -111,6 +111,7 @@ statement = React.createClass
 
 		newButton = if @state.isAdding
 			newStatement
+				key: "new-statement-#{@props.id}"
 				id: @props.id
 				handleClickSave: (values) =>
 					values.statementId = @props.id

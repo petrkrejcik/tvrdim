@@ -6,16 +6,20 @@ webpackDevMiddleware = require 'webpack-dev-middleware'
 webpackHotMiddleware = require 'webpack-hot-middleware'
 {renderToString} = require 'react-dom/server'
 {Provider} = require 'react-redux'
-{createStore} = require 'redux'
+{createStore, applyMiddleware} = require 'redux'
+thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
+
+{LocalStorage} = require 'node-localstorage'
+localStorage = require('./localStorage').set LocalStorage
+
 reducer = require './rootReducer'
 
 compiler = webpack webpackConfig
 app = express()
 
-
 handleRender = (req, res) ->
-	store = createStore reducer
+	store = createStore reducer, applyMiddleware thunk
 	state = store.getState()
 	body = renderToString \
 		React.createElement Provider, {store},
