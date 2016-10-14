@@ -1,12 +1,13 @@
 update = require 'react-addons-update'
 mock = require './mock'
+t = require './actionTypes'
 
 
 module.exports =
 
 	statement: (state = mock.createDefault(), action) ->
 		switch action.type
-			when 'ADD_STATEMENT'
+			when t.ADD
 				console.info 'add action', action
 				key = if action.isPos then 'childrenPos' else 'childrenNeg'
 				changed = {}

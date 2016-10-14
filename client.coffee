@@ -1,14 +1,14 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
-appView = require './src/view/app'
-reducer = require './src/model/reducer/index'
+reducer = require './rootReducer'
 {createStore} = require 'redux'
 {Provider} = require 'react-redux'
+appView = React.createFactory require './src/app/components/app'
 
 store = createStore reducer, window.__PRELOADED_STATE__, window.devToolsExtension && window.devToolsExtension()
 
 provider =
 	React.createElement Provider, {store},
-		React.createElement appView
+		appView {}
 
 ReactDOM.render provider, document.getElementById 'root'

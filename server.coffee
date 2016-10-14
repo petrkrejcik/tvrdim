@@ -7,8 +7,8 @@ webpackHotMiddleware = require 'webpack-hot-middleware'
 {renderToString} = require 'react-dom/server'
 {Provider} = require 'react-redux'
 {createStore} = require 'redux'
-appView = require './src/view/app'
-reducer = require './src/model/reducer/index'
+appView = React.createFactory require './src/app/components/app'
+reducer = require './rootReducer'
 
 compiler = webpack webpackConfig
 app = express()
@@ -19,11 +19,12 @@ handleRender = (req, res) ->
 	state = store.getState()
 	body = renderToString \
 		React.createElement Provider, {store},
-			React.createElement appView
+			appView {}
 	res.send renderHtml body, state
 	return
 
 renderHtml = (body, state) ->
+				# <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 	"""
 		<!doctype html>
 		<html>

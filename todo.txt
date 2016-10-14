@@ -4,3 +4,21 @@ Root statements
 SELECT * FROM statement_tree AS st WHERE st.parent_id NOT IN (
 	SELECT child_id FROM statement_tree
 )
+
+ukladat statements v local storage?
+
+pridam statement
+vyslu ajax
+loader
+pri odpovedi vidim statement
+
+akce je objekt s daty: action = type: ADD_STATEMENT, text: 'novej statement'
+akce se posilaji do storu (store.dispatch(≤action≥))
+store je tvoreny reducerama, drzi stav; cteni: store.getState(); zapis: store.dispatch
+reducer obdrzi state a akci
+reducer vytvari novy state
+nad storem posloucha provider (react-redux)
+pri zmene storu provider obvola komponenty
+
+reducer nema side effecty - nevola API, neroutuje, nevytvari Date, Math
+
