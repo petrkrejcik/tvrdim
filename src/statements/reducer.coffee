@@ -23,8 +23,9 @@ module.exports =
 				newState = update state, $merge: newStatement
 				newState
 
-			when 'DECREMENT'
-				state--
+			when t.ADD_SUCCESS
+				console.info 'reducing success', action
+				state
 			else
 				state
 

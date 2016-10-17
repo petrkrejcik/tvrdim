@@ -8,13 +8,11 @@ module.exports = ->
 		type: t.ADD_CLICK
 		parentId: parentId
 
-	_addStatementSuccess = (response) ->
-		console.info 'success', response
+	_addStatementSuccess = ({id}) ->
 		type: t.ADD_SUCCESS
-		id: response
+		id: id
 
 	addStatement: (parentId, text, isPos) ->
-		console.info 'addStatement'
 		(dispatch) ->
 			dispatch _addStatementClick parentId
 			fetch '/api/0/statement/add',
@@ -23,7 +21,6 @@ module.exports = ->
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				body: JSON.stringify {parentId, text, isPos}
-			.then (response) ->
-				dispatch _addStatementSuccess response
-				return
-
+			.then (response) -> response.json response
+			.then (data) -> dispatch _addStatementSuccess data
+			return

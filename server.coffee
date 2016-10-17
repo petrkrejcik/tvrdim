@@ -51,6 +51,7 @@ app.use webpackDevMiddleware compiler,
 	'noInfo': true
 	'publicPath': webpackConfig.output.publicPath
 app.use webpackHotMiddleware compiler
+app.use '/api/0', require './src/statements/api'
 app.use handleRender
 
 
