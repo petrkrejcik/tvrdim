@@ -1,6 +1,8 @@
+l = require './actionTypes'
+
 module.exports =
 
 	toggleVisibility: (statementId, isPos) ->
-		type: 'TOGGLE_STATEMENT_CHILD_VISIBILITY'
+		type: l.STATEMENTS_COLLAPSE
 		statementId: statementId
 		isPos: isPos

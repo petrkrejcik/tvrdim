@@ -1,9 +1,13 @@
 update = require 'react-addons-update'
+l = require './actionTypes'
 
 defaultState =
 	statements:
-		openedPos: []
-		openedNeg: []
+		sort:
+			root: []
+		opened:
+			pos: []
+			neg: []
 
 
 module.exports =
@@ -11,16 +15,24 @@ module.exports =
 
 	layout: (state = defaultState, action) ->
 		switch action.type
-			when 'TOGGLE_STATEMENT_CHILD_VISIBILITY'
-				changed = {}
-				key = if action.isPos then 'openedPos' else 'openedNeg'
-				if action.statementId in state.statements[key]
-					changed[key] = $set: state.statements[key].filter (id) -> id isnt action.statementId
-					newState = update state, statements: changed
+
+			when l.STATEMENTS_COLLAPSE
+				id = action.statementId
+				key = if action.isPos then 'pos' else 'neg'
+				current = state.statements.opened[key]
+				if (index = current.indexOf id) > -1
+					current.splice index, 1
 				else
-					changed[key] = $push: [action.statementId]
-					newState = update state, statements: changed
-				newState
+					current.push id
+
+				update state, statements: opened: "#{key}": $set: current
+
+			when l.STATEMENTS_SORT_ROOT
+				update state, statements: sort: root: $set: (statement.id for statement in action.statements)
+
+			when l.STATEMENTS_SORT_ROOT_ADD
+				update state, statements: sort: root: $unshift: [action.id]
+
 			else
 				state
 

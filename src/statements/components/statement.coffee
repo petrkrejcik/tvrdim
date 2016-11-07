@@ -1,13 +1,16 @@
 React = require 'react'
 {connect} = require 'react-redux'
-{addStatement} = require('../actions')()
+{addStatement} = require '../actions'
+newStatement = React.createFactory require './newStatement'
+{getByIds} = require '../actions'
 layoutActions = require '../../layout/actions'
 {toggleVisibility} = layoutActions
 
 
 dispatchToProps = (dispatch) ->
-	handleToggleChildren: (statementId, isPos) ->
+	handleToggleChildren: (statementId, isPos, childrenIds) ->
 		dispatch toggleVisibility statementId, isPos
+		dispatch getByIds childrenIds
 
 	handleSave: ({statementId, text, isPos}) ->
 		dispatch addStatement statementId, text, isPos
@@ -23,7 +26,9 @@ childrenButton = React.createFactory React.createClass
 
 		React.DOM.div
 			className: cssClasses.join ' '
-			onClick: => @props.handleClick @props.id, @props.isPos
+			onClick: =>
+				return unless @props.childrenCount
+				@props.handleClick @props.id, @props.isPos
 		, "-(#{@props.childrenCount})"
 
 	getDefaultProps: ->
@@ -31,49 +36,49 @@ childrenButton = React.createFactory React.createClass
 		childrenCount: null
 		handleStatementClick: ->
 
-newStatement = React.createFactory React.createClass
+# newStatement = React.createFactory React.createClass
 
-	displayName: 'NewStatement'
+# 	displayName: 'NewStatement'
 
-	render: ->
-		React.DOM.div
-			key: "new-statement-#{@props.id}"
-			className: 'newStatement'
-		, [
-			React.DOM.input
-				key: "new-statement-input-#{@props.id}"
-				placeholder: 'Add new'
-				value: @state.text
-				onChange: (e) => return @setState text: e.target.value
-			React.DOM.select
-				key: "new-statement-select-#{@props.id}"
-				value: if @state.isPos then 'positive' else 'negative'
-				onChange: (e) => return @setState isPos: e.target.value is 'positive'
-			, [
-				React.DOM.option
-					key: "new-statement-select-option-pos-#{@props.id}"
-					value: 'positive'
-				, 'Positive'
-			,
-				React.DOM.option
-					key: "new-statement-select-option-neg-#{@props.id}"
-					value: 'negative'
-				, 'Negative'
-			]
-			React.DOM.button
-				key: "new-statement-button-#{@props.id}"
-				onClick: => return @props.handleClickSave @state
-			, 'Add'
-		]
+# 	render: ->
+# 		React.DOM.div
+# 			key: "new-statement-#{@props.id}"
+# 			className: 'newStatement'
+# 		, [
+# 			React.DOM.input
+# 				key: "new-statement-input-#{@props.id}"
+# 				placeholder: 'Add new'
+# 				value: @state.text
+# 				onChange: (e) => return @setState text: e.target.value
+# 			React.DOM.select
+# 				key: "new-statement-select-#{@props.id}"
+# 				value: if @state.isPos then 'positive' else 'negative'
+# 				onChange: (e) => return @setState isPos: e.target.value is 'positive'
+# 			, [
+# 				React.DOM.option
+# 					key: "new-statement-select-option-pos-#{@props.id}"
+# 					value: 'positive'
+# 				, 'Positive'
+# 			,
+# 				React.DOM.option
+# 					key: "new-statement-select-option-neg-#{@props.id}"
+# 					value: 'negative'
+# 				, 'Negative'
+# 			]
+# 			React.DOM.button
+# 				key: "new-statement-button-#{@props.id}"
+# 				onClick: => return @props.handleClickSave @state
+# 			, 'Add'
+# 		]
 
 
-	getInitialState: ->
-		text: ''
-		isPos: no
+# 	getInitialState: ->
+# 		text: ''
+# 		isPos: no
 
-	getDefaultProps: ->
-		id: null
-		handleClickSave: ->
+# 	getDefaultProps: ->
+# 		id: null
+# 		handleClickSave: ->
 
 
 statement = React.createClass
@@ -83,40 +88,45 @@ statement = React.createClass
 	render: ->
 		if @props['isPosOpened']
 			childrenPos = @props.listFactory
-				statements: @props.childrenPos
 				nestedType: 'positive'
+				vole: 'aaa'
+				sortChildren: @props['childrenPos']
 				key: "nestedStatementList-pos-#{@props.id}"
 		if @props['isNegOpened']
 			childrenNeg = @props.listFactory
-				statements: @props.childrenNeg
 				nestedType: 'negative'
+				sortChildren: @props['childrenNeg']
 				key: "nestedStatementList-neg-#{@props.id}"
 
 		posButton = childrenButton
 			key: "togglePos-#{@props.id}"
 			isPos: yes
 			childrenCount: @props['childrenPos'].length
-			handleClick: => @props.handleToggleChildren @props.id, yes
+			handleClick: => @props.handleToggleChildren @props.id, yes, @props['childrenPos']
 
 		negButton = childrenButton
 			key: "toggleNeg-#{@props.id}"
 			childrenCount: @props['childrenNeg'].length
+			handleClick: => @props.handleToggleChildren @props.id, no, @props['childrenNeg']
 
-		newStatementText = unless @props.isAdding
-			React.DOM.span
-				key: "add-statement-#{@props.id}"
-				className: 'statement-newButton'
-				onClick: => @setState isAdding: yes
-			, 'Add new'
+		addNew = newStatement
+			key: 'addNew'
+			parentId: @props.id
+		# newStatementText = unless @props.isAdding
+		# 	React.DOM.span
+		# 		key: "add-statement-#{@props.id}"
+		# 		className: 'statement-newButton'
+		# 		onClick: => @setState isAdding: yes
+		# 	, 'Add new'
 
-		newButton = if @state.isAdding
-			newStatement
-				key: "new-statement-#{@props.id}"
-				id: @props.id
-				handleClickSave: (values) =>
-					values.statementId = @props.id
-					@props.handleSave values
-					return
+		# newButton = if @state.isAdding
+		# 	newStatement
+		# 		key: "new-statement-#{@props.id}"
+		# 		id: @props.id
+		# 		handleClickSave: (values) =>
+		# 			values.statementId = @props.id
+		# 			@props.handleSave values
+		# 			return
 
 
 		React.DOM.div
@@ -124,9 +134,8 @@ statement = React.createClass
 		, [
 			@props.text
 			posButton
-			newStatementText
 			negButton
-			newButton
+			addNew
 			childrenPos
 			childrenNeg
 		]

@@ -1,26 +1,70 @@
 t = require './actionTypes'
+l = require '../layout/actionTypes'
 fetch = require 'isomorphic-fetch'
 
-module.exports = ->
+actions = ->
 
 	_addStatementClick = (parentId) ->
-		console.info 'click'
 		type: t.ADD_CLICK
 		parentId: parentId
 
-	_addStatementSuccess = ({id}) ->
+	_addStatementSuccess = (statement) ->
 		type: t.ADD_SUCCESS
-		id: id
+		statement: statement
+
+	_filterBy = (dispatch, filter) ->
+		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+		fetch '/api/0/statement/filter',
+			method: 'post'
+			headers:
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			body: JSON.stringify filter
+		.then (response) -> response.json response
 
 	addStatement: (parentId, text, isPos) ->
 		(dispatch) ->
+			statement = {parentId, text, isPos}
+			statement.childrenPos = []
+			statement.childrenNeg = []
 			dispatch _addStatementClick parentId
 			fetch '/api/0/statement/add',
 				method: 'post'
 				headers:
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
-				body: JSON.stringify {parentId, text, isPos}
+				body: JSON.stringify statement
 			.then (response) -> response.json response
-			.then (data) -> dispatch _addStatementSuccess data
+			.then ({id}) ->
+				console.info 'added parent', parentId
+				statement.id = id
+				dispatch _addStatementSuccess "#{id}": statement
+				if parentId
+					dispatch
+						type: t.ADD_CHILD
+						parentId: parentId
+						childId: id
+						isPos: isPos
+				else
+					dispatch type: l.STATEMENTS_SORT_ROOT_ADD, id: id
 			return
+
+	getRoot: (filter) ->
+		(dispatch) ->
+			_filterBy dispatch, withoutChildren: yes
+			.then ({data}) ->
+				dispatch type: l.STATEMENTS_SORT_ROOT, statements: data
+				dispatch type: t.GET_SUCCESS, statements: data
+			return
+
+
+	getByIds: (ids) ->
+		(dispatch) ->
+			_filterBy dispatch, {ids}
+			.then ({data}) ->
+				dispatch type: t.GET_SUCCESS, statements: data
+			return
+
+
+
+module.exports = actions()

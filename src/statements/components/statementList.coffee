@@ -3,12 +3,10 @@ React = require 'react'
 statement = React.createFactory require './statement'
 
 appState = (state) ->
-	statements = state.statements
-	# statements = state.statements.map (st) ->
-	# 	st.isPosOpened = st.id in state.layout.statements.openedPos
-	# 	st.isNegOpened = st.id in state.layout.statements.openedNeg
-	# 	st
-	{statements}
+	statements: state.statements
+	sortRoot: state.layout.statements.sort.root
+	statementsPosOpened: state.layout.statements.opened.pos
+	statementsNegOpened: state.layout.statements.opened.neg
 
 
 list = React.createClass
@@ -20,11 +18,19 @@ list = React.createClass
 		cssClasses.push @props.nestedType if @props.nestedType
 
 		statements = []
-		for id, statementProps of @props.statements
+		if @props['sortChildren'].length
+			sort = @props['sortChildren']
+		else
+			sort = @props['sortRoot']
+
+		for id in sort
 			props =
-				listFactory: React.createFactory list
 				key: id
-			props[key] = value for key, value of statementProps
+				isPosOpened: id in @props.statementsPosOpened
+				isNegOpened: id in @props.statementsNegOpened
+				listFactory: (props) ->
+					React.createFactory(connect(appState) list) props
+			props[key] = value for key, value of @props.statements[id]
 			statements.push statement props
 
 		React.DOM.div
@@ -34,6 +40,8 @@ list = React.createClass
 	getDefaultProps: ->
 		statements: []
 		nestedType: ''
+		sortRoot: []
+		sortChildren: []
 
 
 module.exports = connect(appState) list
