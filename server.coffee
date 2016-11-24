@@ -9,7 +9,6 @@ webpackHotMiddleware = require 'webpack-hot-middleware'
 {createStore, applyMiddleware} = require 'redux'
 thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
-# mongo = require 'mongoskin'
 
 reducer = require './rootReducer'
 

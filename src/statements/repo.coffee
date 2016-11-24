@@ -1,15 +1,10 @@
-mongo = require 'mongoskin'
-db = mongo.db 'mongodb://localhost:27017/tvrdim'
-db.bind 'statement'
-ObjectID = require('mongodb').ObjectID
+db = require '../lib/db'
 
 repo = ->
 
 	convert = (items) ->
 		result = []
 		for item in items
-			item.id = item._id
-			delete item._id
 			result.push item
 		result
 
@@ -33,15 +28,21 @@ repo = ->
 		return
 
 	getAll: (done) ->
-		db.statement.find().sort(createdTime: -1).toArray (err, result) ->
-			done err, convert result
-			return
-		return
+		db.query 'SELECT * FROM statement', (err, res) ->
+			return if err
+			done err, convert res.rows
+		# db.statement.find().sort(createdTime: -1).toArray (err, result) ->
+		# 	done err, convert result
+		# 	return
+		# return
 
 	filterBy: (filter, done) ->
-		db.statement.find(filter).sort(createdTime: -1).toArray (err, result) ->
-			done err, convert result
-			return
-		return
+		db.query 'SELECT * FROM statement', (err, res) ->
+			return if err
+			done err, convert res.rows
+		# db.statement.find(filter).sort(createdTime: -1).toArray (err, result) ->
+		# 	done err, convert result
+		# 	return
+		# return
 
 module.exports = repo()
