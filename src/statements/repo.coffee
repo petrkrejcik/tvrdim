@@ -8,7 +8,27 @@ repo = ->
 			result.push item
 		result
 
+	getEntities = (items) ->
+		entities = {}
+		for item in items
+			entities[item.id] = item
+		entities
+
+	getRoot = ->
+		new Promise (resolve, reject) ->
+			db.query 'SELECT s.* FROM statement s JOIN statement_closure sc ON (s.id = sc.descendant) WHERE sc.ancestor = 1 AND sc.descendant <> 1 AND sc.depth = 1;', (err, res) ->
+				return reject err if err
+				resolve entities: getEntities res.rows
+
+	getChildren = (parentIds) ->
+		new Promise (resolve, reject) ->
+			db.query 'SELECT s.*, sc.ancestor FROM statement s JOIN statement_closure sc ON (s.id = sc.descendant) WHERE sc.ancestor = ANY ($1);', [parentIds], (err, res) ->
+				return reject err if err
+				resolve entities: getEntities res.rows
+			return
+
 	add: (data, done) ->
+		console.info 'adding new...', data
 
 		addNew = (data) ->
 			new Promise (resolve, reject) ->
@@ -18,7 +38,7 @@ repo = ->
 					# createdTime: (new Date).getTime()
 				db.insert 'statement', row, (err, res) ->
 					console.info 'err', err if err
-					console.info 'res', res
+					# console.info 'res', res
 					return reject err if err
 					{id} = res[0]
 					resolve id
@@ -33,15 +53,16 @@ repo = ->
 					depth: 0
 				db.insert 'statement_closure', self, (err, res) ->
 					console.info 'err', err if err
-					console.info 'res', res
+					# console.info 'res', res
 					return reject err if err
 					resolve id
 				return
 
 		addSelfToParent = (id) ->
 			new Promise (resolve, reject) ->
-				console.info 'addSelfToParent...'
-				resolve id unless parentId = data.parentId
+				console.info 'addSelfToParent...', data.parentId
+				parentId = data.parentId
+				parentId = 1 unless parentId # __ROOT__
 				db.query 'INSERT INTO statement_closure (ancestor, descendant, depth) SELECT ancestor, $1, depth + 1 FROM statement_closure WHERE descendant = $2', [id, parentId], (err, res) ->
 					console.info 'err', err if err
 					return reject err if err
@@ -61,38 +82,23 @@ repo = ->
 					resolve id
 				return
 
-		# db.query 'INSERT INTO statement (text) VALUES', (err, res) ->
-
-		# doc =
-		# 	text: data.text
-		# 	createdTime: (new Date).getTime()
-		# doc.parentId = data.parentId if data.parentId
-		# doc.weight = data.weight if data.weight
-		# doc.childrenPos = []
-		# doc.childrenNeg = []
-		# db.statement.insert doc, (err, result) ->
-		# 	id = result.insertedIds[0]
-		# 	if parentId = ObjectID doc.parentId
-		# 		children = if data.isPos then 'childrenPos' else 'childrenNeg'
-		# 		db.statement.update {_id: parentId}, {$push: "#{children}": $each: [id], $position: 0}, (err, updateResult) ->
-		# 			done err, id
-		# 	else
-		# 		done err, id
-
 	getAll: ->
 		new Promise (resolve, reject) ->
-
-			db.query 'SELECT * FROM statement', (err, res) ->
-			# db.query 'SELECT * FROM statement s JOIN statement_closure sc ON (s.id = sc.id);', (err, res) ->
-				console.info 'queried'
-				console.log JSON.stringify(err, null, 4)
-				return reject err if err
-				resolve convert res.rows
-				# done err, convert res.rows
-		# db.statement.find().sort(createdTime: -1).toArray (err, result) ->
-		# 	done err, convert result
-		# 	return
-		# return
+			tree = {}
+			getRoot()
+			.then (roots) ->
+				ids = Object.keys roots.entities
+				tree.root = ids
+				getChildren ids
+			.then (children) ->
+				for id, child of children.entities
+					continue if(parseInt id) is parseInt child.ancestor
+					tree[child.ancestor] ?= []
+					tree[child.ancestor].push id
+				resolve
+					entities: children.entities
+					tree: tree
+			.catch reject
 
 	filterBy: (filter, done) ->
 		db.query 'SELECT * FROM statement', (err, res) ->

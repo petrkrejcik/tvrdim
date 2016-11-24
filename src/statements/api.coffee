@@ -4,21 +4,31 @@ bodyParser = require 'body-parser'
 jsonParser = bodyParser.json()
 repo = require './repo'
 
+###
+entities:
+	1:
+		id: 1
+		text: 'Foo bar'
+	2...
+tree:
+	root: [1, 5] // without parent
+	2:
+		pos: [2, 3]
+		neg: [4]
+	6...
+###
 router.get '/statement/get', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
-	repo.getAll (err, items) ->
-		res.json data: items
+	repo.getAll()
+	.then (result) ->
+		res.json result
 	return
 
 router.post '/statement/filter', jsonParser, (req, res) ->
 	filterData = req.body
 	filter = {}
-	if filterData.withoutChildren
-		filter['parentId'] = $exists: no
-	if filterData.ids
-		filter['_id'] = $in: filterData.ids
 	repo.filterBy filter, (err, result) ->
-		res.json data: result
+		res.json result
 	return
 
 router.post '/statement/add', jsonParser, (req, res) ->

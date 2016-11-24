@@ -4,7 +4,7 @@ statement = React.createFactory require './statement'
 
 appState = (state) ->
 	statements: state.statements
-	sortRoot: state.layout.statements.sort.root
+	sortRoot: state.statementsTree.root
 	statementsPosOpened: state.layout.statements.opened.pos
 	statementsNegOpened: state.layout.statements.opened.neg
 

@@ -1,5 +1,6 @@
 t = require './actionTypes'
 l = require '../layout/actionTypes'
+st = require '../statementsTree/actionTypes'
 fetch = require 'isomorphic-fetch'
 
 actions = ->
@@ -11,6 +12,11 @@ actions = ->
 	_addStatementSuccess = (statement) ->
 		type: t.ADD_SUCCESS
 		statement: statement
+
+	_getRoot = (dispatch) ->
+		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+		fetch '/api/0/statement/get'
+		.then (response) -> response.json response
 
 	_filterBy = (dispatch, filter) ->
 		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
@@ -51,10 +57,10 @@ actions = ->
 
 	getRoot: (filter) ->
 		(dispatch) ->
-			_filterBy dispatch, withoutChildren: yes
-			.then ({data}) ->
-				dispatch type: l.STATEMENTS_SORT_ROOT, statements: data
-				dispatch type: t.GET_SUCCESS, statements: data
+			_getRoot dispatch
+			.then ({entities, tree}) ->
+				dispatch type: st.UPDATE, tree: tree
+				dispatch type: t.GET_SUCCESS, statements: entities
 			return
 
 

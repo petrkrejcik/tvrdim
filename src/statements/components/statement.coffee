@@ -35,6 +35,7 @@ childrenButton = React.createFactory React.createClass
 		isPos: no
 		childrenCount: null
 		handleStatementClick: ->
+		handleClick: ->
 
 # newStatement = React.createFactory React.createClass
 

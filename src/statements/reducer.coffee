@@ -19,9 +19,7 @@ module.exports =
 				update state, $merge: action.statement
 
 			when t.GET_SUCCESS
-				statements = {}
-				statements[statement.id] = statement for statement in action.statements
-				update state, $merge: statements
+				update state, $merge: action.statements
 
 			when t.ADD_CHILD
 				statement = state[action.parentId]
