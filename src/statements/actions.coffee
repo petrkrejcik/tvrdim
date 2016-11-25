@@ -75,6 +75,4 @@ actions = ->
 				dispatch type: t.GET_SUCCESS, statements: data
 			return
 
-
-
 module.exports = actions()

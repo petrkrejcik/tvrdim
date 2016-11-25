@@ -13,7 +13,6 @@ appState = (state) ->
 dispatchToProps = (dispatch) ->
 	handleToggleChildren: (statementId, isPos, childrenIds) ->
 		dispatch toggleVisibility statementId, isPos
-		console.info 'childrenIds', childrenIds
 		dispatch getDirectChildren childrenIds
 
 	handleSave: ({statementId, text, isPos}) ->
@@ -31,45 +30,23 @@ statement = React.createClass
 	getDefaultProps: ->
 		id: null
 		text: ''
-		isPosOpened: no
-		isNegOpened: no
-		childrenPos: []
-		childrenNeg: []
+		customClassNames: []
 		tree: {}
-		listFactory: ->
-		handleClickSave: ->
 
 	render: ->
-		# if @props['isPosOpened']
-		if @props.id in @props.opened.pos
-			childrenPos = @props.listFactory
-				nestedType: 'positive'
-				vole: 'aaa'
-				sortChildren: @props.tree[@props.id]
-				key: "nestedStatementList-pos-#{@props.id}"
-		if @props.id in @props.opened.neg
-		# if @props['isNegOpened']
-			childrenNeg = @props.listFactory
-				nestedType: 'negative'
-				sortChildren: @props.tree[@props.id]
-				key: "nestedStatementList-neg-#{@props.id}"
-
-		posButton = @_renderChildrenButton yes
-		negButton = @_renderChildrenButton no
-
 		addNew = newStatement
 			key: 'addNew'
 			parentId: @props.id
 
+		title = React.DOM.div className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
+
 		React.DOM.div
-			'className': 'statement'
+			'className': (['statement'].concat @props.customClassNames).join ' '
 		, [
-			"#{@props.text} (id: #{@props.id})"
-			posButton
-			negButton
+			title
+			@_renderChildrenButton yes
+			@_renderChildrenButton no
 			addNew
-			childrenPos
-			childrenNeg
 		]
 
 	_renderChildrenButton: (isPos) ->
