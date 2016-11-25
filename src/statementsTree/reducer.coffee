@@ -12,8 +12,11 @@ module.exports =
 		switch action.type
 
 			when a.UPDATE
-				# nemel by se updatovat celej strom, jen konkretni klic
-				update state, $set: action.tree
+				update state, $merge: action.tree
+
+			when a.ADD_CHILD
+				newState = update state, "#{action.statement.parentId}": $push: [action.statement.id]
+				update newState, "#{action.statement.id}": $set: []
 
 			else
 				state

@@ -5,11 +5,13 @@ module.exports = {
 	module: {
 		loaders: [
 			{test: /\.coffee$/, loader: 'coffee-loader'},
+			{test: /\.less$/, loader: 'style!css!less'},
 			{test: /\.json$/, loader: 'json-loader'} // asi neni potreba
 		]
 	},
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
+		'./src/statements/components/statement.less',
 		// 'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
 		'./client'
 	],

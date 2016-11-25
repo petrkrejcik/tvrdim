@@ -5,6 +5,7 @@ statement = React.createFactory require './statement'
 appState = (state) ->
 	statements: state.statements
 	sortRoot: state.statementsTree.root
+	tree: state.statementsTree
 	statementsPosOpened: state.layout.statements.opened.pos
 	statementsNegOpened: state.layout.statements.opened.neg
 
@@ -19,11 +20,11 @@ list = React.createClass
 
 		statements = []
 		if @props['sortChildren'].length
-			sort = @props['sortChildren']
+			ids = @props['sortChildren']
 		else
-			sort = @props['sortRoot']
+			ids = @props.tree.root
 
-		for id in sort
+		for id in ids
 			props =
 				key: id
 				isPosOpened: id in @props.statementsPosOpened
@@ -41,6 +42,7 @@ list = React.createClass
 		statements: []
 		nestedType: ''
 		sortRoot: []
+		tree: {}
 		sortChildren: []
 
 

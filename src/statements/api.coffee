@@ -26,16 +26,18 @@ router.get '/statement/get', (req, res) ->
 
 router.post '/statement/filter', jsonParser, (req, res) ->
 	filterData = req.body
-	filter = {}
-	repo.filterBy filter, (err, result) ->
+	repo.filterBy filterData
+	.then (result) ->
+		res.setHeader 'Content-Type', 'application/json'
 		res.json result
 	return
 
 router.post '/statement/add', jsonParser, (req, res) ->
-	repo.add req.body, (err, id) ->
+	repo.add req.body
+	.then (id) ->
 		res.setHeader 'Content-Type', 'application/json'
 		res.json {id}
-		return
+	.catch -> console.info 'adding error'
 	return
 
 module.exports = router

@@ -5,12 +5,12 @@ fetch = require 'isomorphic-fetch'
 
 actions = ->
 
-	_addStatementClick = (parentId) ->
-		type: t.ADD_CLICK
+	_addStatementRequest = (parentId) ->
+		type: l.STATEMENT_ADD_REQUEST
 		parentId: parentId
 
 	_addStatementSuccess = (statement) ->
-		type: t.ADD_SUCCESS
+		type: l.STATEMENT_ADD_SUCCESS
 		statement: statement
 
 	_getRoot = (dispatch) ->
@@ -28,12 +28,11 @@ actions = ->
 			body: JSON.stringify filter
 		.then (response) -> response.json response
 
+
 	addStatement: (parentId, text, isPos) ->
 		(dispatch) ->
 			statement = {parentId, text, isPos}
-			statement.childrenPos = []
-			statement.childrenNeg = []
-			dispatch _addStatementClick parentId
+			dispatch _addStatementRequest parentId
 			fetch '/api/0/statement/add',
 				method: 'post'
 				headers:
@@ -42,27 +41,32 @@ actions = ->
 				body: JSON.stringify statement
 			.then (response) -> response.json response
 			.then ({id}) ->
-				console.info 'added parent', parentId
-				statement.id = id
-				dispatch _addStatementSuccess "#{id}": statement
 				if parentId
-					dispatch
-						type: t.ADD_CHILD
-						parentId: parentId
-						childId: id
-						isPos: isPos
+					dispatch type: t.ADD_CHILD, statement: "#{id}": {text, id}
+					dispatch type: st.ADD_CHILD, statement: {parentId, id}
 				else
-					dispatch type: l.STATEMENTS_SORT_ROOT_ADD, id: id
+					dispatch type: l.STATEMENTS_SORT_ROOT_ADD, id: id # TODO
+				dispatch _addStatementSuccess "#{id}": {text, id}
 			return
 
 	getRoot: (filter) ->
 		(dispatch) ->
 			_getRoot dispatch
 			.then ({entities, tree}) ->
-				dispatch type: st.UPDATE, tree: tree
+				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
 				dispatch type: t.GET_SUCCESS, statements: entities
+				dispatch type: st.UPDATE, tree: tree
 			return
 
+
+	getDirectChildren: (parentIds) ->
+		(dispatch) ->
+			_filterBy dispatch, {parentIds}
+			.then ({entities, tree}) ->
+				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
+				dispatch type: t.GET_SUCCESS, statements: entities
+				dispatch type: st.UPDATE, tree: tree
+			return
 
 	getByIds: (ids) ->
 		(dispatch) ->
