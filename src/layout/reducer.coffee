@@ -27,11 +27,16 @@ module.exports =
 
 				update state, statements: opened: "#{key}": $set: current
 
-			when l.STATEMENTS_SORT_ROOT
-				update state, statements: sort: root: $set: (statement.id for statement in action.statements)
+			when l.STATEMENT_ADD_SUCCESS
+				# TODO hide loader
+				state
 
-			when l.STATEMENTS_SORT_ROOT_ADD
-				update state, statements: sort: root: $unshift: [action.id]
+			when l.STATEMENT_OPEN
+				id = action.statement.id
+				key = 'pos' # TODO
+				current = state.statements.opened[key]
+				current.push id
+				update state, statements: opened: "#{key}": $set: current
 
 			else
 				state

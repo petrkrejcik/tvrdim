@@ -38,7 +38,7 @@ statement = React.createClass
 			key: 'addNew'
 			parentId: @props.id
 
-		title = React.DOM.div className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
+		title = React.DOM.div className: 'title', key: 'title', "#{@props.text}"
 
 		React.DOM.div
 			'className': (['statement'].concat @props.customClassNames).join ' '
@@ -47,6 +47,7 @@ statement = React.createClass
 			@_renderChildrenButton yes
 			@_renderChildrenButton no
 			addNew
+			"(id: #{@props.id})"
 		]
 
 	_renderChildrenButton: (isPos) ->

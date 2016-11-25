@@ -16,7 +16,7 @@ statement = React.createClass
 	render: ->
 		id = @props.parentId ? 'root'
 		unless @state.isAdding
-			return React.DOM.span
+			return React.DOM.div
 				key: "add-statement-#{id}"
 				className: 'statement-newButton'
 				onClick: => @setState isAdding: yes

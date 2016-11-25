@@ -5,11 +5,12 @@ CREATE TABLE statement (
 );
 
 INSERT INTO statement (text) VALUES
-('Kouření by mělo být v hospodách zakázáno.') -- 1
-,('Majitel by si měl sám rozhodnout.') -- 2
-,('Omezilo by to kouření celkově.') -- 3
-,('Hromadná doprava by měla být zdarma.') -- 4
-,('Ulevilo by to silnicím.'); -- 5
+('__ROOT__') -- root for all
+,('Kouření by mělo být v hospodách zakázáno.') -- 2
+,('Majitel by si měl sám rozhodnout.') -- 3
+,('Omezilo by to kouření celkově.') -- 4
+,('Hromadná doprava by měla být zdarma.') -- 5
+,('Ulevilo by to silnicím.'); -- 6
 
 
 
@@ -23,10 +24,18 @@ CREATE TABLE statement_closure (
 INSERT INTO statement_closure VALUES
 -- (asc, desc, depth)
 (1, 1, 0)
-,(1, 2, 1)
-,(1, 3, 1)
 ,(2, 2, 0)
+,(1, 2, 1)
 ,(3, 3, 0)
+,(1, 3, 2)
+,(2, 3, 1)
 ,(4, 4, 0)
-,(4, 5, 1);
+,(2, 4, 1)
+,(1, 4, 2)
+,(5, 5, 0)
+,(1, 5, 1)
+,(6, 6, 0)
+,(5, 6, 1)
+,(2, 6, 2)
+,(1, 6, 3);
 

@@ -11,7 +11,7 @@ module.exports = {
 	},
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
-		'./src/statements/components/statement.less',
+		'./src/app/components/app.less',
 		// 'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
 		'./client'
 	],

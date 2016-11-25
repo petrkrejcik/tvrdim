@@ -14,7 +14,7 @@ module.exports =
 			when a.UPDATE
 				update state, $merge: action.tree
 
-			when a.ADD_CHILD
+			when a.ADD
 				newState = update state, "#{action.statement.parentId}": $push: [action.statement.id]
 				update newState, "#{action.statement.id}": $set: []
 

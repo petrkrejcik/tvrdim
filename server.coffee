@@ -25,7 +25,6 @@ handleRender = (req, res) ->
 	return
 
 renderHtml = (body, state) ->
-				# <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 	"""
 		<!doctype html>
 		<html>

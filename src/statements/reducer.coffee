@@ -10,7 +10,7 @@ module.exports =
 			when t.GET_SUCCESS
 				update state, $merge: action.statements
 
-			when t.ADD_CHILD
+			when t.ADD
 				update state, $merge: action.statement
 
 			else
