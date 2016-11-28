@@ -7,16 +7,16 @@ layoutActions = require '../../layout/actions'
 
 
 appState = (state) ->
+	statements: state.statements
 	tree: state.statementsTree
 	opened: state.layout.statements.opened
 
 dispatchToProps = (dispatch) ->
-	handleToggleChildren: (statementId, isPos, childrenIds) ->
-		dispatch toggleVisibility statementId, isPos
-		dispatch getDirectChildren childrenIds
+	handleToggleChildren: (statementId, isApproving, open) ->
+		dispatch toggleVisibility statementId, isApproving, open
 
-	handleSave: ({statementId, text, isPos}) ->
-		dispatch addStatement statementId, text, isPos
+	handleSave: ({statementId, text, isApproving}) ->
+		dispatch addStatement statementId, text, isApproving
 
 
 
@@ -57,25 +57,28 @@ statement = React.createClass
 			'className': (cssClasses.concat @props.customClassNames).join ' '
 		, [
 			title
-			@props.depth
 			@_renderChildrenButton yes
 			@_renderChildrenButton no
 			addNew
 			"(id: #{@props.id})"
 		]
 
-	_renderChildrenButton: (isPos) ->
+	_renderChildrenButton: (isApproving) ->
 		cssClasses = ['childrenToggle']
-		cssClasses.push 'positive' if isPos
-		childrenCount = @props.tree[@props.id]?.length ? 0
+		cssClasses.push 'approving' if isApproving
+		children = @props.tree[@props.id].filter (childId) => @props.statements[childId].isApproving is isApproving
+		childrenCount = children.length
+		openedKey = if isApproving then 'approving' else 'rejecting'
+		isOpened = @props.id in @props.opened[openedKey]
+
 
 		React.DOM.div
-			key: "children-btn-#{@props.id}-#{isPos}"
+			key: "children-btn-#{@props.id}-#{isApproving}"
 			className: cssClasses.join ' '
 			onClick: =>
 				return unless childrenCount
-				@props.handleToggleChildren @props.id, isPos, @props.tree[@props.id]
-		, "(#{childrenCount})"
+				@props.handleToggleChildren @props.id, isApproving, !isOpened
+		, "#{openedKey}: (#{childrenCount})"
 
 
 

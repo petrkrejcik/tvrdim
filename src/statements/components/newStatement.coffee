@@ -4,8 +4,8 @@ React = require 'react'
 
 
 dispatchToProps = (dispatch) ->
-	handleSave: ({parentId, text, isPos}) ->
-		dispatch addStatement parentId, text, isPos
+	handleSave: ({parentId, text, isApproving}) ->
+		dispatch addStatement parentId, text, isApproving
 
 
 
@@ -34,25 +34,25 @@ statement = React.createClass
 				onChange: (e) => return @setState text: e.target.value
 			React.DOM.select
 				key: "new-statement-select-#{id}"
-				value: if @state.isPos then 'positive' else 'negative'
-				onChange: (e) => return @setState isPos: e.target.value is 'positive'
+				value: if @state.isApproving then 'approving' else 'rejecting'
+				onChange: (e) => return @setState isApproving: e.target.value is 'approving'
 			, [
 				React.DOM.option
-					key: "new-statement-select-option-pos-#{id}"
-					value: 'positive'
-				, 'Positive'
+					key: "new-statement-select-option-app-#{id}"
+					value: 'approving'
+				, 'Approving'
 			,
 				React.DOM.option
-					key: "new-statement-select-option-neg-#{id}"
-					value: 'negative'
-				, 'Negative'
+					key: "new-statement-select-option-rej-#{id}"
+					value: 'rejecting'
+				, 'Rejecting'
 			]
 			React.DOM.button
 				key: "new-statement-button-#{id}"
 				onClick: =>
 					newStatement =
 						text: @state.text
-						isPost: @state.isPos
+						isApproving: @state.isApproving
 						parentId: @props.parentId ? null
 					@setState isAdding: no, @props.handleSave.bind @, newStatement
 			, 'Add'
@@ -61,7 +61,7 @@ statement = React.createClass
 
 	getInitialState: ->
 		text: ''
-		isPos: no
+		isApproving: no
 		isAdding: no
 
 	getDefaultProps: ->

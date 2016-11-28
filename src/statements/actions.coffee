@@ -20,10 +20,12 @@ actions = ->
 			body: JSON.stringify filter
 		.then (response) -> response.json response
 
+	_updateScore = (id, score) ->
 
-	addStatement: (parentId, text, isPos) ->
+
+	addStatement: (parentId, text, isApproving) ->
 		(dispatch) ->
-			statement = {parentId, text, isPos}
+			statement = {parentId, text, isApproving}
 			dispatch type: l.STATEMENT_ADD_REQUEST, {parentId}
 			fetch '/api/0/statement/add',
 				method: 'post'
@@ -33,11 +35,14 @@ actions = ->
 				body: JSON.stringify statement
 			.then (response) -> response.json response
 			.then ({id}) ->
+				statement = {id, text, isApproving}
+				statement.ancestor = parentId if parentId
 				parentId = 'root' unless parentId
-				dispatch type: t.ADD, statement: "#{id}": {text, id}
+				dispatch type: t.ADD, statement: "#{id}": statement
 				dispatch type: st.ADD, statement: {parentId, id}
+				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id
 				dispatch type: l.STATEMENT_ADD_SUCCESS, {statement}
-				dispatch type: l.STATEMENT_OPEN, statement: id: parentId
+				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, isApproving}
 			return
 
 	getAll: (filter) ->
@@ -50,6 +55,7 @@ actions = ->
 			return
 
 	getDirectChildren: (parentIds) ->
+		# not used1
 		(dispatch) ->
 			_filterBy dispatch, {parentIds}
 			.then ({entities, tree}) ->

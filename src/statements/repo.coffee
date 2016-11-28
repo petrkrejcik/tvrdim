@@ -1,4 +1,5 @@
 db = require '../lib/db'
+util = require './util'
 
 repo = ->
 
@@ -11,9 +12,12 @@ repo = ->
 	_makeTree = (entities) ->
 		tree = {}
 		for id, child of entities
-			continue if id is child.ancestor
-			tree[child.ancestor] ?= []
-			tree[child.ancestor].push id
+			if id is child.ancestor or !child.ancestor?
+				tree['root'] ?= []
+				tree['root'].push id
+			else
+				tree[child.ancestor] ?= []
+				tree[child.ancestor].push id
 		tree
 
 	_getRoot = ->
@@ -112,55 +116,27 @@ repo = ->
 
 	getAll: ->
 		new Promise (resolve, reject) ->
-			tree = {}
-			entities = {}
-			structure = []
 			_getRoot()
 			.then (roots) ->
-				entities = roots.entities
-				ids = Object.keys entities
-				tree.root = ids
-				structure.push ids
-				_getChildren ids, yes
+				rootIds = Object.keys roots.entities
+				_getChildren rootIds, yes
 			.then (children) ->
-				Object.assign entities, children.entities
 				childrenIds = Object.keys children.entities
-				childrenIdsFiltered = childrenIds.filter (id) -> id not in tree.root
-				_getTree childrenIdsFiltered
-			.then (treeScores) ->
+				_getTree childrenIds
+			.then (entitiesRelation) ->
+				for id, entity of entitiesRelation
+					if entity.is_approving is null
+						# is root
+						delete entity.ancestor
+						delete entity.is_approving
+						continue
+					entity.isApproving = entity.is_approving
+					delete entity.is_approving
 
-				_makeHierarchy = (nodes, parentIds, depth) ->
-					return unless Object.keys(nodes).length
-					remaining = {}
-					for id, row of nodes
-						if (row.ancestor + '') in parentIds
-							structure[depth] ?= []
-							structure[depth].push id
-						else
-							remaining[id] = row
-					_makeHierarchy remaining, structure[depth], depth + 1
-
-				_makeHierarchy treeScores, tree.root, 1
-
-				for id, entity of treeScores
-					entities[id].ancestor = entity.ancestor
-					continue unless entity.is_approving?
-					entities[id].isApproving = entity.is_approving
-
-				for ids in structure.reverse()
-					for id in ids
-						entity = entities[id]
-						parent = entities[entity.ancestor]
-						parent.score ?= 0
-
-						continue if isRoot = entity.id is entity.ancestor
-						continue if entity.score? and entity.score < 0
-
-						diff = if entity.isApproving then 1 else -1
-						parent.score += diff
-
-				Object.assign tree, _makeTree treeScores
+				entities = util.countScore entitiesRelation
+				tree = _makeTree entitiesRelation
 				resolve {entities, tree}
+				return
 			.catch reject
 			return
 

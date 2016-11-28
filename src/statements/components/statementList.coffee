@@ -7,8 +7,6 @@ appState = (state) ->
 	sortRoot: state.statementsTree.root
 	tree: state.statementsTree
 	opened: state.layout.statements.opened
-	statementsPosOpened: state.layout.statements.opened.pos
-	statementsNegOpened: state.layout.statements.opened.neg
 
 
 list = React.createClass
@@ -32,20 +30,24 @@ list = React.createClass
 		statements = []
 		for id in @props.tree.root
 			statements.push statement Object.assign @props.statements[id], key: id
-			@_renderChildren id, statements
+			@_renderChildren id, statements, 1, no
+			@_renderChildren id, statements, 1, yes
 
 		React.DOM.div
 			'className': cssClasses.join ' '
 		, statements
 
-	_renderChildren: (parentId, list, depth = 1) ->
-		return unless parentId in @props.opened.pos
+	_renderChildren: (parentId, list, depth, isApproving) ->
+		key = if isApproving then 'approving' else 'rejecting'
+		return unless parentId in @props.opened[key]
 		for id in @props.tree[parentId]
+			continue unless @props.statements[id].isApproving is isApproving
 			props =
 				key: "statement-#{id}"
 				depth: depth
 			list.push statement Object.assign {}, @props.statements[id], props
-			@_renderChildren id, list, depth + 1
+			@_renderChildren id, list, depth + 1, no
+			@_renderChildren id, list, depth + 1, yes
 		return
 
 
