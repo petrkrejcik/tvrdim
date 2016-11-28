@@ -9,6 +9,7 @@ module.exports =
 
 		_countParentScore = (parentId, oldState, newState) ->
 			parent = oldState[parentId]
+			return newState unless parent
 			if parent.score isnt newState[parentId].score
 				newState = update newState, "#{parentId}": $set: newState[parentId]
 			if parent.ancestor

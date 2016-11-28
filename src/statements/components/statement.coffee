@@ -57,10 +57,10 @@ statement = React.createClass
 			'className': (cssClasses.concat @props.customClassNames).join ' '
 		, [
 			title
+			"(id: #{@props.id})"
+			addNew
 			@_renderChildrenButton yes
 			@_renderChildrenButton no
-			addNew
-			"(id: #{@props.id})"
 		]
 
 	_renderChildrenButton: (isApproving) ->

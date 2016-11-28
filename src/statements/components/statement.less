@@ -1,17 +1,18 @@
 .statement {
-	margin: 10px;
+	margin-top: 4px;
 	background-color: #f8f8f8;
 	padding: 10px;
-
-	&.depth-1 {margin-left: 30px;}
-	&.depth-2 {margin-left: 60px;}
-	&.depth-3 {margin-left: 90px;}
-	&.depth-4 {margin-left: 120px;}
-	&.depth-5 {margin-left: 150px;}
+	clear: both;
 
 	.title {
 		margin-bottom: 10px;
 		font-weight: bold;
+	}
+	.childrenToggle {
+		cursor: pointer;
+		&.approving {
+			float: right
+		}
 	}
 
 	&.approved.root {

@@ -20,35 +20,40 @@ list = React.createClass
 		sortRoot: []
 		tree: {}
 		sortChildren: []
-		opened: []
-
+		opened: {}
 
 	render: ->
-		cssClasses = ['statementList']
+		cssClasses = ['statement-list', 'root']
 		cssClasses.push @props.nestedType if @props.nestedType
-
-		statements = []
-		for id in @props.tree.root
-			statements.push statement Object.assign @props.statements[id], key: id
-			@_renderChildren id, statements, 1, no
-			@_renderChildren id, statements, 1, yes
 
 		React.DOM.div
 			'className': cssClasses.join ' '
-		, statements
+		, @_renderChildren 'root', 0
 
-	_renderChildren: (parentId, list, depth, isApproving) ->
+	_renderChildren: (parentId, depth, isApproving) ->
 		key = if isApproving then 'approving' else 'rejecting'
-		return unless parentId in @props.opened[key]
+		children = []
 		for id in @props.tree[parentId]
-			continue unless @props.statements[id].isApproving is isApproving
+			continue if @props.statements[id].isApproving isnt isApproving and parentId isnt 'root'
 			props =
 				key: "statement-#{id}"
 				depth: depth
-			list.push statement Object.assign {}, @props.statements[id], props
-			@_renderChildren id, list, depth + 1, no
-			@_renderChildren id, list, depth + 1, yes
-		return
+			children.push statement Object.assign {}, @props.statements[id], props
+			if id in @props.opened.rejecting
+				childrenRejecting = @_renderChildren id, depth + 1, no
+				if childrenRejecting.length
+					children.push React.DOM.div
+						'key': "reject-#{id}-#{depth}"
+						'className': "statement-list reject depth-#{depth}"
+					, childrenRejecting
+			if id in @props.opened.approving
+				childrenApproving = @_renderChildren id, depth + 1, yes
+				if childrenApproving.length
+					children.push React.DOM.div
+						'key': "approve-#{id}-#{depth}"
+						'className': "statement-list approve depth-#{depth}"
+					, childrenApproving
+		children
 
 
 module.exports = connect(appState) list

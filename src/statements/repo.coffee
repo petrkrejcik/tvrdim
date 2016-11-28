@@ -116,15 +116,18 @@ repo = ->
 
 	getAll: ->
 		new Promise (resolve, reject) ->
+			dbEntities = {}
 			_getRoot()
 			.then (roots) ->
 				rootIds = Object.keys roots.entities
 				_getChildren rootIds, yes
 			.then (children) ->
+				dbEntities = children.entities
 				childrenIds = Object.keys children.entities
 				_getTree childrenIds
 			.then (entitiesRelation) ->
 				for id, entity of entitiesRelation
+					entity.text = dbEntities[id].text
 					if entity.is_approving is null
 						# is root
 						delete entity.ancestor

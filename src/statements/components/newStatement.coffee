@@ -52,7 +52,7 @@ statement = React.createClass
 				onClick: =>
 					newStatement =
 						text: @state.text
-						isApproving: @state.isApproving
+						isApproving: if @props.parentId then @state.isApproving else null
 						parentId: @props.parentId ? null
 					@setState isAdding: no, @props.handleSave.bind @, newStatement
 			, 'Add'
