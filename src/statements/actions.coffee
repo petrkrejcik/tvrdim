@@ -5,7 +5,7 @@ fetch = require 'isomorphic-fetch'
 
 actions = ->
 
-	_getRoot = (dispatch) ->
+	_getAll = (dispatch) ->
 		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
 		fetch '/api/0/statement/get'
 		.then (response) -> response.json response
@@ -40,15 +40,14 @@ actions = ->
 				dispatch type: l.STATEMENT_OPEN, statement: id: parentId
 			return
 
-	getRoot: (filter) ->
+	getAll: (filter) ->
 		(dispatch) ->
-			_getRoot dispatch
+			_getAll dispatch
 			.then ({entities, tree}) ->
 				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
 				dispatch type: t.GET_SUCCESS, statements: entities
 				dispatch type: st.UPDATE, tree: tree
 			return
-
 
 	getDirectChildren: (parentIds) ->
 		(dispatch) ->

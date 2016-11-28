@@ -43,8 +43,8 @@ list = React.createClass
 		for id in @props.tree[parentId]
 			props =
 				key: "statement-#{id}"
-				customClassNames: ["depth-#{depth}"]
-			list.push statement Object.assign @props.statements[id], props
+				depth: depth
+			list.push statement Object.assign {}, @props.statements[id], props
 			@_renderChildren id, list, depth + 1
 		return
 

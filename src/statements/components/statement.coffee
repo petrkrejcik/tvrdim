@@ -30,10 +30,23 @@ statement = React.createClass
 	getDefaultProps: ->
 		id: null
 		text: ''
+		depth: null
+		score: null
 		customClassNames: []
 		tree: {}
 
 	render: ->
+		cssClasses = ['statement']
+		if @props.score
+			if @props.score > 0
+				cssClasses.push 'approved'
+			else
+				cssClasses.push 'rejected'
+		if isRoot = !@props.depth
+			cssClasses.push ['root']
+		else
+			cssClasses.push "depth-#{@props.depth}"
+
 		addNew = newStatement
 			key: 'addNew'
 			parentId: @props.id
@@ -41,9 +54,10 @@ statement = React.createClass
 		title = React.DOM.div className: 'title', key: 'title', "#{@props.text}"
 
 		React.DOM.div
-			'className': (['statement'].concat @props.customClassNames).join ' '
+			'className': (cssClasses.concat @props.customClassNames).join ' '
 		, [
 			title
+			@props.depth
 			@_renderChildrenButton yes
 			@_renderChildrenButton no
 			addNew

@@ -12,4 +12,16 @@
 		margin-bottom: 10px;
 		font-weight: bold;
 	}
+
+	&.approved.root {
+		background-color: #bdffa3;
+	}
+	&.rejected {
+		&.root {
+			background-color: #ffa3a3;
+		}
+		&:not(.root) {
+			opacity: 0.3;
+		}
+	}
 }
