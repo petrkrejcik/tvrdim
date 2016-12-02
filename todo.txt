@@ -1,17 +1,3 @@
-Root statements
-
-
-SELECT * FROM statement_tree AS st WHERE st.parent_id NOT IN (
-	SELECT child_id FROM statement_tree
-)
-
-ukladat statements v local storage?
-
-pridam statement
-vyslu ajax
-loader
-pri odpovedi vidim statement
-
 akce je objekt s daty: action = type: ADD_STATEMENT, text: 'novej statement'
 akce se posilaji do storu (store.dispatch(≤action≥))
 store je tvoreny reducerama, drzi stav; cteni: store.getState(); zapis: store.dispatch
@@ -21,4 +7,30 @@ nad storem posloucha provider (react-redux)
 pri zmene storu provider obvola komponenty
 
 reducer nema side effecty - nevola API, neroutuje, nevytvari Date, Math
+
+nemusim se vzdy ptat na filter, kdyz uz mam ty statements natahany
+kdyz zaviram strom, tak musim zavrit i vsechny potomky
+API::getEntities by se melo dit az nakonec v public metode. Celou dobu chci jinak pracovat s tim, co mi vrati DB
+
+accept
+reject
+approve
+assuption
+polarity
+
+
+structure [ [ '2', '7', '9' ], [ '3', '4', '8' ], [ '5', '6' ] ]
+
+agree VS disagree
+
+remove
+	smazat tohle id plus vsechny childy
+	pokud tohle id nebo nektery child existuje ve stromu i jinde, smazu to id pouze ze stromu
+	if parentId
+		id = 4
+		parentId = 2
+		children = select descendant where ancestor = 4 and depth = 1
+		children [5, 6]
+		delete from closure where ancestor is 2 and descendant = 4 OR descendant in children
+
 

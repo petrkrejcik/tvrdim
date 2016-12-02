@@ -40,4 +40,15 @@ router.post '/statement/add', jsonParser, (req, res) ->
 	.catch -> console.info 'adding error'
 	return
 
+router.delete '/statements/:id/parentId/:parentId', (req, res) ->
+	res.setHeader 'Content-Type', 'application/json'
+	id = req.params.id
+	parentId = req.params.parentId
+	return res.json error: msg: 'No ID provided' unless id
+	repo.remove id, parentId
+	.then (ids) ->
+		res.json {ids}
+	.catch (err) -> console.info 'remove error', err
+	return
+
 module.exports = router

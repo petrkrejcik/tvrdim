@@ -156,4 +156,52 @@ repo = ->
 				resolve getAll()
 			return
 
+	###
+	# Removing id and all his children from DB
+	###
+	remove: (id, parentId) ->
+		_getChildren = ->
+			new Promise (resolve, reject) ->
+				db.queryAll '
+					SELECT descendant
+					FROM statement_closure
+					WHERE
+						ancestor = $1
+				', [id], (err, rows) ->
+					return reject err if err
+					resolve rows.map (row) -> row.descendant
+				return
+		_deleteFromClosure = (parentId, childrenIds) ->
+			new Promise (resolve, reject) ->
+				db.queryAll '
+					SELECT descendant
+					FROM statement_closure
+					WHERE
+						ancestor = $1 AND
+						descendant = ANY ($2)
+				', [parentId, childrenIds], (err, rows) ->
+					return reject err if err
+					resolve rows.map (row) -> row.descendant
+				return
+		_deleteFromStatements = (ids) ->
+			new Promise (resolve, reject) ->
+				db.delete 'statement', 'id = ANY ($1)', [ids], (err, rows) ->
+					return reject err if err
+					resolve rows.map (row) -> row.id
+				return
+
+		new Promise (resolve, reject) ->
+			parentId = 1 unless parentId
+			_getChildren()
+			.then (ids) ->
+				_deleteFromClosure parentId, ids
+				.then (ids) ->
+					_deleteFromStatements ids
+					.then (ids) ->
+						resolve ids
+					.catch (err) -> reject err
+				.catch (err) -> reject err
+			.catch (err) -> reject err
+			return
+
 module.exports = repo()
