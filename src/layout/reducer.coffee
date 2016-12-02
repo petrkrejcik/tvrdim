@@ -6,8 +6,8 @@ defaultState =
 		sort:
 			root: []
 		opened:
-			approving: []
-			rejecting: []
+			agree: []
+			disagree: []
 
 
 module.exports =
@@ -21,15 +21,15 @@ module.exports =
 				state
 
 			when l.STATEMENT_OPEN
-				{id, isApproving} = action.statement
-				key = if isApproving then 'approving' else 'rejecting'
+				{id, agree} = action.statement
+				key = if agree then 'agree' else 'disagree'
 				current = state.statements.opened[key]
 				current.push id
 				update state, statements: opened: "#{key}": $set: current
 
 			when l.STATEMENT_CLOSE
-				{id, isApproving} = action.statement
-				key = if isApproving then 'approving' else 'rejecting'
+				{id, agree} = action.statement
+				key = if agree then 'agree' else 'disagree'
 				current = state.statements.opened[key]
 				index = current.indexOf id
 				update state, statements: opened: "#{key}": $splice: [[index, 1]]

@@ -9,7 +9,7 @@ module.exports =
 			result[id] = id: id
 			result[id].text = entity.text if entity.text?
 			result[id].ancestor = entity.ancestor if entity.ancestor
-			result[id].isApproving = entity.isApproving if entity.isApproving?
+			result[id].agree = entity.agree if entity.agree?
 			roots.push id unless entity.ancestor
 
 		_makeRelations = (_entities, parentIds, depth) ->
@@ -39,7 +39,7 @@ module.exports =
 				continue if isRoot
 				continue if entity.score? and entity.score < 0
 
-				diff = if entity.isApproving then 1 else -1
+				diff = if entity.agree then 1 else -1
 				parent.score += diff
 
 		result

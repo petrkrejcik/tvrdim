@@ -23,9 +23,9 @@ actions = ->
 	_updateScore = (id, score) ->
 
 
-	addStatement: (parentId, text, isApproving) ->
+	addStatement: (parentId, text, agree) ->
 		(dispatch) ->
-			statement = {parentId, text, isApproving}
+			statement = {parentId, text, agree}
 			dispatch type: l.STATEMENT_ADD_REQUEST, {parentId}
 			fetch '/api/0/statement/add',
 				method: 'post'
@@ -35,14 +35,14 @@ actions = ->
 				body: JSON.stringify statement
 			.then (response) -> response.json response
 			.then ({id}) ->
-				statement = {id, text, isApproving}
+				statement = {id, text, agree}
 				statement.ancestor = parentId if parentId
 				parentId = 'root' unless parentId
 				dispatch type: t.ADD, statement: "#{id}": statement
 				dispatch type: st.ADD, statement: {parentId, id}
 				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id
 				dispatch type: l.STATEMENT_ADD_SUCCESS, {statement}
-				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, isApproving}
+				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, agree}
 			return
 
 	getAll: (filter) ->

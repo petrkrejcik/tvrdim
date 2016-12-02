@@ -19,7 +19,7 @@ CREATE TABLE statement_closure (
     ancestor BIGSERIAL REFERENCES statement (id) ON DELETE CASCADE,
     descendant BIGSERIAL REFERENCES statement (id) ON DELETE CASCADE,
     depth INTEGER,
-    is_approving BOOLEAN
+    agree BOOLEAN
 );
 
 INSERT INTO statement_closure VALUES

@@ -12,11 +12,11 @@ appState = (state) ->
 	opened: state.layout.statements.opened
 
 dispatchToProps = (dispatch) ->
-	handleToggleChildren: (statementId, isApproving, open) ->
-		dispatch toggleVisibility statementId, isApproving, open
+	handleToggleChildren: (statementId, agree, open) ->
+		dispatch toggleVisibility statementId, agree, open
 
-	handleSave: ({statementId, text, isApproving}) ->
-		dispatch addStatement statementId, text, isApproving
+	handleSave: ({statementId, text, agree}) ->
+		dispatch addStatement statementId, text, agree
 
 
 
@@ -39,9 +39,9 @@ statement = React.createClass
 		cssClasses = ['statement']
 		if @props.score
 			if @props.score > 0
-				cssClasses.push 'approved'
+				cssClasses.push 'agree'
 			else
-				cssClasses.push 'rejected'
+				cssClasses.push 'disagree'
 		if isRoot = !@props.depth
 			cssClasses.push ['root']
 		else
@@ -63,21 +63,21 @@ statement = React.createClass
 			@_renderChildrenButton no
 		]
 
-	_renderChildrenButton: (isApproving) ->
+	_renderChildrenButton: (agree) ->
 		cssClasses = ['childrenToggle']
-		cssClasses.push 'approving' if isApproving
-		children = @props.tree[@props.id].filter (childId) => @props.statements[childId].isApproving is isApproving
+		cssClasses.push 'agree' if agree
+		children = @props.tree[@props.id].filter (childId) => @props.statements[childId].agree is agree
 		childrenCount = children.length
-		openedKey = if isApproving then 'approving' else 'rejecting'
+		openedKey = if agree then 'agree' else 'disagree'
 		isOpened = @props.id in @props.opened[openedKey]
 
 
 		React.DOM.div
-			key: "children-btn-#{@props.id}-#{isApproving}"
+			key: "children-btn-#{@props.id}-#{agree}"
 			className: cssClasses.join ' '
 			onClick: =>
 				return unless childrenCount
-				@props.handleToggleChildren @props.id, isApproving, !isOpened
+				@props.handleToggleChildren @props.id, agree, !isOpened
 		, "#{openedKey}: (#{childrenCount})"
 
 

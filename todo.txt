@@ -14,7 +14,7 @@ API::getEntities by se melo dit az nakonec v public metode. Celou dobu chci jina
 
 accept
 reject
-approve
+agree
 assuption
 polarity
 

@@ -53,7 +53,7 @@ repo = ->
 	_getTree = (parentIds) ->
 		new Promise (resolve, reject) ->
 			db.queryAll '
-				SELECT ancestor, descendant AS id, is_approving
+				SELECT ancestor, descendant AS id, agree
 				FROM statement_closure
 				WHERE
 					descendant = ANY ($1) AND
@@ -90,15 +90,15 @@ repo = ->
 
 		addSelfToParent = (id) ->
 			new Promise (resolve, reject) ->
-				{parentId, isApproving} = data
+				{parentId, agree} = data
 				parentId = 1 unless parentId # __ROOT__
 				db.query '
-					INSERT INTO statement_closure (ancestor, descendant, depth, is_approving)
+					INSERT INTO statement_closure (ancestor, descendant, depth, agree)
 						SELECT ancestor, $1, depth + 1, CASE WHEN depth + 1 = 1 THEN CAST($3 AS BOOLEAN) END
 						FROM statement_closure
 						WHERE
 							descendant = $2
-				', [id, parentId, isApproving], (err, res) ->
+				', [id, parentId, agree], (err, res) ->
 					return reject err if err
 					resolve id
 				return
@@ -128,13 +128,10 @@ repo = ->
 			.then (entitiesRelation) ->
 				for id, entity of entitiesRelation
 					entity.text = dbEntities[id].text
-					if entity.is_approving is null
+					if entity.agree is null
 						# is root
 						delete entity.ancestor
-						delete entity.is_approving
 						continue
-					entity.isApproving = entity.is_approving
-					delete entity.is_approving
 
 				entities = util.countScore entitiesRelation
 				tree = _makeTree entitiesRelation

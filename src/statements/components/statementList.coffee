@@ -30,28 +30,28 @@ list = React.createClass
 			'className': cssClasses.join ' '
 		, @_renderChildren 'root', 0
 
-	_renderChildren: (parentId, depth, isApproving) ->
-		key = if isApproving then 'approving' else 'rejecting'
+	_renderChildren: (parentId, depth, agree) ->
+		key = if agree then 'agree' else 'disagree'
 		children = []
 		for id in @props.tree[parentId]
-			continue if @props.statements[id].isApproving isnt isApproving and parentId isnt 'root'
+			continue if @props.statements[id].agree isnt agree and parentId isnt 'root'
 			props =
 				key: "statement-#{id}"
 				depth: depth
 			children.push statement Object.assign {}, @props.statements[id], props
-			if id in @props.opened.rejecting
+			if id in @props.opened.disagree
 				childrenRejecting = @_renderChildren id, depth + 1, no
 				if childrenRejecting.length
 					children.push React.DOM.div
-						'key': "reject-#{id}-#{depth}"
-						'className': "statement-list reject depth-#{depth}"
+						'key': "disagree-#{id}-#{depth}"
+						'className': "statement-list disagree depth-#{depth}"
 					, childrenRejecting
-			if id in @props.opened.approving
+			if id in @props.opened.agree
 				childrenApproving = @_renderChildren id, depth + 1, yes
 				if childrenApproving.length
 					children.push React.DOM.div
-						'key': "approve-#{id}-#{depth}"
-						'className': "statement-list approve depth-#{depth}"
+						'key': "agree-#{id}-#{depth}"
+						'className': "statement-list agree depth-#{depth}"
 					, childrenApproving
 		children
 
