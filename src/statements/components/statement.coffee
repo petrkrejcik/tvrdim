@@ -66,7 +66,8 @@ statement = React.createClass
 	_renderChildrenButton: (agree) ->
 		cssClasses = ['childrenToggle']
 		cssClasses.push 'agree' if agree
-		children = @props.tree[@props.id].filter (childId) => @props.statements[childId].agree is agree
+		childrenIds = @props.tree[@props.id] ? []
+		children = childrenIds.filter (childId) => @props.statements[childId].agree is agree
 		childrenCount = children.length
 		openedKey = if agree then 'agree' else 'disagree'
 		isOpened = @props.id in @props.opened[openedKey]

@@ -42,7 +42,7 @@ actions = ->
 				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, agree}
 			return
 
-	getAll: (filter) ->
+	getAll: ->
 		(dispatch) ->
 			_getAll dispatch
 			.then ({entities, tree}) ->

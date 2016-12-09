@@ -1,6 +1,6 @@
 React = require 'react'
 {connect} = require 'react-redux'
-{addStatement} = require('../actions')
+{addStatement} = require '../actions'
 
 
 dispatchToProps = (dispatch) ->

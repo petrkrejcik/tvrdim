@@ -19,12 +19,19 @@ compiler = webpack webpackConfig
 app = express()
 
 handleRender = (req, res) ->
-	store = createStore reducer, applyMiddleware thunk
-	state = store.getState()
-	body = renderToString \
-		React.createElement Provider, {store},
-			appView user: req.user
-	res.send renderHtml body, state
+	{getAll} = require './src/statements/repo'
+	getAll()
+	.then ({entities, tree}) ->
+		statements = entities
+		statementsTree = tree
+		store = createStore reducer, {statements, statementsTree}, applyMiddleware thunk
+		state = store.getState()
+		body = renderToString \
+			React.createElement Provider, {store},
+				appView user: req.user
+		res.send renderHtml body, state
+		return
+	.catch (err) -> console.info 'error in app load', err
 	return
 
 renderHtml = (body, state) ->
