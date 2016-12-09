@@ -1,6 +1,6 @@
 React = require 'react'
 {connect} = require 'react-redux'
-{addStatement, getDirectChildren} = require '../actions'
+{addStatement} = require '../actions'
 newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
 {toggleVisibility} = layoutActions

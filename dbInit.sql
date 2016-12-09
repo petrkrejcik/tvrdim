@@ -2,9 +2,18 @@ DROP TABLE IF EXISTS statement_closure;
 DROP TABLE IF EXISTS statement;
 DROP TABLE IF EXISTS users;
 
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    social_id BIGINT,
+    social_network TEXT
+);
+
+
 CREATE TABLE statement (
-    id BIGSERIAL PRIMARY KEY,
-    text TEXT NOT NULL
+    id SERIAL PRIMARY KEY,
+    text TEXT NOT NULL,
+    user_id INTEGER REFERENCES users (id)
 );
 
 INSERT INTO statement (text) VALUES
@@ -12,8 +21,8 @@ INSERT INTO statement (text) VALUES
 
 
 CREATE TABLE statement_closure (
-    ancestor BIGSERIAL REFERENCES statement (id) ON DELETE CASCADE,
-    descendant BIGSERIAL REFERENCES statement (id) ON DELETE CASCADE,
+    ancestor INTEGER REFERENCES statement (id) ON DELETE CASCADE,
+    descendant INTEGER REFERENCES statement (id) ON DELETE CASCADE,
     depth INTEGER,
     agree BOOLEAN
 );
@@ -22,9 +31,3 @@ INSERT INTO statement_closure VALUES
 -- (asc, desc, depth)
 ('1', '1', 0);
 
-
-CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    social_id BIGSERIAL,
-    social_network TEXT
-);

@@ -33,7 +33,7 @@ list = React.createClass
 	_renderChildren: (parentId, depth, agree) ->
 		key = if agree then 'agree' else 'disagree'
 		children = []
-		for id in @props.tree[parentId]
+		for id in @props.tree[parentId] or []
 			continue if @props.statements[id].agree isnt agree and parentId isnt 'root'
 			props =
 				key: "statement-#{id}"

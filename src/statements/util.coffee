@@ -20,7 +20,7 @@ module.exports =
 					# root
 					structure[0] ?= []
 					structure[0].push id
-				else if row.ancestor in parentIds
+				else if row.ancestor in parentIds or []
 					structure[depth] ?= []
 					structure[depth].push id
 				else

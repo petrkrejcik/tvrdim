@@ -70,8 +70,8 @@ describe 'Statement API', ->
 
 	it 'selects all statements', (done) ->
 
-		repo.getAll()
-		# repo.filterBy parentIds: [3, 4]
+		# repo.getAll()
+		repo.filterBy parentIds: [3, 4]
 		.then (statements) ->
 			console.info 'got all'
 			console.log JSON.stringify(statements, null, 4)

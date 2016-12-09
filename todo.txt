@@ -12,16 +12,9 @@ nemusim se vzdy ptat na filter, kdyz uz mam ty statements natahany
 kdyz zaviram strom, tak musim zavrit i vsechny potomky
 API::getEntities by se melo dit az nakonec v public metode. Celou dobu chci jinak pracovat s tim, co mi vrati DB
 
-accept
-reject
-agree
-assuption
-polarity
-
 
 structure [ [ '2', '7', '9' ], [ '3', '4', '8' ], [ '5', '6' ] ]
 
-agree VS disagree
 
 remove
 	smazat tohle id plus vsechny childy
@@ -56,9 +49,13 @@ kdyz presmeruju na fb login, tak mi zmizi state?
 mam rozepsany agree argument a jdu do settings
 	zustane to rozepsany?
 
-user
+users
 	id
 	social_id
+statement
+	id
+	user_id - kazdy statement patri k jednomu uzivateli
+	- co kdyz chci sledovat statement?
 
 online
 	not logged

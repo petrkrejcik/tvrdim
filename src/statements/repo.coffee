@@ -20,17 +20,25 @@ repo = ->
 				tree[child.ancestor].push id
 		tree
 
-	_getRoot = ->
+	_getRoot = (query = {}) ->
+		{userId} = query
+		params = []
+		user = ''
+		if userId
+			params.push userId
+			i = params.length
+			user = "AND s.user_id = $#{i}"
 		new Promise (resolve, reject) ->
-			db.queryAll '
+			db.queryAll "
 				SELECT s.id, s.text
 				FROM statement s
 				JOIN statement_closure sc ON (s.id = sc.descendant)
 				WHERE
 					sc.ancestor = 1 AND
 					sc.descendant <> 1 AND
-					sc.depth = 1;
-			', (err, res) ->
+					sc.depth = 1
+					#{user};
+			", params, (err, res) ->
 				return reject err if err
 				resolve entities: _getEntities res
 			return
@@ -62,6 +70,45 @@ repo = ->
 				return reject err if err
 				resolve _getEntities res
 			return
+
+	_select = (query = {}) ->
+		{userId} = query
+		new Promise (resolve, reject) ->
+			dbEntities = {}
+			_getRoot(userId: 3)
+			# _getRoot({userId})
+			.then (roots) ->
+				rootIds = Object.keys roots.entities
+				_getChildren rootIds, yes
+			.then (children) ->
+				dbEntities = children.entities
+				childrenIds = Object.keys children.entities
+				_getTree childrenIds
+			.then (entitiesRelation) ->
+				for id, entity of entitiesRelation
+					entity.text = dbEntities[id].text
+					if entity.agree is null
+						# is root
+						delete entity.ancestor
+						continue
+				entities = util.countScore entitiesRelation
+				tree = _makeTree entitiesRelation
+				resolve {entities, tree}
+				return
+			.catch reject
+			return
+
+	_validate = (filter) ->
+		errors = null
+		if filter.parentIds and !Array.isArray filter.parentIds
+			errors ?= []
+			errors.push
+				'error': 'Filter error. ParentIds has to be an array.'
+		if filter.userId and !Number.isInteger filter.userId
+			errors ?= []
+			errors.push
+				'error': 'Filter error. UserId has to be an integer.'
+		errors
 
 
 	add: (data, done) ->
@@ -115,34 +162,12 @@ repo = ->
 				return
 
 	getAll: ->
-		new Promise (resolve, reject) ->
-			dbEntities = {}
-			_getRoot()
-			.then (roots) ->
-				rootIds = Object.keys roots.entities
-				_getChildren rootIds, yes
-			.then (children) ->
-				dbEntities = children.entities
-				childrenIds = Object.keys children.entities
-				_getTree childrenIds
-			.then (entitiesRelation) ->
-				for id, entity of entitiesRelation
-					entity.text = dbEntities[id].text
-					if entity.agree is null
-						# is root
-						delete entity.ancestor
-						continue
+		_select()
 
-				entities = util.countScore entitiesRelation
-				tree = _makeTree entitiesRelation
-				resolve {entities, tree}
-				return
-			.catch reject
-			return
-
-	filterBy: (filter) ->
+	filterBy: (filter = {}) ->
 		new Promise (resolve, reject) ->
-			if filter.parentIds and Array.isArray filter.parentIds
+			return reject errors if errors = _validate filter
+			if filter.parentIds
 				_getChildren filter.parentIds
 				.then (children) ->
 					tree = _makeTree children.entities
@@ -150,7 +175,7 @@ repo = ->
 					resolve {entities, tree}
 				.catch reject
 			else
-				resolve getAll()
+				resolve _select filter
 			return
 
 	###

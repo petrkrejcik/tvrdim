@@ -90,11 +90,15 @@ passport.use new fbStrategy
 	clientSecret: process.env.FB_SECRET,
 	callbackURL: 'http://localhost:3000/login/facebook/return'
 ,	(accessToken, refreshToken, profile, cb) ->
-	# console.info 'accessToken', accessToken
-	# console.info 'refreshToken', refreshToken
-	# console.info 'profile', profile
 	users.selectOrInsert socialId: profile.id, socialNetwork: 'facebook'
-	return cb null, profile
+	.then (userId) ->
+		user =
+			id: userId
+			providerId: profile.id
+			displayName: profile.displayName
+			provider: profile.provider
+		return cb null, user
+	return
 
 passport.serializeUser (user, cb) ->
 	cb null, user

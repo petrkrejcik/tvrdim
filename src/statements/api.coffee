@@ -17,22 +17,21 @@ tree:
 		neg: [4]
 	6...
 ###
-router.get '/statement/get', (req, res) ->
+router.get '/statements?', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
-	repo.getAll()
+	try
+		filter = JSON.parse req.query.q
+	catch
+		filter = {}
+	if user = req.user
+		filter.userId = user.id
+	repo.filterBy filter
 	.then (result) ->
 		res.json result
+	.catch (err) -> console.info 'Get statements error', err
 	return
 
-router.post '/statement/filter', jsonParser, (req, res) ->
-	filterData = req.body
-	repo.filterBy filterData
-	.then (result) ->
-		res.setHeader 'Content-Type', 'application/json'
-		res.json result
-	return
-
-router.post '/statement/add', jsonParser, (req, res) ->
+router.post '/statements/add', jsonParser, (req, res) ->
 	repo.add req.body
 	.then (id) ->
 		res.setHeader 'Content-Type', 'application/json'

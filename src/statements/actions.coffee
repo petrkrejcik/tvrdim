@@ -7,24 +7,20 @@ actions = ->
 
 	_getAll = (dispatch) ->
 		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
-		fetch '/api/0/statement/get'
+		fetch '/api/0/statements'
 		.then (response) -> response.json response
 
-	_filterBy = (dispatch, filter) ->
-		dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
-		fetch '/api/0/statement/filter',
-			method: 'post'
-			headers:
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			body: JSON.stringify filter
-		.then (response) -> response.json response
+	# _filterBy = (dispatch, filter) ->
+	# 	dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+	# 	params = encodeURIComponent JSON.stringify filter
+	# 	fetch "/api/0/statements?q=#{params}"
+	# 	.then (response) -> response.json response
 
 	addStatement: (parentId, text, agree) ->
 		(dispatch) ->
 			statement = {parentId, text, agree}
 			dispatch type: l.STATEMENT_ADD_REQUEST, {parentId}
-			fetch '/api/0/statement/add',
+			fetch '/api/0/statements/add',
 				method: 'post'
 				headers:
 					'Accept': 'application/json',
@@ -51,15 +47,15 @@ actions = ->
 				dispatch type: st.UPDATE, tree: tree
 			return
 
-	getDirectChildren: (parentIds) ->
-		# not used
-		(dispatch) ->
-			_filterBy dispatch, {parentIds}
-			.then ({entities, tree}) ->
-				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
-				dispatch type: t.GET_SUCCESS, statements: entities
-				dispatch type: st.UPDATE, tree: tree
-			return
+	# getDirectChildren: (parentIds) ->
+	# 	# not used
+	# 	(dispatch) ->
+	# 		_filterBy dispatch, {parentIds}
+	# 		.then ({entities, tree}) ->
+	# 			Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
+	# 			dispatch type: t.GET_SUCCESS, statements: entities
+	# 			dispatch type: st.UPDATE, tree: tree
+	# 		return
 
 	getByIds: (ids) ->
 		(dispatch) ->
