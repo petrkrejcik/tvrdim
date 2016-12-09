@@ -1,0 +1,9 @@
+body {
+	background-color: #e2e2e2;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+@import '../../statements/components/statement.scss';
+@import '../../statements/components/statementList.scss';

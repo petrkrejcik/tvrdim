@@ -20,9 +20,6 @@ actions = ->
 			body: JSON.stringify filter
 		.then (response) -> response.json response
 
-	_updateScore = (id, score) ->
-
-
 	addStatement: (parentId, text, agree) ->
 		(dispatch) ->
 			statement = {parentId, text, agree}
@@ -55,7 +52,7 @@ actions = ->
 			return
 
 	getDirectChildren: (parentIds) ->
-		# not used1
+		# not used
 		(dispatch) ->
 			_filterBy dispatch, {parentIds}
 			.then ({entities, tree}) ->

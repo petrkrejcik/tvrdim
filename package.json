@@ -2,21 +2,30 @@
   "name": "tvrdim",
   "private": true,
   "scripts": {
-    "start": "node_modules/webpack/bin/webpack.js -d --watch --display-error-details",
+    "start": "ENV=test coffee server.coffee",
+    "build": "node_modules/webpack/bin/webpack.js -p --display-error-details",
     "test": " ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
   },
   "engines": {
     "node": ">=5"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^2.0.0",
     "easy-pg": "^2.0.2",
+    "express-session": "^1.14.2",
     "isomorphic-fetch": "^2.2.1",
-    "pg": "^6.1.0",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "pg": "6.1.0",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.6",
     "redux": "^3.6.0",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "serve-favicon": "^2.3.2"
   },
   "devDependencies": {
     "body-parser": "^1.15.2",
@@ -26,10 +35,10 @@
     "css-loader": "^0.26.0",
     "express": "^4.14.0",
     "json-loader": "^0.5.4",
-    "less": "^2.7.1",
-    "less-loader": "^2.2.3",
     "mocha": "^3.1.2",
+    "node-sass": "^3.13.0",
     "react-addons-update": "^15.4.0",
+    "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",

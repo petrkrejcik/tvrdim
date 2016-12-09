@@ -3,7 +3,7 @@ config = require('cson-config').load "#{__dirname}/../../config.cson"
 
 db = ->
 	client = pg config.db
-	client.on 'ready', -> console.info 'db connected'
+	client.on 'ready', -> return
 	client.on 'end', -> console.info 'db disconnected'
 	client.on 'error', (error) -> console.info 'db error', error
 	client
