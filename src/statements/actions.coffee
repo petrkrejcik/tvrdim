@@ -30,7 +30,6 @@ actions = ->
 			.then ({id}) ->
 				statement = {id, text, agree}
 				statement.ancestor = parentId if parentId
-				parentId = 'root' unless parentId
 				dispatch type: t.ADD, statement: "#{id}": statement
 				dispatch type: st.ADD, statement: {parentId, id}
 				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id

@@ -26,7 +26,8 @@ module.exports =
 				update state, $merge: action.statement
 
 			when t.COUNT_SCORE
-				newState = _countParentScore action.parentId, state, countScore state
+				parentId = 'root' unless parentId = action.parentId
+				newState = _countParentScore parentId, state, countScore state
 				newState
 
 			else

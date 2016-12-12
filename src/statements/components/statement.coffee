@@ -3,7 +3,7 @@ React = require 'react'
 {addStatement} = require '../actions'
 newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
-{toggleVisibility} = layoutActions
+{open, close, openRoot} = layoutActions
 
 
 appState = (state) ->
@@ -12,8 +12,12 @@ appState = (state) ->
 	opened: state.layout.statements.opened
 
 dispatchToProps = (dispatch) ->
-	handleToggleChildren: (statementId, agree, open) ->
-		dispatch toggleVisibility statementId, agree, open
+
+	handleOpen: (statement) ->
+		dispatch open statement
+
+	handleOpenRoot: ->
+		dispatch openRoot()
 
 	handleSave: ({statementId, text, agree}) ->
 		dispatch addStatement statementId, text, agree
@@ -39,48 +43,54 @@ statement = React.createClass
 		cssClasses = ['statement']
 		if @props.score
 			if @props.score > 0
-				cssClasses.push 'agree'
-			else
-				cssClasses.push 'disagree'
-		if isRoot = !@props.depth
-			cssClasses.push ['root']
-		else
-			cssClasses.push "depth-#{@props.depth}"
+				cssClasses.push 'approved'
+		if @props.id is @props.opened
+			cssClasses.push ['opened']
+		# else
+			# cssClasses.push "depth-#{@props.depth}"
 
-		addNew = newStatement
-			key: 'addNew'
-			parentId: @props.id
-
-		title = React.DOM.div className: 'title', key: 'title', "#{@props.text}"
+		title = React.DOM.div className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
 
 		React.DOM.div
 			'className': (cssClasses.concat @props.customClassNames).join ' '
 		, [
 			title
-			"(id: #{@props.id})"
-			addNew
-			@_renderChildrenButton yes
-			@_renderChildrenButton no
+			React.DOM.div key: 'buttons', className: 'actions', [
+				@_renderShowArgumentsBtn()
+				@_renderGoToParentBtn()
+			]
 		]
 
-	_renderChildrenButton: (agree) ->
-		cssClasses = ['childrenToggle']
-		cssClasses.push 'agree' if agree
+	_renderShowArgumentsBtn: ->
+		return if @props.id is @props.opened
 		childrenIds = @props.tree[@props.id] ? []
-		children = childrenIds.filter (childId) => @props.statements[childId].agree is agree
-		childrenCount = children.length
-		openedKey = if agree then 'agree' else 'disagree'
-		isOpened = @props.id in @props.opened[openedKey]
+		count = childrenIds.length
+		return @_renderAddArgumentBtn() unless count
+		isOpened = @props.id is @props.opened
+		React.DOM.button
+			className: 'btn-showArguments button'
+			key: 'btn-showArguments'
+			onClick: @props.handleOpen.bind @, @props
+		,	"Show arguments (#{count})"
 
+	_renderAddArgumentBtn: ->
+		React.DOM.button
+			className: 'btn-addArguments button'
+			key: 'btn-addArguments'
+			onClick: @props.handleOpen.bind @, @props
+		,	"Add argument"
 
-		React.DOM.div
-			key: "children-btn-#{@props.id}-#{agree}"
-			className: cssClasses.join ' '
-			onClick: =>
-				return unless childrenCount
-				@props.handleToggleChildren @props.id, agree, !isOpened
-		, "#{openedKey}: (#{childrenCount})"
-
+	_renderGoToParentBtn: ->
+		return unless @props.id is @props.opened
+		if parent = @props.statements[@props.ancestor]
+			onClick = @props.handleOpen.bind @, parent
+		else
+			onClick = @props.handleOpenRoot.bind @
+		React.DOM.button
+			className: 'btn-goToParent button'
+			key: 'btn-goToParent'
+			onClick: onClick
+		,	'Up'
 
 
 module.exports = connect(appState, dispatchToProps) statement
