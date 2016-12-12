@@ -17,6 +17,16 @@ tree:
 		neg: [4]
 	6...
 ###
+router.get '/statements/mine', (req, res) ->
+	res.setHeader 'Content-Type', 'application/json'
+	unless user = req.user
+		return res.json error: 'Not logged'
+	repo.filterBy userId: user.id
+	.then (result) ->
+		res.json result
+	.catch (err) -> console.info 'Get mine statements error', err
+	return
+
 router.get '/statements?', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
 	try
@@ -32,7 +42,12 @@ router.get '/statements?', (req, res) ->
 	return
 
 router.post '/statements/add', jsonParser, (req, res) ->
-	repo.add req.body
+	unless user = req.user
+		return res.json error: 'Not logged'
+	data = {}
+	Object.assign data, req.body
+	data.userId = req.user.id
+	repo.add data
 	.then (id) ->
 		res.setHeader 'Content-Type', 'application/json'
 		res.json {id}

@@ -4,11 +4,13 @@ statementOpened = React.createFactory require '../../statements/components/state
 newStatement = React.createFactory require '../../statements/components/newStatement'
 loginStatus = React.createFactory require '../../user/components/loginStatus'
 header = React.createFactory require '../../header/components/header'
+drawer = React.createFactory require '../../drawer/components/drawer'
 {connect} = require 'react-redux'
 
 
 appState = (state) ->
 	opened: state.layout.statements.opened
+	drawer: state.layout.drawer
 	tree: state.statementsTree
 
 
@@ -32,8 +34,8 @@ app = React.createClass
 		React.DOM.div
 			'className': 'app'
 		, [
-			# loginStatus {key: 'loginStatus'}
 			header key: 'header'
+			drawer key: 'drawer' if @props.drawer.isOpened
 			React.DOM.main 'className': 'content', 'key': 'content', content
 		]
 

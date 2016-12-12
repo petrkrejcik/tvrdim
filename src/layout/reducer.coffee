@@ -6,6 +6,8 @@ defaultState =
 		sort:
 			root: []
 		opened: null
+	drawer:
+		isOpened: no
 
 module.exports =
 
@@ -23,6 +25,9 @@ module.exports =
 
 			when l.STATEMENT_OPEN_ROOT
 				update state, statements: opened: $set: null
+
+			when l.DRAWER_OPEN
+				update state, drawer: isOpened: $set: yes
 
 			else
 				state

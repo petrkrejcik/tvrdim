@@ -5,10 +5,11 @@ reducer = require './rootReducer'
 {Provider} = require 'react-redux'
 thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
-{getAll} = require './src/statements/actions'
+{getAll, getMine} = require './src/statements/actions'
 
 store = createStore reducer, window.__PRELOADED_STATE__, compose(applyMiddleware(thunk), window.devToolsExtension && window.devToolsExtension())
-# store.dispatch getAll()
+if userId = store.getState().user.id
+	store.dispatch getMine userId
 
 provider =
 	React.createElement Provider, {store},

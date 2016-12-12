@@ -21,4 +21,16 @@
 		align-item: center;
 		display: flex;
 	}
+
+	.drawer-button {
+		color: rgba(0, 0, 0, 0.54);
+		margin: 4px;
+		position: absolute;
+		height: 48px;
+		width: 48px;
+		text-align: center;
+		cursor: pointer;
+		line-height: 56px;
+
+	}
 }

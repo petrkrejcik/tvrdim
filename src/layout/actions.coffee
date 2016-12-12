@@ -17,3 +17,8 @@ module.exports =
 		{
 			type: l.STATEMENT_OPEN_ROOT
 		}
+
+	openDrawer: ->
+		{
+			type: l.DRAWER_OPEN
+		}

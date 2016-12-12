@@ -24,11 +24,12 @@ handleRender = (req, res) ->
 	.then ({entities, tree}) ->
 		statements = entities
 		statementsTree = tree
-		store = createStore reducer, {statements, statementsTree}, applyMiddleware thunk
+		user = req.user
+		store = createStore reducer, {statements, statementsTree, user}, applyMiddleware thunk
 		state = store.getState()
 		body = renderToString \
 			React.createElement Provider, {store},
-				appView user: req.user
+				appView()
 		res.send renderHtml body, state
 		return
 	.catch (err) -> console.info 'error in app load', err
@@ -58,6 +59,7 @@ renderHtml = (body, state) ->
 				<script>window.__PRELOADED_STATE__ = #{JSON.stringify(state)}</script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.js"></script>
+				<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			</head>
 			<body>
 				<div id="root">#{body}</div>

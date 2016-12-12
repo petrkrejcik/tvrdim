@@ -75,8 +75,7 @@ repo = ->
 		{userId} = query
 		new Promise (resolve, reject) ->
 			dbEntities = {}
-			_getRoot(userId: 3)
-			# _getRoot({userId})
+			_getRoot({userId})
 			.then (roots) ->
 				rootIds = Object.keys roots.entities
 				_getChildren rootIds, yes
@@ -103,20 +102,22 @@ repo = ->
 		if filter.parentIds and !Array.isArray filter.parentIds
 			errors ?= []
 			errors.push
-				'error': 'Filter error. ParentIds has to be an array.'
+				'error': "Filter error. ParentIds has to be an array: '#{filter.parentIds}'"
 		if filter.userId and !Number.isInteger filter.userId
 			errors ?= []
 			errors.push
-				'error': 'Filter error. UserId has to be an integer.'
+				'error': "Filter error. UserId has to be an integer: '#{filter.userId}'"
 		errors
 
 
 	add: (data, done) ->
+		console.info 'adding', data
 
 		addNew = (data) ->
 			new Promise (resolve, reject) ->
 				row =
 					text: data.text
+					user_id: data.userId
 					# createdTime: (new Date).getTime()
 				db.insert 'statement', row, (err, res) ->
 					return reject err if err

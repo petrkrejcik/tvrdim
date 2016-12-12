@@ -7,3 +7,4 @@ module.exports =
 	STATEMENT_GET_SUCCESS: 'layout/statement/get/request'
 	STATEMENT_ADD_REQUEST: 'layout/statement/add/request'
 	STATEMENT_ADD_SUCCESS: 'layout/statement/add/success'
+	DRAWER_OPEN: 'layout/drawer/open'

@@ -3,9 +3,12 @@ React = require 'react'
 {addStatement} = require '../actions'
 
 
+appState = (state) ->
+	user: state.user
+
 dispatchToProps = (dispatch) ->
-	handleSave: ({parentId, text, agree}) ->
-		dispatch addStatement parentId, text, agree
+	handleSave: ({parentId, text, agree, user}) ->
+		dispatch addStatement parentId, text, agree, user.id
 
 
 
@@ -17,6 +20,7 @@ statement = React.createClass
 		parentId: null
 		agree: null
 		handleClickSave: ->
+		user: {}
 
 	getInitialState: ->
 		text: ''
@@ -55,5 +59,5 @@ statement = React.createClass
 			, 'Add'
 		]
 
-module.exports = connect(null, dispatchToProps) statement
+module.exports = connect(appState, dispatchToProps) statement
 
