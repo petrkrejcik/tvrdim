@@ -21,12 +21,8 @@ list = React.createClass
 			statement Object.assign {}, @props.statements[id], key: "statement-#{id}"
 
 		React.DOM.div
-			'className': cssClasses.join ' '
-		, children
-
-	_renderChildren: (children, cssClass) ->
-		React.DOM.div
-			'className': "statement-list #{cssClass}"
+			key: 'statement-list'
+			className: cssClasses.join ' '
 		, children
 
 

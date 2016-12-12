@@ -3,6 +3,7 @@ statementList = React.createFactory require '../../statements/components/stateme
 statementOpened = React.createFactory require '../../statements/components/statementOpened'
 newStatement = React.createFactory require '../../statements/components/newStatement'
 loginStatus = React.createFactory require '../../user/components/loginStatus'
+header = React.createFactory require '../../header/components/header'
 {connect} = require 'react-redux'
 
 
@@ -31,8 +32,9 @@ app = React.createClass
 		React.DOM.div
 			'className': 'app'
 		, [
-			loginStatus {key: 'loginStatus'}
-			React.DOM.div 'className': 'content', 'key': 'content', content
+			# loginStatus {key: 'loginStatus'}
+			header key: 'header'
+			React.DOM.main 'className': 'content', 'key': 'content', content
 		]
 
 

@@ -1,9 +1,10 @@
 @import '../../util/style/variables.scss';
 
 .statement {
-	margin-top: 4px;
-	background-color: #f8f8f8;
+	margin-top: 6px;
+	background-color: #fff;
 	padding: 10px;
+	box-shadow: $shadow;
 
 	.title {
 		margin-bottom: 10px;

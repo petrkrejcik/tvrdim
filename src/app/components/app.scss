@@ -1,15 +1,42 @@
+@import '../../util/style/input.scss';
+
+
+html {
+	width: 100%;
+	height: 100%;
+}
 body {
-	background-color: #e2e2e2;
-	max-width: 800px;
+	display: block;
+	width: 100%;
+	min-height: 100%;
+	margin: 0;
+}
+#root {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+
+.app {
+	background-color: $main-bg-color;
+	width: 100%;
+	height: 100%;
 	margin: 0 auto;
-	padding: 10px;
+	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .content {
 	flex-grow: 1;
 	position: relative;
+	background-color: $main-bg-color;
+	padding: 8px;
 }
 
+@import '../../header/components/header.scss';
 @import '../../statements/components/statement.scss';
 @import '../../statements/components/statementList.scss';
 @import '../../statements/components/statementOpened.scss';
