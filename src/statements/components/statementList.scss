@@ -1,25 +1,26 @@
 .statement-list {
-	&:not(.root) {
-	}
 
 	margin-bottom: 10px;
+	display: flex;
 
+	&:not(.root) {
+		flex-direction: column;
+		margin: 8px;
 
+		@media (min-width: $grid-desktop-breakpoint) {
+			width: calc(50% - 16px);
+		}
 
-	// &.depth-1 {margin-left: 30px;}
-	// &.depth-2 {margin-left: 60px;}
-	// &.depth-3 {margin-left: 90px;}
-	// &.depth-4 {margin-left: 120px;}
-	// &.depth-5 {margin-left: 150px;}
-
-	&.disagree {
-		// padding-right: 50%;
-		float: left;
-		width: 49%;
+		@media (min-width: $grid-tablet-breakpoint) and (max-width: $grid-desktop-breakpoint) {
+			width: 100%;
+		}
 	}
-	&.agree {
-		// padding-left: 50%;
-		float: right;
-		width: 49%;
+
+	&.root {
+		width: 100%;
+		flex-flow: row wrap;
+
 	}
+
+
 }

@@ -1,3 +1,5 @@
+@import '../../util/style/variables.scss';
+
 .statement {
 	margin-top: 4px;
 	background-color: #f8f8f8;
@@ -15,15 +17,13 @@
 		}
 	}
 
-	&.agree.root {
-		background-color: #bdffa3;
+	&.root {
+		width: 100%;
 	}
-	&.disagree {
-		&.root {
-			background-color: #ffa3a3;
-		}
-		&:not(.root) {
-			opacity: 0.3;
-		}
+	&:not(.root) {
+		opacity: 0.3;
 	}
+
+
+
 }

@@ -5,5 +5,10 @@ body {
 	padding: 10px;
 }
 
+.content {
+	flex-grow: 1;
+	position: relative;
+}
+
 @import '../../statements/components/statement.scss';
 @import '../../statements/components/statementList.scss';

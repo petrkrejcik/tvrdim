@@ -16,13 +16,16 @@ app = React.createClass
 		user: null
 
 	render: ->
+		content = React.DOM.div 'className': 'content', 'key': 'content', [
+			statementList key: 'statementList'
+		]
+
 		React.DOM.div
 			'className': 'app'
 		, [
 			loginStatus {key: 'loginStatus'}
 			newStatement key: 'addStatement'
-		,
-			statementList key: 'statementList'
+			content
 		]
 
 
