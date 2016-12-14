@@ -1,0 +1,48 @@
+@import '../../util/style/variables.scss';
+
+.children {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	overflow: hidden;
+	padding: 0 0 5px 0;
+
+	position: absolute;
+
+
+	&.appear {
+		max-height: 0;
+		// position: absolute;
+		// display: none;
+	}
+	&.enter {
+		transition: all $statementOpenDuration linear;
+		max-height: 200px;
+	}
+	&.visible {
+		max-height: none;
+		position: relative;
+	}
+
+
+	.children-disagree {
+		margin-right: 32px;
+	}
+
+	.children-disagree, .children-agree {
+		flex-direction: column;
+
+		@media (min-width: $grid-desktop-breakpoint) {
+			width: calc(50% - 16px);
+		}
+		@media (min-width: $grid-tablet-breakpoint) and (max-width: $grid-desktop-breakpoint) {
+			width: 100%;
+			margin-right: 0px;
+		}
+		@media (max-width: $grid-tablet-breakpoint) {
+			width: 100%;
+			margin-right: 0px;
+		}
+	}
+
+}

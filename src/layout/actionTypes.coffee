@@ -1,6 +1,9 @@
 module.exports =
 	STATEMENTS_COLLAPSE: '/layout/statements/collapse'
 	STATEMENT_OPEN: '/layout/statement/open'
+	STATEMENT_OPEN_INIT: '/layout/statement/open/init'
+	STATEMENT_OPEN_START: '/layout/statement/open/start'
+	STATEMENT_OPEN_END: '/layout/statement/open/end'
 	STATEMENT_CLOSE: '/layout/statement/close'
 	STATEMENT_OPEN_ROOT: '/layout/statement/openRoot'
 	STATEMENT_GET_REQUEST: 'layout/statement/get/request'

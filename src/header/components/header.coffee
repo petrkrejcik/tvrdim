@@ -20,14 +20,16 @@ header = React.createClass
 
 	render: ->
 		React.DOM.header
+			key: 'header'
 			className: 'header'
 		, [
 			React.DOM.div
+				key: 'drawer-button'
 				className: 'drawer-button'
 				onClick: @props.handleOpenMenuClick
-			, React.DOM.i className: 'material-icons', 'more_vert'
-			React.DOM.div className: 'row', [
-				React.DOM.span className: 'search', 'Search'
+			, React.DOM.i key: 'icon', className: 'material-icons', 'more_vert'
+			React.DOM.div key: 'row', className: 'row', [
+				React.DOM.span key: 'search', className: 'search', 'Search'
 			]
 		]
 

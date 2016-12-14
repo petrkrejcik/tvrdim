@@ -1,10 +1,8 @@
 React = require 'react'
 {connect} = require 'react-redux'
 {addStatement} = require '../actions'
-newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
 {open, close, openRoot} = layoutActions
-
 
 appState = (state) ->
 	statements: state.statements
@@ -13,8 +11,8 @@ appState = (state) ->
 
 dispatchToProps = (dispatch) ->
 
-	handleOpen: (statement) ->
-		dispatch open statement
+	handleOpen: (statement, top) ->
+		dispatch open statement, top
 
 	handleOpenRoot: ->
 		dispatch openRoot()
@@ -30,6 +28,7 @@ statement = React.createClass
 
 	getInitialState: ->
 		isAdding: no
+		cssClasses: []
 
 	getDefaultProps: ->
 		id: null
@@ -38,21 +37,19 @@ statement = React.createClass
 		score: null
 		customClassNames: []
 		tree: {}
+		style: {}
 
 	render: ->
 		cssClasses = ['statement']
 		if @props.score
 			if @props.score > 0
 				cssClasses.push 'approved'
-		if @props.id is @props.opened
-			cssClasses.push ['opened']
-		# else
-			# cssClasses.push "depth-#{@props.depth}"
 
 		title = React.DOM.div className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
 
 		React.DOM.div
-			'className': (cssClasses.concat @props.customClassNames).join ' '
+			className: (cssClasses.concat @props.customClassNames).join ' '
+			style: @props.style
 		, [
 			title
 			React.DOM.div key: 'buttons', className: 'actions', [
@@ -70,7 +67,9 @@ statement = React.createClass
 		React.DOM.button
 			className: 'btn-showArguments button'
 			key: 'btn-showArguments'
-			onClick: @props.handleOpen.bind @, @props
+			onClick: =>
+				self = ReactDOM.findDOMNode @ # TODO: use ref
+				@props.handleOpen @props, self.offsetTop
 		,	"Show arguments (#{count})"
 
 	_renderAddArgumentBtn: ->

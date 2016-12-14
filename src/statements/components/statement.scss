@@ -1,6 +1,7 @@
 @import '../../util/style/variables.scss';
 
 .statement {
+	position: relative;
 	margin-top: 6px;
 	background-color: #fff;
 	padding: 10px 10px 0 10px;
@@ -19,6 +20,24 @@
 
 	.actions {
 		border-top: 1px solid rgba(0,0,0,.1);
+	}
+
+
+	&.opened {
+		z-index: 1;
+		width: 100%;
+
+		&.appear {
+			position: absolute;
+		}
+		&.enter {
+			position: absolute;
+			transition: all $statementOpenDuration linear;
+			top: 6px !important;
+		}
+		&.visible {
+			position: relative;
+		}
 	}
 
 }

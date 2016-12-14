@@ -25,7 +25,6 @@ statement = React.createClass
 	getInitialState: ->
 		text: ''
 
-
 	render: ->
 		parentId = @props.parentId
 		btnClass = ['button button-raised']

@@ -8,8 +8,8 @@ appView = React.createFactory require './src/app/components/app'
 {getAll, getMine} = require './src/statements/actions'
 
 store = createStore reducer, window.__PRELOADED_STATE__, compose(applyMiddleware(thunk), window.devToolsExtension && window.devToolsExtension())
-if userId = store.getState().user.id
-	store.dispatch getMine userId
+# if userId = store.getState().user.id
+# 	store.dispatch getMine userId
 
 provider =
 	React.createElement Provider, {store},

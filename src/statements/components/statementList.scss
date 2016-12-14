@@ -1,4 +1,12 @@
 .statement-list {
+	opacity: 1;
 
+	&.root {
+		margin-top: 0;
+	}
 
+	&.leave {
+		transition: all $statementOpenDuration linear;
+		opacity: 0;
+	}
 }

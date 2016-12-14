@@ -2,18 +2,20 @@ React = require 'react'
 {connect} = require 'react-redux'
 statement = React.createFactory require './statement'
 statementList = React.createFactory require './statementList'
-newStatement = React.createFactory require './newStatement'
+{openDrawer} = require '../../layout/actions'
+{ANIMATION_START, ANIMATION_END, ANIMATION_HIDE_DURATION} = require '../../util/consts'
+
 
 appState = (state) ->
 	statements: state.statements
-	tree: state.statementsTree
 	opened: state.layout.statements.opened
+	openedTop: state.layout.statements.openedTop
+	animationOpen: state.layout.statements.animationOpen
 
 
 list = React.createClass
 
 	displayName: 'StatementOpened'
-
 
 	getDefaultProps: ->
 		statements: []
@@ -21,42 +23,24 @@ list = React.createClass
 		opened: null
 
 	render: ->
-		cssClasses = ['statement-opened']
+		style = {}
+		cssClasses = ['opened']
 		parent = @props.statements[@props.opened]
-		childrenIds = @props.tree[parent.id] ? []
-		agrees = childrenIds.filter (id) => @props.statements[id].agree
-		disagrees = childrenIds.filter (id) => !@props.statements[id].agree
 
-		children = React.DOM.div
-			'className': 'children'
-		, [
-			@_renderChildren disagrees, parent.id, no
-			@_renderChildren agrees, parent.id, yes
-		]
+		unless @props.animationOpen
+			cssClasses.push 'appear'
+			style = top: "#{@props.openedTop - 6}px" # TODO: add padding variable
+		else if @props.animationOpen is ANIMATION_START
+			cssClasses.push 'enter'
+			style = top: "#{@props.openedTop - 6}px" # TODO: add padding variable
+		else
+			cssClasses.push 'visible'
 
-		React.DOM.div
-			'className': cssClasses.join ' '
-		, [
-			statement Object.assign {}, parent, key: "statement-#{parent.id} opened"
-			children
-		]
+		props = Object.assign {}, {style}, parent,
+			key: "statement-#{parent.id}-opened"
+			customClassNames: cssClasses
 
-	_renderChildren: (children, parentId, agree) ->
-		cssClass = if agree then 'agree' else 'disagree'
-		emptyStatement = newStatement
-			key: 'empty-statement'
-			agree: agree
-			parentId: parentId
-
-		React.DOM.div
-			'className': "children-#{cssClass}"
-		, [
-			emptyStatement
-			statementList
-				statementIds: children
-				cssClasses: [cssClass]
-			, children
-		]
+		statement props, key: "statement-#{parent.id}-opened"
 
 
 module.exports = connect(appState) list

@@ -1,5 +1,6 @@
 webpack = require('webpack');
 path = require('path');
+consts = require('./src/util/consts')
 
 module.exports = {
 	module: {
@@ -8,6 +9,9 @@ module.exports = {
 			{test: /\.scss$/, loader: 'style!css!sass'},
 			{test: /\.json$/, loader: 'json-loader'} // asi neni potreba
 		]
+	},
+	'sassLoader': {
+		data: "$statementOpenDuration: " + consts.ANIMATION_HIDE_DURATION / 1000 + "s;"
 	},
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
