@@ -61,7 +61,7 @@ repo = ->
 	_getTree = (parentIds) ->
 		new Promise (resolve, reject) ->
 			db.queryAll '
-				SELECT ancestor, descendant AS id, agree
+				SELECT CAST(ancestor AS TEXT), CAST(descendant AS TEXT) AS id, agree
 				FROM statement_closure
 				WHERE
 					descendant = ANY ($1) AND
@@ -111,8 +111,6 @@ repo = ->
 
 
 	add: (data, done) ->
-		console.info 'adding', data
-
 		addNew = (data) ->
 			new Promise (resolve, reject) ->
 				row =
@@ -155,6 +153,7 @@ repo = ->
 			db.begin (err, res) ->
 				return reject err if err
 				addNew data
+				.catch reject
 				.then addSelfToClosure
 				.then addSelfToParent
 				.then (id) -> db.commit (err, res) ->

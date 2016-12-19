@@ -1,12 +1,29 @@
 .statement-list {
+	position: relative;
 	opacity: 1;
 
 	&.root {
 		margin-top: 0;
 	}
 
+	&.appear {
+		position: absolute;
+		opacity: 0;
+		width: 100%;
+	}
+	&.enter {
+		transition: all $statementOpenDuration linear;
+		position: absolute;
+		opacity: 1;
+		width: 100%;
+	}
 	&.leave {
 		transition: all $statementOpenDuration linear;
 		opacity: 0;
+	}
+	&.disappear {
+		position: absolute;
+		opacity: 1;
+		width: 100%;
 	}
 }

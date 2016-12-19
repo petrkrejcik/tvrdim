@@ -21,10 +21,32 @@ actions = ->
 			, 1
 			return
 
+	_openStatementRootStart = (dispatch) ->
+		new Promise (resolve, reject) ->
+			action = {
+				type: l.STATEMENT_OPEN_ROOT_START
+			}
+			setTimeout ->
+				dispatch action
+				resolve()
+			, 1
+			return
+
 	_openStatementEnd = (dispatch) ->
 		new Promise (resolve, reject) ->
 			action = {
 				type: l.STATEMENT_OPEN_END
+			}
+			setTimeout ->
+				dispatch action
+				resolve()
+			, ANIMATION_HIDE_DURATION
+			return
+
+	_openStatementRootEnd = (dispatch) ->
+		new Promise (resolve, reject) ->
+			action = {
+				type: l.STATEMENT_OPEN_ROOT_END
 			}
 			setTimeout ->
 				dispatch action
@@ -45,10 +67,25 @@ actions = ->
 			.then -> _openStatementEnd dispatch
 			return
 
-	openRoot: ->
+	storeTopOffset: (offset) ->
 		{
-			type: l.STATEMENT_OPEN_ROOT
+			type: l.STATEMENT_STORE_FIRST_TOP_OFFSET
+			offset
 		}
+
+	openRoot: ->
+		(dispatch) ->
+			dispatch type: l.STATEMENT_OPEN_ROOT_INIT
+			_openStatementRootStart dispatch
+			.then -> _openStatementRootEnd dispatch
+			return
+
+	openParent: (statement) ->
+		(dispatch) ->
+			dispatch _openStatementInit statement, top
+			_openStatementStart dispatch
+			.then -> _openStatementEnd dispatch
+			return
 
 	openDrawer: ->
 		{

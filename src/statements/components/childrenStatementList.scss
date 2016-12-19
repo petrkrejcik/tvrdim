@@ -4,24 +4,23 @@
 	width: 100%;
 	display: flex;
 	flex-flow: row wrap;
-	overflow: hidden;
+	// overflow: hidden;
 	padding: 0 0 5px 0;
+	// margin-top: 6px;
 
 	position: absolute;
 
 
 	&.appear {
-		max-height: 0;
+		opacity: 0;
+		// max-height: 0;
 		// position: absolute;
 		// display: none;
 	}
 	&.enter {
 		transition: all $statementOpenDuration linear;
-		max-height: 200px;
-	}
-	&.visible {
-		max-height: none;
-		position: relative;
+		opacity: 1;
+		// max-height: 200px;
 	}
 
 

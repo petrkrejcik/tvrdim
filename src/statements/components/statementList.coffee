@@ -1,11 +1,14 @@
 React = require 'react'
 {connect} = require 'react-redux'
+{ANIMATION_INIT, ANIMATION_START, ANIMATION_END} = require '../../util/consts'
 statement = React.createFactory require './statement'
-{ANIMATION_START, ANIMATION_END} = require '../../util/consts'
 
 appState = (state) ->
 	statements: state.statements
-	animationOpen: state.layout.statements.animationOpen
+	openingStatementId: state.layout.statements.openingId
+	animationOpenChild: state.layout.statements.animationOpenChild
+	animationOpenParent: state.layout.statements.animationOpenParent
+
 
 
 list = React.createClass
@@ -17,14 +20,14 @@ list = React.createClass
 		statementIds: []
 		cssClasses: []
 		isEntering: no
+		storeTopOffset: no
 
 	render: ->
 		cssClasses = @props.cssClasses.concat ['statement-list']
-		children = @props.statementIds.map (id) =>
-			statement Object.assign {}, @props.statements[id], key: "statement-#{id}"
-
-		if @props.animationOpen is ANIMATION_START and !@props.isEntering
-			cssClasses.push 'leave'
+		children = @props.statementIds.map (id, i) =>
+			props = key: "statement-#{id}"
+			props.storeTopOffset = yes if @props.storeTopOffset and i is 0
+			statement Object.assign props, @props.statements[id]
 
 		React.DOM.div
 			key: 'statement-list'
