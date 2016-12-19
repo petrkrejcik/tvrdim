@@ -29,6 +29,9 @@ module.exports =
 			when l.DRAWER_OPEN
 				update state, drawer: isOpened: $set: yes
 
+			when l.DRAWER_CLOSE
+				update state, drawer: isOpened: $set: no
+
 			else
 				state
 

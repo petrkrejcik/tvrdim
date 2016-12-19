@@ -20,10 +20,16 @@ drawer = React.createClass
 			user = loginStatus {key: 'loginStatus'}
 
 		React.DOM.div
+			key: 'drawer'
 			className: 'drawer'
 		, [
-			React.DOM.header className: 'drawer-header', user
-			React.DOM.nav className: 'drawer-nav'
+			React.DOM.header
+				key: 'drawer-header'
+				className: 'drawer-header'
+			, user
+			React.DOM.nav
+				key: 'drawer-nav'
+				className: 'drawer-nav'
 		]
 
 module.exports = connect(appState) drawer

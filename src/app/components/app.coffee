@@ -5,6 +5,7 @@ newStatement = React.createFactory require '../../statements/components/newState
 loginStatus = React.createFactory require '../../user/components/loginStatus'
 header = React.createFactory require '../../header/components/header'
 drawer = React.createFactory require '../../drawer/components/drawer'
+drawerOverlay = React.createFactory require '../../drawer/components/drawerOverlay'
 {connect} = require 'react-redux'
 
 
@@ -37,6 +38,7 @@ app = React.createClass
 			header key: 'header'
 			drawer key: 'drawer' if @props.drawer.isOpened
 			React.DOM.main 'className': 'content', 'key': 'content', content
+			drawerOverlay key: 'drawerOverlay'
 		]
 
 

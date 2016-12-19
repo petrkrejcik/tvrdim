@@ -22,3 +22,8 @@ module.exports =
 		{
 			type: l.DRAWER_OPEN
 		}
+
+	closeDrawer: ->
+		{
+			type: l.DRAWER_CLOSE
+		}
