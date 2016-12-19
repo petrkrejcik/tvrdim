@@ -61,7 +61,7 @@ repo = ->
 	_getTree = (parentIds) ->
 		new Promise (resolve, reject) ->
 			db.queryAll '
-				SELECT ancestor, descendant AS id, agree
+				SELECT CAST(ancestor AS TEXT), CAST(descendant AS TEXT) AS id, agree
 				FROM statement_closure
 				WHERE
 					descendant = ANY ($1) AND
