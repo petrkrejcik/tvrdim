@@ -5,10 +5,6 @@ statement = React.createFactory require './statement'
 
 appState = (state) ->
 	statements: state.statements
-	openingStatementId: state.layout.statements.openingId
-	animationOpenChild: state.layout.statements.animationOpenChild
-	animationOpenParent: state.layout.statements.animationOpenParent
-
 
 
 list = React.createClass
@@ -19,7 +15,6 @@ list = React.createClass
 	getDefaultProps: ->
 		statementIds: []
 		cssClasses: []
-		isEntering: no
 		storeTopOffset: no
 
 	render: ->

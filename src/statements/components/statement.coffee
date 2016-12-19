@@ -1,7 +1,7 @@
 React = require 'react'
+layoutActions = require '../../layout/actions'
 {connect} = require 'react-redux'
 {addStatement} = require '../actions'
-layoutActions = require '../../layout/actions'
 {open, close, openRoot, storeTopOffset, openParent} = layoutActions
 
 appState = (state) ->

@@ -14,8 +14,7 @@ appState = (state) ->
 	current = state.statements[state.layout.statements.opened]
 	openedStatementId: state.layout.statements.opened
 	openingStatementId: state.layout.statements.openingId
-	animationOpenChild: state.layout.statements.animationOpenChild
-	animationOpenParent: state.layout.statements.animationOpenParent
+	animationOpen: state.layout.statements.animationOpen
 	statements: state.statements
 	tree: state.statementsTree
 	isGoingUp: state.layout.statements.openingId is 'root' or current?.ancestor is state.layout.statements.openingId
@@ -39,9 +38,9 @@ app = React.createClass
 				if @props.openingStatementId is 'root'
 					# Animace - vracim se na root uroven
 					listCssClasses.push 'root'
-					if @props.animationOpenParent is ANIMATION_INIT
+					if @props.animationOpen is ANIMATION_INIT
 						listCssClasses.push 'appear'
-					else if @props.animationOpenParent is ANIMATION_START
+					else if @props.animationOpen is ANIMATION_START
 						listCssClasses.push 'enter'
 					content.push statementList {
 						key: 'statementList'
@@ -83,10 +82,10 @@ app = React.createClass
 				openedListCssClasses = []
 				if @props.openingStatementId is 'root'
 					# Jdu z prvniho potomka do rootu
-					if @props.animationOpenParent is ANIMATION_INIT
+					if @props.animationOpen is ANIMATION_INIT
 						openedCss.push 'disappear'
 						openedListCssClasses.push 'disappear'
-					else if @props.animationOpenParent is ANIMATION_START
+					else if @props.animationOpen is ANIMATION_START
 						openedCss.push 'leave'
 						openedCss.push 'slide'
 						openedListCssClasses.push 'leave'
@@ -102,13 +101,13 @@ app = React.createClass
 						listCssClasses: openedListCssClasses
 				else
 					# Jdu z xtyho potomka nahoru, co neni root
-					if @props.animationOpenChild is ANIMATION_INIT
+					if @props.animationOpen is ANIMATION_INIT
 						openedCss.push 'disappear'
 						openingCss.push 'appear'
 						openingCss.push 'trans'
 						openedListCssClasses.push 'disappear'
 						openingListCssClasses.push 'appear'
-					else if @props.animationOpenChild is ANIMATION_START
+					else if @props.animationOpen is ANIMATION_START
 						openedCss.push 'leave'
 						openedCss.push 'slide'
 						openingCss.push 'enter'
@@ -147,9 +146,9 @@ app = React.createClass
 
 				if opened
 					# Nejsem v rootu a jdu dolu, renderuju aktualni opened, kterej zmizi bez slide
-					if @props.animationOpenChild is ANIMATION_INIT
+					if @props.animationOpen is ANIMATION_INIT
 						openedCss.push 'disappear'
-					else if @props.animationOpenChild is ANIMATION_START
+					else if @props.animationOpen is ANIMATION_START
 						openedCss.push 'leave'
 					content.push statementOpened
 						key: 'statementOpened'
@@ -157,12 +156,12 @@ app = React.createClass
 						style: openingStyle
 						cssClasses: openedCss
 
-				if @props.animationOpenChild is ANIMATION_INIT
+				if @props.animationOpen is ANIMATION_INIT
 					cssClasses.push 'appear'
 					openingCss.push 'appear'
 					listStyle = top: "#{@props.firstOffset.height}px"
 					openingStyle = top: "#{@props.openedTop - 6}px"
-				else if @props.animationOpenChild is ANIMATION_START
+				else if @props.animationOpen is ANIMATION_START
 					cssClasses.push 'enter'
 					openingCss.push 'enter'
 					listStyle = top: "#{@props.firstOffset.height}px"

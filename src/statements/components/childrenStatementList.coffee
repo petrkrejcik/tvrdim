@@ -7,9 +7,6 @@ newStatement = React.createFactory require './newStatement'
 appState = (state) ->
 	tree: state.statementsTree
 	statements: state.statements
-	openedStatementId: state.layout.statements.opened
-	firstOffset: state.layout.statements.firstOffset
-	animationOpenChild: state.layout.statements.animationOpenChild
 
 
 list = React.createClass
@@ -21,7 +18,6 @@ list = React.createClass
 		statementIds: []
 		cssClasses: []
 		listCssClasses: []
-		isEntering: no
 		childrenIds: []
 		parent: null
 		style: {}
@@ -54,7 +50,6 @@ list = React.createClass
 			statementList
 				statementIds: childrenIds
 				cssClasses: cssClasses
-				isEntering: @props.isEntering
 		]
 
 

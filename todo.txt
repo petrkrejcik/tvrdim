@@ -90,7 +90,7 @@ akce pro ukladani na server:
 		- zakazat zmenu udaju
 
 
-pri prechodu na root parenta se neodebere trida appear, protoze je porad nastaveno, ze animationOpenChild
+pri prechodu na root parenta se neodebere trida appear, protoze je porad nastaveno, ze animationOpen
 
 
 
