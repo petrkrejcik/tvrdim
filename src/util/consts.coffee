@@ -1,0 +1,3 @@
+consts = ->
+
+module.exports = consts()

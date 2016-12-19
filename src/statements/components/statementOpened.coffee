@@ -28,16 +28,18 @@ list = React.createClass
 		disagrees = childrenIds.filter (id) => !@props.statements[id].agree
 
 		children = React.DOM.div
-			'className': 'children'
+			key: 'children'
+			className: 'children'
 		, [
 			@_renderChildren disagrees, parent.id, no
 			@_renderChildren agrees, parent.id, yes
 		]
 
 		React.DOM.div
-			'className': cssClasses.join ' '
+			key: 'statementOpened'
+			className: cssClasses.join ' '
 		, [
-			statement Object.assign {}, parent, key: "statement-#{parent.id} opened"
+			statement Object.assign {}, parent, key: "statement-#{parent.id}-opened"
 			children
 		]
 
@@ -49,10 +51,12 @@ list = React.createClass
 			parentId: parentId
 
 		React.DOM.div
-			'className': "children-#{cssClass}"
+			key: "children-#{parentId}-#{cssClass}"
+			className: "children-#{cssClass}"
 		, [
-			emptyStatement
+			# emptyStatement
 			statementList
+				key: "statementList-#{parentId}"
 				statementIds: children
 				cssClasses: [cssClass]
 			, children
