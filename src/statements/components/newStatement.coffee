@@ -51,7 +51,7 @@ statement = React.createClass
 				onClick: =>
 					newStatement =
 						text: @state.text
-						agree: !!@props.agree
+						agree: @props.agree
 						parentId: @props.parentId
 						user: @props.user
 					@props.handleSave newStatement, @setState text: ''

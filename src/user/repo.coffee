@@ -17,7 +17,7 @@ repo = ->
 	insert = ({socialId, socialNetwork}) -> new Promise (resolve, reject) ->
 		db.insert 'users', {social_id: socialId, social_network: socialNetwork}, (err, rows) ->
 			return reject err if err
-			resolve rows.map (row) -> row.id
+			resolve rows[0].id
 		return
 
 	selectOrInsert = ({socialId, socialNetwork}) -> new Promise (resolve, reject) ->

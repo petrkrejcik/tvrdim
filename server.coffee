@@ -12,6 +12,7 @@ thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
 config = require('cson-config').load 'config.cson'
 users = require './src/user/repo'
+statementsRepo = require './src/statements/repo'
 
 reducer = require './rootReducer'
 
@@ -19,12 +20,29 @@ compiler = webpack webpackConfig
 app = express()
 
 handleRender = (req, res) ->
+	user = req.user
 	{getAll} = require './src/statements/repo'
-	getAll()
-	.then ({entities, tree}) ->
-		statements = entities
-		statementsTree = tree
-		user = req.user
+	query = {}
+	query = loggedUserId: user.id if user
+	queries = [getAll query]
+	query.userId = user.id if user
+	queries.push statementsRepo.filterBy query
+	Promise.all queries
+	.then (results) ->
+		statements = {}
+		statementsTree = {}
+		for result in results
+			# merge two result into one
+			Object.assign statements, result.entities
+			for parent, ids of result.tree
+				if parent is 'root'
+					if statementsTree.root
+						statementsTree.root.concat ids
+					else
+						statementsTree.root = ids
+				else
+					statementsTree[parent] = ids
+
 		store = createStore reducer, {statements, statementsTree, user}, applyMiddleware thunk
 		state = store.getState()
 		body = renderToString \
@@ -108,14 +126,23 @@ passport.serializeUser (user, cb) ->
 passport.deserializeUser (obj, cb) ->
 	cb null, obj
 
-# app.use require('morgan')('combined')
 app.use require('cookie-parser')()
 app.use require('body-parser').urlencoded extended: true
-app.use require('express-session')(secret: 'sdfuiasj83ljfa203fsdlkj', resave: true, saveUninitialized: true)
+
+session = require 'express-session'
+redis = require('connect-redis')(session)
+redisOpts = config.redis
+app.use session secret: 'sdfuiasj83ljfa203fsdlkj', resave: true, saveUninitialized: true, store: new redis redisOpts
 
 # on each request; store id into req.user
 app.use passport.initialize()
 app.use passport.session()
+
+# app.use require('morgan')('combined')
+app.get '/logout', (req, res, next) ->
+	req.session.destroy()
+	req.logout()
+	res.sendStatus 200
 
 # app.use (req, res, next) ->
 # 	console.info 'req.session', req.session
@@ -123,7 +150,6 @@ app.use passport.session()
 # 	return
 
 app.get '/login/facebook', passport.authenticate 'facebook'
-
 app.get(
 	'/login/facebook/return',
 	passport.authenticate('facebook', failureRedirect: '/login'),

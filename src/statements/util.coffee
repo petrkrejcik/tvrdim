@@ -10,8 +10,10 @@ module.exports =
 			result[id].text = entity.text if entity.text?
 			result[id].ancestor = entity.ancestor if entity.ancestor
 			result[id].agree = entity.agree if entity.agree?
+			result[id].isMine = yes if entity.isMine
 			roots.push id unless entity.ancestor
 
+		# make array of levels in tree
 		_makeRelations = (_entities, parentIds, depth) ->
 			return unless Object.keys(_entities).length
 			remaining = {}
@@ -29,6 +31,7 @@ module.exports =
 
 		_makeRelations entities, roots, 1
 
+		# count scores
 		for ids in structure.reverse()
 			for id in ids
 				entity = result[id]

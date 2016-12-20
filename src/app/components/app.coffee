@@ -25,7 +25,7 @@ app = React.createClass
 			content = statementOpened()
 		else
 			content = [
-				# newStatement key: 'addStatement'
+				newStatement key: 'addStatement'
 				statementList
 					key: 'statementList'
 					statementIds: @props.tree.root

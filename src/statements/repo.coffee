@@ -72,7 +72,7 @@ repo = ->
 			return
 
 	_select = (query = {}) ->
-		{userId} = query
+		{userId, loggedUserId} = query
 		new Promise (resolve, reject) ->
 			dbEntities = {}
 			_getRoot({userId})
@@ -86,6 +86,7 @@ repo = ->
 			.then (entitiesRelation) ->
 				for id, entity of entitiesRelation
 					entity.text = dbEntities[id].text
+					entity.isMine = yes if dbEntities[id].user_id is loggedUserId
 					if entity.agree is null
 						# is root
 						delete entity.ancestor
@@ -107,12 +108,14 @@ repo = ->
 			errors ?= []
 			errors.push
 				'error': "Filter error. UserId has to be an integer: '#{filter.userId}'"
+		if filter.loggedUserId and !Number.isInteger filter.loggedUserId
+			errors ?= []
+			errors.push
+				'error': "Filter error. LoggedUserId has to be an integer: '#{filter.loggedUserId}'"
 		errors
 
 
 	add: (data, done) ->
-		console.info 'adding', data
-
 		addNew = (data) ->
 			new Promise (resolve, reject) ->
 				row =
@@ -139,6 +142,7 @@ repo = ->
 		addSelfToParent = (id) ->
 			new Promise (resolve, reject) ->
 				{parentId, agree} = data
+				agree = null unless agree?
 				parentId = 1 unless parentId # __ROOT__
 				db.query '
 					INSERT INTO statement_closure (ancestor, descendant, depth, agree)
@@ -157,13 +161,17 @@ repo = ->
 				addNew data
 				.then addSelfToClosure
 				.then addSelfToParent
-				.then (id) -> db.commit (err, res) ->
-					return reject err if err
-					resolve id
+				.then (id) ->
+					db.commit (err, res) ->
+						return reject err if err
+						resolve id
+				.catch (error) ->
+					db.rollback()
+					reject error
 				return
 
-	getAll: ->
-		_select()
+	getAll: (query) ->
+		_select query
 
 	filterBy: (filter = {}) ->
 		new Promise (resolve, reject) ->

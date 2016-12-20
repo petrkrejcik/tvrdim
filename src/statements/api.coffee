@@ -21,10 +21,12 @@ router.get '/statements/mine', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
 	unless user = req.user
 		return res.json error: 'Not logged'
-	repo.filterBy userId: user.id
+	repo.filterBy userId: user.id, loggedUserId: user.id
 	.then (result) ->
 		res.json result
-	.catch (err) -> console.info 'Get mine statements error', err
+	.catch (error) ->
+		console.info 'Get mine statements error', error
+		res.status(500).send error: 'Get mine statements error'
 	return
 
 router.get '/statements?', (req, res) ->
@@ -34,16 +36,18 @@ router.get '/statements?', (req, res) ->
 	catch
 		filter = {}
 	if user = req.user
-		filter.userId = user.id
+		filter.loggedUserId = user.id
 	repo.filterBy filter
 	.then (result) ->
 		res.json result
-	.catch (err) -> console.info 'Get statements error', err
+	.catch (error) ->
+		console.info 'Get statements error', error
+		res.status(500).send error: 'Get statements error'
 	return
 
-router.post '/statements/add', jsonParser, (req, res) ->
+router.post '/statements', jsonParser, (req, res) ->
 	unless user = req.user
-		return res.json error: 'Not logged'
+		return res.status(403).send error: 'Not logged'
 	data = {}
 	Object.assign data, req.body
 	data.userId = req.user.id
@@ -51,7 +55,9 @@ router.post '/statements/add', jsonParser, (req, res) ->
 	.then (id) ->
 		res.setHeader 'Content-Type', 'application/json'
 		res.json {id}
-	.catch -> console.info 'adding error'
+	.catch (error) ->
+		console.info 'Add statement error', error
+		res.status(500).send error: 'Add statement error'
 	return
 
 router.delete '/statements/:id/parentId/:parentId', (req, res) ->

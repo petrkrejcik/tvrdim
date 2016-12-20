@@ -26,7 +26,7 @@ actions = ->
 				return resolve {id}
 
 		_storeOnServer = (statement) ->
-			fetch '/api/0/statements/add',
+			fetch '/api/0/statements',
 				method: 'post'
 				credentials: 'same-origin'
 				headers:
@@ -47,6 +47,7 @@ actions = ->
 				return dispatch {type: t.ADD_FAILURE, error} if error
 				statement = {id, text, agree}
 				statement.ancestor = parentId if parentId
+				statement.isMine = yes
 				dispatch type: t.ADD, statement: "#{id}": statement
 				dispatch type: st.ADD, statement: {parentId, id}
 				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id

@@ -6,3 +6,5 @@ db:
 	host: 'localhost'
 	db: if process.env.ENV is 'test' then 'tvrdim_dev_test' else 'tvrdim_dev'
 	options: {}
+redis:
+	port: 6379
