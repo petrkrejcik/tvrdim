@@ -21,13 +21,13 @@ INSERT INTO statement (text) VALUES
 
 
 CREATE TABLE statement_closure (
+    id BIGSERIAL PRIMARY KEY,
     ancestor INTEGER REFERENCES statement (id) ON DELETE CASCADE,
     descendant INTEGER REFERENCES statement (id) ON DELETE CASCADE,
     depth INTEGER,
     agree BOOLEAN
 );
 
-INSERT INTO statement_closure VALUES
--- (asc, desc, depth)
+INSERT INTO statement_closure (ancestor, descendant, depth) VALUES
 ('1', '1', 0);
 

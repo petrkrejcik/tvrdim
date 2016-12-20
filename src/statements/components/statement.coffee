@@ -1,8 +1,8 @@
 React = require 'react'
 {connect} = require 'react-redux'
-{addStatement} = require '../actions'
 newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
+{addStatement, remove} = require '../actions'
 {open, close, openRoot} = layoutActions
 
 
@@ -21,6 +21,9 @@ dispatchToProps = (dispatch) ->
 
 	handleSave: ({statementId, text, agree}) ->
 		dispatch addStatement statementId, text, agree
+
+	handleRemove: (id, parentId) ->
+		dispatch remove id, parentId
 
 
 
@@ -55,11 +58,24 @@ statement = React.createClass
 			'className': (cssClasses.concat @props.customClassNames).join ' '
 		, [
 			title
+			@_renderRemoveBtn()
 			React.DOM.div key: 'buttons', className: 'actions', [
 				@_renderShowArgumentsBtn()
 				@_renderGoToParentBtn()
 			]
 		]
+
+	_renderRemoveBtn: ->
+		self = @props.statements[@props.id]
+		return null unless self.isMine
+		React.DOM.div
+			key: 'remove'
+			className: 'remove'
+			onClick: @props.handleRemove.bind @, self.id, self.ancestor
+		, React.DOM.i
+			key: 'icon-vert'
+			className: 'material-icons', 'more_vert'
+
 
 	_renderShowArgumentsBtn: ->
 		return if @props.id is @props.opened

@@ -43,7 +43,7 @@ repo = ->
 				resolve entities: _getEntities res
 			return
 
-	_getChildren = (parentIds, entireTree = no) ->
+	_getChildrenEntities = (parentIds, entireTree = no) ->
 		new Promise (resolve, reject) ->
 			direct = if entireTree then '' else 'AND sc.depth = 1'
 			db.queryAll "
@@ -78,7 +78,7 @@ repo = ->
 			_getRoot({userId})
 			.then (roots) ->
 				rootIds = Object.keys roots.entities
-				_getChildren rootIds, yes
+				_getChildrenEntities rootIds, yes
 			.then (children) ->
 				dbEntities = children.entities
 				childrenIds = Object.keys children.entities
@@ -98,7 +98,7 @@ repo = ->
 			.catch reject
 			return
 
-	_validate = (filter) ->
+	_validate = (filter = {}) ->
 		errors = null
 		if filter.parentIds and !Array.isArray filter.parentIds
 			errors ?= []
@@ -190,7 +190,7 @@ repo = ->
 	###
 	# Removing id and all his children from DB
 	###
-	remove: (id, parentId) ->
+	remove: (id, parentId, loggedUserId) ->
 		_getChildren = ->
 			new Promise (resolve, reject) ->
 				db.queryAll '
@@ -205,18 +205,18 @@ repo = ->
 		_deleteFromClosure = (parentId, childrenIds) ->
 			new Promise (resolve, reject) ->
 				db.queryAll '
-					SELECT descendant
+					DELETE
 					FROM statement_closure
 					WHERE
-						ancestor = $1 AND
-						descendant = ANY ($2)
-				', [parentId, childrenIds], (err, rows) ->
+						ancestor = ANY ($1) OR
+						descendant = ANY ($1)
+				', [childrenIds], (err, rows) ->
 					return reject err if err
 					resolve rows.map (row) -> row.descendant
 				return
 		_deleteFromStatements = (ids) ->
 			new Promise (resolve, reject) ->
-				db.delete 'statement', 'id = ANY ($1)', [ids], (err, rows) ->
+				db.delete 'statement', 'id = ANY ($1) AND user_id = $2', [ids, loggedUserId], (err, rows) ->
 					return reject err if err
 					resolve rows.map (row) -> row.id
 				return
@@ -225,13 +225,20 @@ repo = ->
 			parentId = 1 unless parentId
 			_getChildren()
 			.then (ids) ->
-				_deleteFromClosure parentId, ids
-				.then (ids) ->
-					_deleteFromStatements ids
+				db.begin (err, res) ->
+					_deleteFromClosure parentId, ids
+					.then ->
+						_deleteFromStatements [id]
 					.then (ids) ->
+						if ids.length is 0
+							# statement was not mine, so cancel deleting
+							db.rollback()
+							return reject()
+						db.commit()
 						resolve ids
-					.catch (err) -> reject err
-				.catch (err) -> reject err
+					.catch (err) ->
+						db.rollback()
+						reject err
 			.catch (err) -> reject err
 			return
 

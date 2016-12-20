@@ -1,4 +1,3 @@
-setup = require './setup'
 repo = require '../src/statements/repo'
 
 getRandomString = (length = 7) ->
@@ -81,7 +80,7 @@ describe 'Statement API', ->
 
 	it 'removes statement', (done) ->
 
-		repo.remove 10
+		repo.remove 10, undefined, 2
 		.then (ids) ->
 			console.info 'removed', ids
 		.then -> done()

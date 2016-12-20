@@ -60,12 +60,15 @@ router.post '/statements', jsonParser, (req, res) ->
 		res.status(500).send error: 'Add statement error'
 	return
 
-router.delete '/statements/:id/parentId/:parentId', (req, res) ->
+router.delete '/statements/:id/:parentId?', (req, res) ->
+	unless user = req.user
+		return res.status(403).send error: 'Not logged'
 	res.setHeader 'Content-Type', 'application/json'
 	id = req.params.id
 	parentId = req.params.parentId
-	return res.json error: msg: 'No ID provided' unless id
-	repo.remove id, parentId
+	unless id
+		return res.status(404).send error: 'No ID provided'
+	repo.remove id, parentId, user.id
 	.then (ids) ->
 		res.json {ids}
 	.catch (err) -> console.info 'remove error', err

@@ -83,6 +83,23 @@ actions = ->
 				dispatch type: t.GET_SUCCESS, statements: data
 			return
 
+	remove: (id, parentId) ->
+		parent = ''
+		parent = "/#{parentId}" if parentId
+		(dispatch) ->
+			fetch "/api/0/statements/#{id}#{parent}",
+				method: 'delete'
+				credentials: 'same-origin'
+			.then (response) -> response.json response
+			.then (response) ->
+				console.info 'removed?', response
+				# return dispatch {type: t.GET_FAILURE, error} if error
+				# Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
+				# dispatch type: t.GET_SUCCESS, statements: entities
+				# dispatch type: st.UPDATE, tree: tree
+				# return
+			return
+
 	getMine: ->
 		(dispatch) ->
 			dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
