@@ -86,6 +86,7 @@ repo = ->
 			.then (entitiesRelation) ->
 				for id, entity of entitiesRelation
 					entity.text = dbEntities[id].text
+					entity.createdTime = dbEntities[id].created_time
 					entity.isMine = yes if dbEntities[id].user_id is loggedUserId
 					if entity.agree is null
 						# is root
@@ -121,7 +122,7 @@ repo = ->
 				row =
 					text: data.text
 					user_id: data.userId
-					# createdTime: (new Date).getTime()
+					created_time: 'NOW'
 				db.insert 'statement', row, (err, res) ->
 					return reject err if err
 					{id} = res[0]
@@ -177,7 +178,7 @@ repo = ->
 		new Promise (resolve, reject) ->
 			return reject errors if errors = _validate filter
 			if filter.parentIds
-				_getChildren filter.parentIds
+				_getChildrenEntities filter.parentIds
 				.then (children) ->
 					tree = _makeTree children.entities
 					entities = children.entities

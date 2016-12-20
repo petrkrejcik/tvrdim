@@ -13,11 +13,12 @@ CREATE TABLE users (
 CREATE TABLE statement (
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
-    user_id INTEGER REFERENCES users (id)
+    user_id INTEGER REFERENCES users (id),
+    created_time timestamp
 );
 
-INSERT INTO statement (text) VALUES
-('__ROOT__'); -- root for all
+INSERT INTO statement (text, created_time) VALUES
+('__ROOT__', 'NOW'); -- root for all
 
 
 CREATE TABLE statement_closure (

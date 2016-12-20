@@ -10,6 +10,7 @@ module.exports =
 			result[id].text = entity.text if entity.text?
 			result[id].ancestor = entity.ancestor if entity.ancestor
 			result[id].agree = entity.agree if entity.agree?
+			result[id].createdTime = entity.createdTime
 			result[id].isMine = yes if entity.isMine
 			roots.push id unless entity.ancestor
 
