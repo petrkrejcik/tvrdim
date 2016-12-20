@@ -1,7 +1,7 @@
 React = require 'react'
 {connect} = require 'react-redux'
 statement = React.createFactory require './statement'
-statementList = React.createFactory require './statementList'
+statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
 
 appState = (state) ->
@@ -23,16 +23,13 @@ list = React.createClass
 	render: ->
 		cssClasses = ['statement-opened']
 		parent = @props.statements[@props.opened]
-		childrenIds = @props.tree[parent.id] ? []
-		agrees = childrenIds.filter (id) => @props.statements[id].agree
-		disagrees = childrenIds.filter (id) => !@props.statements[id].agree
 
 		children = React.DOM.div
 			key: 'children'
 			className: 'children'
 		, [
-			@_renderChildren disagrees, parent.id, no
-			@_renderChildren agrees, parent.id, yes
+			@_renderChildren parent.id, no
+			@_renderChildren parent.id, yes
 		]
 
 		React.DOM.div
@@ -43,7 +40,7 @@ list = React.createClass
 			children
 		]
 
-	_renderChildren: (children, parentId, agree) ->
+	_renderChildren: (parentId, agree) ->
 		cssClass = if agree then 'agree' else 'disagree'
 		emptyStatement = newStatement
 			key: 'empty-statement'
@@ -55,11 +52,10 @@ list = React.createClass
 			className: "children-#{cssClass}"
 		, [
 			# emptyStatement
-			statementList
-				key: "statementList-#{parentId}"
-				statementIds: children
+			statementFilter
+				key: "statementFilter-#{parentId}"
+				filters: [{parentId}, {agree}]
 				cssClasses: [cssClass]
-			, children
 		]
 
 

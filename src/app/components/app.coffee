@@ -1,5 +1,5 @@
 React = require 'react'
-statementList = React.createFactory require '../../statements/components/statementList'
+statementFilter = React.createFactory require '../../statements/containers/statementFilter'
 statementOpened = React.createFactory require '../../statements/components/statementOpened'
 newStatement = React.createFactory require '../../statements/components/newStatement'
 loginStatus = React.createFactory require '../../user/components/loginStatus'
@@ -26,14 +26,32 @@ app = React.createClass
 		else
 			content = [
 				newStatement key: 'addStatement'
-				statementList
-					key: 'statementList'
-					statementIds: @props.tree.root
+				React.DOM.div
+					key: 'sectionMine'
+					className: 'section'
+				, 'My arguments'
+				statementFilter
+					key: 'statementFilterMine'
 					cssClasses: ['root']
+					filters: [
+						parentId: 'root'
+					,	user: 'mine'
+					]
+				React.DOM.div
+					key: 'sectionOthers'
+					className: 'section'
+				, 'Others arguments'
+				statementFilter
+					key: 'statementFilterAll'
+					cssClasses: ['root']
+					filters: [
+						parentId: 'root'
+					,	user: 'notMine'
+					]
 			]
 
 		React.DOM.div
-			'className': 'app'
+			className: 'app'
 		, [
 			header key: 'header'
 			drawer key: 'drawer' if @props.drawer.isOpened
