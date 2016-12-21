@@ -37,7 +37,8 @@ repo = ->
 					sc.ancestor = 1 AND
 					sc.descendant <> 1 AND
 					sc.depth = 1
-					#{user};
+					#{user}
+				ORDER BY s.created_time DESC;
 			", params, (err, res) ->
 				return reject err if err
 				resolve entities: _getEntities res
@@ -52,7 +53,8 @@ repo = ->
 				JOIN statement_closure sc ON (s.id = sc.descendant)
 				WHERE
 					sc.ancestor = ANY ($1)
-					#{direct};
+					#{direct}
+				ORDER BY s.created_time DESC;
 			", [parentIds], (err, res) ->
 				return reject err if err
 				resolve entities: _getEntities res
@@ -165,7 +167,7 @@ repo = ->
 				.then (id) ->
 					db.commit (err, res) ->
 						return reject err if err
-						resolve id
+						resolve id.toString()
 				.catch (error) ->
 					db.rollback()
 					reject error

@@ -2,6 +2,7 @@ update = require 'react-addons-update'
 t = require './actionTypes'
 {countScore} = require './util'
 {LOGOUT} = require '../user/actionTypes'
+{SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
 
 
 module.exports =
@@ -23,7 +24,7 @@ module.exports =
 			when t.GET_SUCCESS
 				update state, $merge: action.statements
 
-			when t.ADD
+			when t.ADD_STATEMENT
 				update state, $merge: action.statement
 
 			when t.ADD_FAILURE
@@ -40,6 +41,19 @@ module.exports =
 				{error} = action
 				console.info 'failure for getting statements:', error
 				state
+
+			when SYNC_STATEMENT_SUCCESS
+				{oldId, newId} = action
+				newState = state
+				for id, statement of state
+					if id is oldId
+						newStatement = Object.assign {}, statement
+						newStatement.id = newId
+						newState = update newState, "#{newId}": $set: newStatement
+					if statement.ancestor is oldId
+						newState = update newState, "#{id}": id: $set: newId
+				delete newState[oldId] # how else?
+				newState
 
 			when LOGOUT
 				changed = []

@@ -9,3 +9,5 @@ module.exports =
 	STATEMENT_ADD_SUCCESS: 'layout/statement/add/success'
 	DRAWER_OPEN: 'layout/drawer/open'
 	DRAWER_CLOSE: 'layout/drawer/close'
+	SYNC_START: 'layout/sync/start'
+	SYNC_END: 'layout/sync/end'

@@ -37,21 +37,15 @@ actions = ->
 
 		(dispatch) ->
 			statement = {parentId, text, agree}
-			dispatch type: l.STATEMENT_ADD_REQUEST, {parentId}
-			storeFn = if userId
-				_storeOnServer.bind @, statement
-			else
-				_storeLocally.bind @
-			storeFn()
+			_storeLocally()
 			.then ({error, id}) ->
 				return dispatch {type: t.ADD_FAILURE, error} if error
 				statement = {id, text, agree}
 				statement.ancestor = parentId if parentId
 				statement.isMine = yes
-				dispatch type: t.ADD, statement: "#{id}": statement
+				dispatch type: t.ADD_STATEMENT, statement: "#{id}": statement
 				dispatch type: st.ADD, statement: {parentId, id}
 				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id
-				dispatch type: l.STATEMENT_ADD_SUCCESS, {statement}
 				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, agree}
 			return
 

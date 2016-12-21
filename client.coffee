@@ -13,7 +13,6 @@ store = createStore reducer, window.__PRELOADED_STATE__, compose(
 	applyMiddleware(listener sync),
 	window.devToolsExtension && window.devToolsExtension()
 )
-store.subscribe sync
 
 provider =
 	React.createElement Provider, {store},

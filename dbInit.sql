@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS statement_closure;
 DROP TABLE IF EXISTS statement;
-DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS users;
 
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     social_id BIGINT,
     social_network TEXT

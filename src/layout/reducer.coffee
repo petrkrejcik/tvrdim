@@ -15,10 +15,6 @@ module.exports =
 	layout: (state = defaultState, action) ->
 		switch action.type
 
-			when l.STATEMENT_ADD_SUCCESS
-				# TODO hide loader
-				state
-
 			when l.STATEMENT_OPEN
 				{id} = action.statement
 				update state, statements: opened: $set: id
