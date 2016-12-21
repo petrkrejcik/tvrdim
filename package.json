@@ -2,7 +2,7 @@
   "name": "tvrdim",
   "private": true,
   "scripts": {
-    "start": "ENV=test coffee server.coffee",
+    "start": "ENV=test ./node_modules/coffee-script/bin/coffee server.coffee",
     "build": "node_modules/webpack/bin/webpack.js -p --display-error-details",
     "test": " ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
   },
