@@ -10,6 +10,7 @@ drawerOverlay = React.createFactory require '../../drawer/components/drawerOverl
 
 appState = (state) ->
 	opened: state.layout.statements.opened
+	statements: state.statements
 	drawer: state.layout.drawer
 	tree: state.statementsTree
 
@@ -21,7 +22,8 @@ app = React.createClass
 
 	render: ->
 		if @props.opened
-			content = statementOpened()
+			content = statementOpened
+				opened: @props.statements[@props.opened]
 		else
 			content = [
 				newStatement key: 'addStatement'
@@ -33,7 +35,7 @@ app = React.createClass
 					key: 'statementFilterMine'
 					cssClasses: ['root']
 					filters: [
-						parentId: 'root'
+						ancestor: 'root'
 					,	user: 'mine'
 					]
 				React.DOM.div
@@ -44,7 +46,7 @@ app = React.createClass
 					key: 'statementFilterAll'
 					cssClasses: ['root']
 					filters: [
-						parentId: 'root'
+						ancestor: 'root'
 					,	user: 'notMine'
 					]
 			]

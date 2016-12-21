@@ -1,5 +1,6 @@
 update = require 'react-addons-update'
 l = require './actionTypes'
+{SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
 
 defaultState =
 	statements:
@@ -16,8 +17,7 @@ module.exports =
 		switch action.type
 
 			when l.STATEMENT_OPEN
-				{id} = action.statement
-				update state, statements: opened: $set: id
+				update state, statements: opened: $set: action.id
 
 			when l.STATEMENT_OPEN_ROOT
 				update state, statements: opened: $set: null
@@ -27,6 +27,14 @@ module.exports =
 
 			when l.DRAWER_CLOSE
 				update state, drawer: isOpened: $set: no
+
+			when SYNC_STATEMENT_SUCCESS
+				{oldId, newId} = action
+				newState = state
+				if state.statements.opened is oldId
+					newState = update state, statements: opened: $set: newId
+				newState
+
 
 			else
 				state

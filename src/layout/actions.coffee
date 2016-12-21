@@ -7,10 +7,10 @@ module.exports =
 		statement = {id}
 		{type, statement}
 
-	open: (statement) ->
+	open: (id) ->
 		{
 			type: l.STATEMENT_OPEN
-			statement
+			id
 		}
 
 	openRoot: ->

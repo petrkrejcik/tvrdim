@@ -1,13 +1,8 @@
 React = require 'react'
 {connect} = require 'react-redux'
-statement = React.createFactory require './statement'
+Statement = React.createFactory require './statement'
 statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
-
-appState = (state) ->
-	statements: state.statements
-	tree: state.statementsTree
-	opened: state.layout.statements.opened
 
 
 list = React.createClass
@@ -16,47 +11,45 @@ list = React.createClass
 
 
 	getDefaultProps: ->
-		statements: []
-		tree: {}
-		opened: null
+		opened: {}
 
 	render: ->
 		cssClasses = ['statement-opened']
-		parent = @props.statements[@props.opened]
-
 		children = React.DOM.div
 			key: 'children'
 			className: 'children'
 		, [
-			@_renderChildren parent.id, no
-			@_renderChildren parent.id, yes
+			@_renderChildren @props.opened.id, no
+			@_renderChildren @props.opened.id, yes
 		]
 
 		React.DOM.div
 			key: 'statementOpened'
 			className: cssClasses.join ' '
 		, [
-			statement Object.assign {}, parent, key: "statement-#{parent.id}-opened"
+			Statement Object.assign {}, @props.opened,
+				key: "statement-#{parent.id}-opened"
+				isOpened: yes
 			children
 		]
 
-	_renderChildren: (parentId, agree) ->
+	_renderChildren: (ancestor, agree) ->
 		cssClass = if agree then 'agree' else 'disagree'
 		emptyStatement = newStatement
 			key: 'empty-statement'
 			agree: agree
-			parentId: parentId
+			ancestor: @props.opened.id
 
 		React.DOM.div
-			key: "children-#{parentId}-#{cssClass}"
+			key: "children-#{ancestor}-#{cssClass}"
 			className: "children-#{cssClass}"
 		, [
-			# emptyStatement
+			emptyStatement
 			statementFilter
-				key: "statementFilter-#{parentId}"
-				filters: [{parentId}, {agree}]
+				key: "statementFilter-#{ancestor}"
+				filters: [{ancestor}, {agree}]
 				cssClasses: [cssClass]
 		]
 
 
-module.exports = connect(appState) list
+module.exports = list

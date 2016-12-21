@@ -1,14 +1,11 @@
 fetch = require 'isomorphic-fetch'
 {ADD_STATEMENT} = require '../statements/actionTypes'
-{SYNC_START, SYNC_END} = require '../layout/actionTypes'
-{SYNC_STATEMENT_SUCCESS} = require './actionTypes'
-
-syncable = [
-	ADD_STATEMENT
-]
+{SYNC_REMOTE_END} = require '../layout/actionTypes'
+{SYNC_STATEMENT_REQUEST, SYNC_STATEMENT_SUCCESS, SYNC_STATEMENT_FAIL, SYNC_STATE_LOCAL} = require './actionTypes'
+localStorage = require '../lib/localStorage'
 
 sync = ->
-	_storeOnServer = (statement) ->
+	_statementToServer = (statement) ->
 		fetch '/api/0/statements',
 			method: 'post'
 			credentials: 'same-origin'
@@ -20,17 +17,16 @@ sync = ->
 
 	sync: (dispatch, action, state) ->
 		return unless state.user.id
-		return unless action.type in syncable
-		if action.type is ADD_STATEMENT
+		if action.type is SYNC_STATEMENT_REQUEST
 			return unless statement = state.sync.slice(0, 1)[0]
 			return unless oldId = Object.keys(statement)[0]
-			dispatch type: SYNC_START
-			_storeOnServer statement[oldId]
+			_statementToServer statement[oldId]
 			.then ({error, id}) ->
-				return dispatch type: SYNC_END if error
+				return dispatch type: SYNC_STATEMENT_FAIL if error
 				dispatch type: SYNC_STATEMENT_SUCCESS, oldId: oldId, newId: id
-				dispatch type: SYNC_END
-		yes
+		if action.type is SYNC_STATE_LOCAL
+			localStorage.insert 'state', state
+		return
 
 
 module.exports = sync()

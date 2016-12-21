@@ -9,11 +9,11 @@ module.exports =
 
 	statement: (state = {}, action) ->
 
-		_countParentScore = (parentId, oldState, newState) ->
-			parent = oldState[parentId]
+		_countParentScore = (ancestor, oldState, newState) ->
+			parent = oldState[ancestor]
 			return newState unless parent
-			if parent.score isnt newState[parentId].score
-				newState = update newState, "#{parentId}": $set: newState[parentId]
+			if parent.score isnt newState[ancestor].score
+				newState = update newState, "#{ancestor}": $set: newState[ancestor]
 			if parent.ancestor
 				_countParentScore parent.ancestor, oldState, newState
 			else
@@ -33,8 +33,8 @@ module.exports =
 				state
 
 			when t.COUNT_SCORE
-				parentId = 'root' unless parentId = action.parentId
-				newState = _countParentScore parentId, state, countScore state
+				ancestor = 'root' unless ancestor = action.ancestor
+				newState = _countParentScore ancestor, state, countScore state
 				newState
 
 			when t.GET_FAILURE

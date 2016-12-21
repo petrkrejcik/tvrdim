@@ -3,7 +3,7 @@ React = require 'react'
 Statement = React.createFactory require './statement'
 
 appState = (state) ->
-	{}
+	tree: state.statementsTree
 
 list = React.createClass
 
@@ -16,7 +16,9 @@ list = React.createClass
 	render: ->
 		cssClasses = @props.cssClasses.concat ['statement-list']
 		children = @props.statements.map (statement) =>
-			Statement Object.assign {}, statement, key: "statement-#{statement.id}"
+			Statement Object.assign {}, statement,
+				key: "statement-#{statement.id}"
+				childrenCount: @props.tree[statement.id]?.length ? 0
 
 		React.DOM.div
 			key: 'statement-list'

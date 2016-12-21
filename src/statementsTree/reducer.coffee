@@ -16,8 +16,8 @@ module.exports =
 				update state, $merge: action.tree
 
 			when a.ADD
-				parentId = 'root' unless parentId = action.statement.parentId
-				newState = update state, "#{parentId}": $unshift: [action.statement.id]
+				ancestor = 'root' unless ancestor = action.statement.ancestor
+				newState = update state, "#{ancestor}": $unshift: [action.statement.id]
 				update newState, "#{action.statement.id}": $set: []
 
 			when SYNC_STATEMENT_SUCCESS

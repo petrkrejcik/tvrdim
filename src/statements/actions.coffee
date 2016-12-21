@@ -1,4 +1,5 @@
-t = require './actionTypes'
+{ADD_STATEMENT, GET_SUCCESS, COUNT_SCORE, GET_REQUEST, GET_FAILURE, ADD_FAILURE} = require './actionTypes'
+{SYNC_STATEMENT_REQUEST, SYNC_STATE_LOCAL} = require '../sync/actionTypes'
 l = require '../layout/actionTypes'
 st = require '../statementsTree/actionTypes'
 fetch = require 'isomorphic-fetch'
@@ -6,57 +7,32 @@ fetch = require 'isomorphic-fetch'
 actions = ->
 
 	# _filterBy = (dispatch, filter) ->
-	# 	dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+	# 	dispatch type: GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
 	# 	params = encodeURIComponent JSON.stringify filter
 	# 	fetch "/api/0/statements?q=#{params}"
 	# 	.then (response) -> response.json response
 
-	addStatement: (parentId, text, agree, userId) ->
-
-		# mel bych ukladal lokalne vzdy
-		# ulozit lokalne
-		# ulozit vygenerovany idcko normalne do state
-		# odeslat request na ulozeni
-		# prepsat ve state provizorni idcko tim novym
-		# je tam na picu, ze uz bude ve state ulozeny na vice mistech
-
-		_storeLocally = ->
-			new Promise (resolve, reject) ->
-				id = Math.random().toString(36).substring(2);
-				return resolve {id}
-
-		_storeOnServer = (statement) ->
-			fetch '/api/0/statements',
-				method: 'post'
-				credentials: 'same-origin'
-				headers:
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				body: JSON.stringify statement
-			.then (response) -> response.json response
-
+	addStatement: (ancestor, text, agree, userId) ->
 		(dispatch) ->
-			statement = {parentId, text, agree}
-			_storeLocally()
-			.then ({error, id}) ->
-				return dispatch {type: t.ADD_FAILURE, error} if error
-				statement = {id, text, agree}
-				statement.ancestor = parentId if parentId
-				statement.isMine = yes
-				dispatch type: t.ADD_STATEMENT, statement: "#{id}": statement
-				dispatch type: st.ADD, statement: {parentId, id}
-				dispatch type: t.COUNT_SCORE, parentId: parentId, id: id
-				dispatch type: l.STATEMENT_OPEN, statement: {id: parentId, agree}
+			id = Math.random().toString(36).substring(2)
+			statement = {id, ancestor, text, agree}
+			statement.isMine = yes
+			dispatch type: ADD_STATEMENT, statement: "#{id}": statement
+			dispatch type: SYNC_STATE_LOCAL
+			dispatch {type: st.ADD, statement}
+			dispatch {type: COUNT_SCORE, ancestor}
+			dispatch {type: l.STATEMENT_OPEN, statement}
+			dispatch type: SYNC_STATEMENT_REQUEST
 			return
 
 	getAll: ->
 		(dispatch) ->
-			dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+			dispatch type: GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
 			fetch '/api/0/statements'
 			.then (response) -> response.json response
 			.then ({entities, tree}) ->
 				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
-				dispatch type: t.GET_SUCCESS, statements: entities
+				dispatch type: GET_SUCCESS, statements: entities
 				dispatch type: st.UPDATE, tree: tree
 			return
 
@@ -66,7 +42,7 @@ actions = ->
 	# 		_filterBy dispatch, {parentIds}
 	# 		.then ({entities, tree}) ->
 	# 			Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
-	# 			dispatch type: t.GET_SUCCESS, statements: entities
+	# 			dispatch type: GET_SUCCESS, statements: entities
 	# 			dispatch type: st.UPDATE, tree: tree
 	# 		return
 
@@ -74,12 +50,12 @@ actions = ->
 		(dispatch) ->
 			_filterBy dispatch, {ids}
 			.then ({data}) ->
-				dispatch type: t.GET_SUCCESS, statements: data
+				dispatch type: GET_SUCCESS, statements: data
 			return
 
-	remove: (id, parentId) ->
+	remove: (id, ancestor) ->
 		parent = ''
-		parent = "/#{parentId}" if parentId
+		parent = "/#{ancestor}" if ancestor
 		(dispatch) ->
 			fetch "/api/0/statements/#{id}#{parent}",
 				method: 'delete'
@@ -87,22 +63,22 @@ actions = ->
 			.then (response) -> response.json response
 			.then (response) ->
 				console.info 'removed?', response
-				# return dispatch {type: t.GET_FAILURE, error} if error
+				# return dispatch {type: GET_FAILURE, error} if error
 				# Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
-				# dispatch type: t.GET_SUCCESS, statements: entities
+				# dispatch type: GET_SUCCESS, statements: entities
 				# dispatch type: st.UPDATE, tree: tree
 				# return
 			return
 
 	getMine: ->
 		(dispatch) ->
-			dispatch type: t.GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
+			dispatch type: GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
 			fetch '/api/0/statements/mine', credentials: 'same-origin'
 			.then (response) -> response.json response
 			.then ({error, entities, tree}) ->
-				return dispatch {type: t.GET_FAILURE, error} if error
+				return dispatch {type: GET_FAILURE, error} if error
 				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
-				dispatch type: t.GET_SUCCESS, statements: entities
+				dispatch type: GET_SUCCESS, statements: entities
 				dispatch type: st.UPDATE, tree: tree
 				return
 			return

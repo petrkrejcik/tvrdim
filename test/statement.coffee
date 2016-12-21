@@ -40,28 +40,28 @@ describe 'Statement API', ->
 		repo.add root1 # A
 		.then (result) ->
 			A = result
-			child1.parentId = A
+			child1.ancestor = A
 			repo.add child1 # A.A
 		.then (result) ->
-			child2.parentId = A
+			child2.ancestor = A
 			repo.add child2 # A.B
 		.then (result) ->
 			AB = result
-			child4.parentId = AB
+			child4.ancestor = AB
 			repo.add child4 # A.B.A
 		.then (result) ->
-			child5.parentId = AB
+			child5.ancestor = AB
 			repo.add child5 # A.B.B
 		.then -> repo.add root2 # B
 		.then (result) ->
 			B = result
-			child3.parentId = B
+			child3.ancestor = B
 			repo.add child3 # B.A
 		.then -> repo.add rootC # C
 		.then -> repo.add rootD # D
 		.then (result) ->
 			D = result
-			childD.parentId = D
+			childD.ancestor = D
 			repo.add childD # D.A
 		.then -> done()
 		.catch done

@@ -6,15 +6,10 @@ layoutActions = require '../../layout/actions'
 {open, close, openRoot} = layoutActions
 
 
-appState = (state) ->
-	statements: state.statements
-	tree: state.statementsTree
-	opened: state.layout.statements.opened
-
 dispatchToProps = (dispatch) ->
 
-	handleOpen: (statement) ->
-		dispatch open statement
+	handleOpen: (ancestorId) ->
+		dispatch open ancestorId
 
 	handleOpenRoot: ->
 		dispatch openRoot()
@@ -22,8 +17,8 @@ dispatchToProps = (dispatch) ->
 	handleSave: ({statementId, text, agree}) ->
 		dispatch addStatement statementId, text, agree
 
-	handleRemove: (id, parentId) ->
-		dispatch remove id, parentId
+	handleRemove: (id, ancestor) ->
+		dispatch remove id, ancestor
 
 
 
@@ -36,18 +31,21 @@ statement = React.createClass
 
 	getDefaultProps: ->
 		id: null
+		isMine: null
+		ancestor: null
 		text: ''
 		depth: null
 		score: null
 		customClassNames: []
-		tree: {}
+		isOpened: no
+		childrenCount: 0
 
 	render: ->
 		cssClasses = ['statement']
 		if @props.score
 			if @props.score > 0
 				cssClasses.push 'approved'
-		if @props.id is @props.opened
+		if @props.isOpened
 			cssClasses.push ['opened']
 		# else
 			# cssClasses.push "depth-#{@props.depth}"
@@ -62,46 +60,41 @@ statement = React.createClass
 				className: 'top'
 			, [title, @_renderRemoveBtn()]
 			React.DOM.div key: 'buttons', className: 'actions', [
-				@_renderShowArgumentsBtn()
 				@_renderGoToParentBtn()
+				@_renderShowArgumentsBtn()
 			]
 		]
 
 	_renderRemoveBtn: ->
-		self = @props.statements[@props.id]
-		return null unless self.isMine
+		return null unless @props.isMine
 		React.DOM.span
 			key: 'remove'
 			className: 'remove button button-narrow'
-			onClick: @props.handleRemove.bind @, self.id, self.ancestor
+			onClick: @props.handleRemove.bind @, @props.id, @props.ancestor
 		, React.DOM.i
 			key: 'icon-vert'
 			className: 'material-icons', 'delete'
 
 
 	_renderShowArgumentsBtn: ->
-		return if @props.id is @props.opened
-		childrenIds = @props.tree[@props.id] ? []
-		count = childrenIds.length
-		return @_renderAddArgumentBtn() unless count
-		isOpened = @props.id is @props.opened
+		return @_renderAddArgumentBtn() unless count = @props.childrenCount
 		React.DOM.button
 			className: 'btn-showArguments button'
 			key: 'btn-showArguments'
-			onClick: @props.handleOpen.bind @, @props
+			onClick: @props.handleOpen.bind @, @props.id
 		,	"Show arguments (#{count})"
 
 	_renderAddArgumentBtn: ->
 		React.DOM.button
 			className: 'btn-addArguments button'
 			key: 'btn-addArguments'
-			onClick: @props.handleOpen.bind @, @props
-		,	"Add argument"
+			onClick: @props.handleOpen.bind @, @props.id
+		, "Add argument"
 
 	_renderGoToParentBtn: ->
-		return unless @props.id is @props.opened
-		if parent = @props.statements[@props.ancestor]
-			onClick = @props.handleOpen.bind @, parent
+		return unless @props.isOpened
+		if @props.ancestor
+			onClick = @props.handleOpen.bind @, @props.ancestor
 		else
 			onClick = @props.handleOpenRoot.bind @
 		React.DOM.button
@@ -111,4 +104,4 @@ statement = React.createClass
 		,	'Up'
 
 
-module.exports = connect(appState, dispatchToProps) statement
+module.exports = connect(null, dispatchToProps) statement

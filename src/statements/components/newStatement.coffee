@@ -7,8 +7,8 @@ appState = (state) ->
 	user: state.user
 
 dispatchToProps = (dispatch) ->
-	handleSave: ({parentId, text, agree, user}) ->
-		dispatch addStatement parentId, text, agree, user.id
+	handleSave: ({ancestor, text, agree, user}) ->
+		dispatch addStatement ancestor, text, agree, user.id
 
 
 
@@ -17,7 +17,7 @@ statement = React.createClass
 	displayName: 'NewStatement'
 
 	getDefaultProps: ->
-		parentId: null
+		ancestor: null
 		agree: null
 		handleClickSave: ->
 		user: {}
@@ -27,32 +27,32 @@ statement = React.createClass
 
 
 	render: ->
-		parentId = @props.parentId
+		ancestor = @props.ancestor
 		btnClass = ['button button-raised']
 		btnClass.push ['button-colored'] if @state.text
 		placeholder = if @props.agree
 			'Yes, that\'s true, because ...'
-		else if @props.parentId then 'No, that\'s not true, because ...'
+		else if @props.ancestor then 'No, that\'s not true, because ...'
 		else 'Add new statement...'
 
 		React.DOM.div
-			key: "new-statement-#{parentId}"
+			key: "new-statement-#{ancestor}"
 			className: 'statement empty'
 		, [
 			React.DOM.input
-				key: "new-statement-input-#{parentId}"
+				key: "new-statement-input-#{ancestor}"
 				placeholder: placeholder
 				value: @state.text
 				className: 'long'
 				onChange: (e) => return @setState text: e.target.value
 			React.DOM.button
-				key: "new-statement-button-#{parentId}"
+				key: "new-statement-button-#{ancestor}"
 				className: btnClass.join ' '
 				onClick: =>
 					newStatement =
 						text: @state.text
 						agree: @props.agree
-						parentId: @props.parentId
+						ancestor: @props.ancestor
 						user: @props.user
 					@props.handleSave newStatement, @setState text: ''
 					return

@@ -144,16 +144,16 @@ repo = ->
 
 		addSelfToParent = (id) ->
 			new Promise (resolve, reject) ->
-				{parentId, agree} = data
+				{ancestor, agree} = data
 				agree = null unless agree?
-				parentId = 1 unless parentId # __ROOT__
+				ancestor = 1 unless ancestor # __ROOT__
 				db.query '
 					INSERT INTO statement_closure (ancestor, descendant, depth, agree)
 						SELECT ancestor, $1, depth + 1, CASE WHEN depth + 1 = 1 THEN CAST($3 AS BOOLEAN) END
 						FROM statement_closure
 						WHERE
 							descendant = $2
-				', [id, parentId, agree], (err, res) ->
+				', [id, ancestor, agree], (err, res) ->
 					return reject err if err
 					resolve id
 				return
@@ -193,7 +193,7 @@ repo = ->
 	###
 	# Removing id and all his children from DB
 	###
-	remove: (id, parentId, loggedUserId) ->
+	remove: (id, ancestor, loggedUserId) ->
 		_getChildren = ->
 			new Promise (resolve, reject) ->
 				db.queryAll '
@@ -205,7 +205,7 @@ repo = ->
 					return reject err if err
 					resolve rows.map (row) -> row.descendant
 				return
-		_deleteFromClosure = (parentId, childrenIds) ->
+		_deleteFromClosure = (ancestor, childrenIds) ->
 			new Promise (resolve, reject) ->
 				db.queryAll '
 					DELETE
@@ -225,11 +225,11 @@ repo = ->
 				return
 
 		new Promise (resolve, reject) ->
-			parentId = 1 unless parentId
+			ancestor = 1 unless ancestor
 			_getChildren()
 			.then (ids) ->
 				db.begin (err, res) ->
-					_deleteFromClosure parentId, ids
+					_deleteFromClosure ancestor, ids
 					.then ->
 						_deleteFromStatements [id]
 					.then (ids) ->

@@ -14,8 +14,8 @@ filterByUser = (statements, user) ->
 filterByAgree = (statements, agree) ->
 	statements.filter (statement) -> statement.agree is agree
 
-filterByParentId = (statements, tree, parentId) ->
-	return [] unless parent = tree[parentId]
+filterByParentId = (statements, tree, ancestor) ->
+	return [] unless parent = tree[ancestor]
 	parent.map (id) -> statements[id]
 
 mapStateToProps = (state, {cssClasses, filters}) ->
@@ -23,7 +23,7 @@ mapStateToProps = (state, {cssClasses, filters}) ->
 	tree = state.statementsTree
 	for filter in filters
 		statements = \
-		if filter.parentId then filterByParentId statements, tree, filter.parentId
+		if filter.ancestor then filterByParentId statements, tree, filter.ancestor
 		else if filter.agree? then filterByAgree statements, filter.agree
 		else if filter.user then filterByUser statements, filter.user
 		else statements
