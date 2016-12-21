@@ -22,6 +22,11 @@
 
 }
 
+.button-narrow {
+	min-width: 30px;
+	height: auto;
+}
+
 .button-raised {
 	background-color: $button-raised;
 	box-shadow: $shadow;

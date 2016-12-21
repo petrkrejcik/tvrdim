@@ -29,7 +29,7 @@ header = React.createClass
 				onClick: @props.handleOpenMenuClick
 			, React.DOM.i
 				key: 'icon-vert'
-				className: 'material-icons', 'more_vert'
+				className: 'material-icons', 'menu'
 			React.DOM.div
 				key: 'row'
 				className: 'row', [

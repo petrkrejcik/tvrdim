@@ -15,7 +15,8 @@ filterByAgree = (statements, agree) ->
 	statements.filter (statement) -> statement.agree is agree
 
 filterByParentId = (statements, tree, parentId) ->
-	tree[parentId].map (id) -> statements[id]
+	return [] unless parent = tree[parentId]
+	parent.map (id) -> statements[id]
 
 mapStateToProps = (state, {cssClasses, filters}) ->
 	statements = state.statements

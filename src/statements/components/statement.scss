@@ -6,10 +6,16 @@
 	padding: 10px 10px 0 10px;
 	box-shadow: $shadow;
 
-	.title {
+	.top {
+		display: flex;
+		justify-content: space-between;
 		margin-bottom: 10px;
-		font-weight: bold;
+
+		.title {
+			font-weight: bold;
+		}
 	}
+
 	.childrenToggle {
 		cursor: pointer;
 		&.agree {

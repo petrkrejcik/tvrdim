@@ -52,13 +52,15 @@ statement = React.createClass
 		# else
 			# cssClasses.push "depth-#{@props.depth}"
 
-		title = React.DOM.div className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
+		title = React.DOM.span className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
 
 		React.DOM.div
-			'className': (cssClasses.concat @props.customClassNames).join ' '
+			className: (cssClasses.concat @props.customClassNames).join ' '
 		, [
-			title
-			@_renderRemoveBtn()
+			React.DOM.div
+				key: 'top'
+				className: 'top'
+			, [title, @_renderRemoveBtn()]
 			React.DOM.div key: 'buttons', className: 'actions', [
 				@_renderShowArgumentsBtn()
 				@_renderGoToParentBtn()
@@ -68,13 +70,13 @@ statement = React.createClass
 	_renderRemoveBtn: ->
 		self = @props.statements[@props.id]
 		return null unless self.isMine
-		React.DOM.div
+		React.DOM.span
 			key: 'remove'
-			className: 'remove'
+			className: 'remove button button-narrow'
 			onClick: @props.handleRemove.bind @, self.id, self.ancestor
 		, React.DOM.i
 			key: 'icon-vert'
-			className: 'material-icons', 'more_vert'
+			className: 'material-icons', 'delete'
 
 
 	_renderShowArgumentsBtn: ->
