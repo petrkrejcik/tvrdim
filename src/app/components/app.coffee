@@ -26,11 +26,11 @@ app = React.createClass
 				opened: @props.statements[@props.opened]
 		else
 			content = [
-				newStatement key: 'addStatement'
-				React.DOM.div
+				React.DOM.h3
 					key: 'sectionMine'
 					className: 'section'
-				, 'My arguments'
+				, 'My statements'
+				newStatement key: 'addStatement'
 				statementFilter
 					key: 'statementFilterMine'
 					cssClasses: ['root']
@@ -38,10 +38,10 @@ app = React.createClass
 						ancestor: 'root'
 					,	user: 'mine'
 					]
-				React.DOM.div
+				React.DOM.h3
 					key: 'sectionOthers'
 					className: 'section'
-				, 'Others arguments'
+				, 'Other\'s statements'
 				statementFilter
 					key: 'statementFilterAll'
 					cssClasses: ['root']

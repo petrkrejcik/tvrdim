@@ -20,10 +20,18 @@ list = React.createClass
 				key: "statement-#{statement.id}"
 				childrenCount: @props.tree[statement.id]?.length ? 0
 
+		return @_empty() unless children.length
+
 		React.DOM.div
 			key: 'statement-list'
 			className: cssClasses.join ' '
 		, children
+
+	_empty: ->
+		React.DOM.div
+			key: 'statement-list-empty'
+			className: 'warning'
+		, React.DOM.p key: 'warning-text', 'You don\'t have any statements. Add some!'
 
 
 module.exports = connect(appState) list

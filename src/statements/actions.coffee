@@ -21,7 +21,7 @@ actions = ->
 			dispatch type: SYNC_STATE_LOCAL
 			dispatch {type: st.ADD, statement}
 			dispatch {type: COUNT_SCORE, ancestor}
-			dispatch {type: l.STATEMENT_OPEN, statement}
+			dispatch {type: l.STATEMENT_OPEN, statement} unless statement.ancestor
 			dispatch type: SYNC_STATEMENT_REQUEST
 			return
 

@@ -3,6 +3,14 @@
 a {
 	text-decoration: none;
 }
+h3 {
+	color: $color-grey;
+}
+p {
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+
 
 html {
 	width: 100%;
@@ -37,6 +45,15 @@ body {
 	position: relative;
 	background-color: $main-bg-color;
 	padding: 8px;
+}
+
+.warning {
+	margin: 0 auto;
+	max-width: 640px;
+	background-color: $color-yellow;
+	padding: 16px;
+	border-radius: 2px;
+	color: $color-dark;
 }
 
 @import '../../header/components/header.scss';

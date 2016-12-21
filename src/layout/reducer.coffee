@@ -4,8 +4,6 @@ l = require './actionTypes'
 
 defaultState =
 	statements:
-		sort:
-			root: []
 		opened: null
 	drawer:
 		isOpened: no
@@ -34,7 +32,6 @@ module.exports =
 				if state.statements.opened is oldId
 					newState = update state, statements: opened: $set: newId
 				newState
-
 
 			else
 				state

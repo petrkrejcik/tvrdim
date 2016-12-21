@@ -33,10 +33,10 @@ header = React.createClass
 			React.DOM.div
 				key: 'row'
 				className: 'row', [
-					React.DOM.span
-						key: 'search'
-						className: 'search', 'Search'
-			]
+					# React.DOM.span
+					# 	key: 'search'
+					# 	className: 'search', 'Search'
+				]
 		]
 
 module.exports = connect(appState, dispatchToProps) header
