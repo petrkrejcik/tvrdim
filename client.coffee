@@ -5,8 +5,15 @@ reducer = require './rootReducer'
 {Provider} = require 'react-redux'
 thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
+listener = require './src/lib/listener'
+{sync} = require './src/sync/syncTask'
 
-store = createStore reducer, window.__PRELOADED_STATE__, compose(applyMiddleware(thunk), window.devToolsExtension && window.devToolsExtension())
+store = createStore reducer, window.__PRELOADED_STATE__, compose(
+	applyMiddleware(thunk),
+	applyMiddleware(listener sync),
+	window.devToolsExtension && window.devToolsExtension()
+)
+store.subscribe sync
 
 provider =
 	React.createElement Provider, {store},

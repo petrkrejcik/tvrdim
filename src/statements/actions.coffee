@@ -22,7 +22,7 @@ actions = ->
 
 		_storeLocally = ->
 			new Promise (resolve, reject) ->
-				id = Math.random().toString(36).substring(7);
+				id = Math.random().toString(36).substring(2);
 				return resolve {id}
 
 		_storeOnServer = (statement) ->
