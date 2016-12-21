@@ -1,6 +1,7 @@
 update = require 'react-addons-update'
 t = require './actionTypes'
 {countScore} = require './util'
+{LOGOUT} = require '../user/actionTypes'
 
 
 module.exports =
@@ -27,7 +28,7 @@ module.exports =
 
 			when t.ADD_FAILURE
 				{error} = action
-				console.info 'adding statements failure', error
+				console.info 'adding statements failure:', error
 				state
 
 			when t.COUNT_SCORE
@@ -37,8 +38,20 @@ module.exports =
 
 			when t.GET_FAILURE
 				{error} = action
-				console.info 'filure for getting statements', error
+				console.info 'failure for getting statements:', error
 				state
+
+			when LOGOUT
+				changed = []
+				for id, statement of state
+					continue unless statement.isMine
+					newStatement = Object.assign {}, statement
+					delete newStatement.isMine
+					changed.push newStatement
+				newState = state
+				for change in changed
+					newState = update newState, "#{change.id}": $set: change
+				newState
 			else
 				state
 

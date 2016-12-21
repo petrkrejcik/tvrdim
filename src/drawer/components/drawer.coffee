@@ -1,7 +1,7 @@
 React = require 'react'
 {connect} = require 'react-redux'
-loginStatus = React.createFactory require '../../user/components/loginStatus'
 {logout} = require '../../user/actions'
+{closeDrawer} = require '../../layout/actions'
 
 appState = (state) ->
 	user: state.user
@@ -10,6 +10,7 @@ appState = (state) ->
 dispatchToProps = (dispatch) ->
 	handleLogoutClick: ->
 		dispatch logout()
+		dispatch closeDrawer()
 
 
 drawer = React.createClass
@@ -21,13 +22,29 @@ drawer = React.createClass
 		user: {}
 
 	render: ->
-		items = []
+		isLogged = @props.user.id
+		items = [
+			@_createItem 'Home', 'home', 'person', @props.handleLogoutClick
+			React.DOM.div key: 'spacer', className: 'nav-spacer'
+		]
+		content = [
+			React.DOM.i
+				key: 'ico-person'
+				className: 'material-icons', if isLogged then 'person' else 'person_outline'
+		]
 
-		if @props.user.id
-			user = React.DOM.div className: 'drawer-username', @props.user.displayName
-			items.push @_createItem 'Logout', @props.handleLogoutClick
+		if isLogged
+			content.push React.DOM.div
+				key: 'drawer-username'
+				className: 'drawer-username'
+			, @props.user.displayName
+			items.push @_createItem 'Logout', 'exit_to_app', 'exit_to_app', @props.handleLogoutClick
 		else
-			user = loginStatus {key: 'loginStatus'}
+			content.push React.DOM.a
+				key: 'drawer-username'
+				className: 'drawer-username button'
+				href: '/login/facebook'
+			, 'Facebook Login'
 
 		React.DOM.div
 			key: 'drawer'
@@ -36,22 +53,22 @@ drawer = React.createClass
 			React.DOM.header
 				key: 'drawer-header'
 				className: 'drawer-header'
-			, user
+			, content
 			React.DOM.nav
 				key: 'drawer-nav'
 				className: 'drawer-nav'
 			, items
 		]
 
-	_createItem: (text, handler) ->
+	_createItem: (text, key, ico, handler) ->
 		React.DOM.a
-			key: 'nav-item'
-			className: 'nav-item'
+			key: key
+			className: 'nav-item button'
 			onClick: handler
 		, [
 			React.DOM.i
-				key: 'icon-logout'
-				className: 'material-icons', 'more_vert'
+				key: ico
+				className: 'material-icons', ico
 		, text
 		]
 

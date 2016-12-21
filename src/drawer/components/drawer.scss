@@ -16,16 +16,27 @@
 
 	.drawer-header {
 		padding: 16px;
-		height: 151px;
+		height: 100px;
 		display: flex;
-		justify-content: flex-end;
+		align-items: center;
+		flex-direction: column;
 		color: $color-grey-light;
+
+		a, i {
+			color: $color-grey-light;
+		}
+		i {
+			font-size: 70px;
+
+		}
 	}
 
 	.drawer-nav {
 		background-color: $color-dark-2;
 		padding-top: 16px;
+		flex-direction: column;
 		flex-grow: 1;
+		display: flex;
 
 		.nav-item {
 			display: flex !important;
@@ -37,6 +48,10 @@
 			align-items: center;
 			font-weight: 500;
 			padding: 16px;
+			cursor: pointer;
+		}
+		.nav-spacer {
+			flex-grow: 1;
 		}
 	}
 }
