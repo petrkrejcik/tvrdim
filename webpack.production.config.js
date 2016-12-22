@@ -26,17 +26,17 @@ module.exports = {
 			}
 		}),
 		new webpack.optimize.UglifyJsPlugin(),
-		new OfflinePlugin({
-			externals: [
-				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js',
-				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js',
-				'https://fonts.googleapis.com/icon?family=Material+Icons',
-				'manifest.json',
-				'index.html'
-			],
-			safeToUseOptionalCaches: true,
-			AppCache: null
-		})
+		// new OfflinePlugin({
+		// 	externals: [
+		// 		'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js',
+		// 		'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js',
+		// 		'https://fonts.googleapis.com/icon?family=Material+Icons',
+		// 		'manifest.json',
+		// 		'index.html'
+		// 	],
+		// 	safeToUseOptionalCaches: true,
+		// 	AppCache: null
+		// })
 	],
 	externals: {
 		'react': 'React' // require => window.

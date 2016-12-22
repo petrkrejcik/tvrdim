@@ -7,7 +7,7 @@ thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
 listener = require './src/lib/listener'
 {sync} = require './src/sync/syncTask'
-require('offline-plugin/runtime').install()
+# require('offline-plugin/runtime').install()
 
 middleware = [
 	applyMiddleware(thunk)
