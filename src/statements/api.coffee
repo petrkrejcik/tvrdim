@@ -71,7 +71,9 @@ router.delete '/statements/:id/:ancestor?', (req, res) ->
 	repo.remove id, ancestor, user.id
 	.then (ids) ->
 		res.json {ids}
-	.catch (err) -> console.info 'remove error', err
+	.catch (err) ->
+		console.info 'remove error', err
+		return res.status(500).send error: 'Error when deleting. Maybe already deleted?'
 	return
 
 module.exports = router
