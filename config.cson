@@ -9,3 +9,4 @@ db:
 	options: {}
 redis:
 	port: 6379
+domain: process.env.DOMAIN ? "localhost:3000"
