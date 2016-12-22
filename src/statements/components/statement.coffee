@@ -35,7 +35,7 @@ statement = React.createClass
 		ancestor: null
 		text: ''
 		depth: null
-		score: null
+		score: 0
 		customClassNames: []
 		isOpened: no
 		childrenCount: 0

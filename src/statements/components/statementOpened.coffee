@@ -46,11 +46,19 @@ list = React.createClass
 			key: 'empty-statement'
 			agree: agree
 			ancestor: @props.opened.id
+		if agree
+			sectionText = 'Yes, that\'s true, because...'
+		else
+			sectionText = 'No, that\'s not true, because...'
 
 		React.DOM.div
 			key: "children-#{ancestor}-#{cssClass}"
 			className: "children-#{cssClass}"
 		, [
+			React.DOM.h3
+				key: 'sectionMine'
+				className: 'section'
+			, sectionText
 			emptyStatement
 			statementFilter
 				key: "statementFilter-#{ancestor}"
