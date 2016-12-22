@@ -80,7 +80,7 @@ fbStrategy = require('passport-facebook').Strategy
 passport.use new fbStrategy
 	clientID: process.env.FB_APP_ID,
 	clientSecret: process.env.FB_SECRET,
-	callbackURL: "http://#{config.domain}/login/facebook/return"
+	callbackURL: "#{config.httpProtocol}://#{config.domain}/login/facebook/return"
 ,	(accessToken, refreshToken, profile, cb) ->
 	users.selectOrInsert socialId: profile.id, socialNetwork: 'facebook'
 	.then (userId) ->

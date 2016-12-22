@@ -10,3 +10,4 @@ db:
 redis:
 	port: 6379
 domain: process.env.DOMAIN ? "localhost:3000"
+httpProtocol: process.env.HTTP_PROTOCOL ? 'http'
