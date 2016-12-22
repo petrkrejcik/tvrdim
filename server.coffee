@@ -152,7 +152,9 @@ app.use '/', (req, res, next) ->
 	next()
 	return
 app.use '/api/0', require './src/statements/api'
-app.use handleRender
+app.use '/()', handleRender
+app.use (req, res, next) ->
+	res.status(404).send()
 
 
 app.listen config.port, ->

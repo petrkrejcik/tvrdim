@@ -14,9 +14,9 @@ actions = ->
 
 	addStatement: (ancestor, text, agree, userId) ->
 		(dispatch) ->
+			isMine = yes
 			id = Math.random().toString(36).substring(2)
-			statement = {id, ancestor, text, agree}
-			statement.isMine = yes
+			statement = {id, ancestor, text, agree, isMine}
 			dispatch type: ADD_STATEMENT, statement: "#{id}": statement
 			dispatch type: SYNC_STATE_LOCAL
 			dispatch {type: st.ADD, statement}

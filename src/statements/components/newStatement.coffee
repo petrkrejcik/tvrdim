@@ -49,6 +49,7 @@ statement = React.createClass
 				key: "new-statement-button-#{ancestor}"
 				className: btnClass.join ' '
 				onClick: =>
+					return unless @state.text
 					newStatement =
 						text: @state.text
 						agree: @props.agree

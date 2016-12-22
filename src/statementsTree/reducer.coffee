@@ -17,7 +17,10 @@ module.exports =
 
 			when a.ADD
 				ancestor = 'root' unless ancestor = action.statement.ancestor
-				newState = update state, "#{ancestor}": $unshift: [action.statement.id]
+				if state.ancestor
+					newState = update state, "#{ancestor}": $unshift: [action.statement.id]
+				else
+					newState = update state, "#{ancestor}": $set: [action.statement.id]
 				update newState, "#{action.statement.id}": $set: []
 
 			when SYNC_STATEMENT_SUCCESS

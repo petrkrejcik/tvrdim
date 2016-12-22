@@ -16,8 +16,8 @@ sync = ->
 		.then (response) -> response.json response
 
 	sync: (dispatch, action, state) ->
-		return unless state.user.id
 		if action.type is SYNC_STATEMENT_REQUEST
+			return unless state.user.id
 			return unless statement = state.sync.slice(0, 1)[0]
 			return unless oldId = Object.keys(statement)[0]
 			_statementToServer statement[oldId]
