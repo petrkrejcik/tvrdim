@@ -58,12 +58,30 @@ statement = React.createClass
 			React.DOM.div
 				key: 'top'
 				className: 'top'
-			, [title, @_renderRemoveBtn()]
+			, [
+				title
+				@_renderRemoveBtn()
+			]
+			@_renderBar()
 			React.DOM.div key: 'buttons', className: 'actions', [
 				@_renderGoToParentBtn()
 				@_renderShowArgumentsBtn()
 			]
 		]
+
+	_renderBar: ->
+		piece = @props.childrenCount
+		style = {}
+		if @props.score is 0
+			cssNeutral = 'neutral'
+		else
+			if @props.score > 0
+				width = 100
+			else
+				width = 0
+			style = width: "#{width}%"
+		React.DOM.div key: 'bar', className: "bar #{cssNeutral}",
+			React.DOM.div key: 'bar-accept', className: 'bar accept', style: style
 
 	_renderRemoveBtn: ->
 		return null unless @props.isMine
@@ -77,14 +95,19 @@ statement = React.createClass
 
 
 	_renderShowArgumentsBtn: ->
-		return @_renderAddArgumentBtn() unless count = @props.childrenCount
+		return if @props.isOpened
+		if count = @props.childrenCount
+			text = "Show arguments (#{count})"
+		else
+			text = 'Add argument'
 		React.DOM.button
 			className: 'btn-showArguments button'
 			key: 'btn-showArguments'
 			onClick: @props.handleOpen.bind @, @props.id
-		,	"Show arguments (#{count})"
+		,	text
 
-	_renderAddArgumentBtn: ->
+	_renderAddBtn: ->
+		return if @props.isOpened
 		React.DOM.button
 			className: 'btn-addArguments button'
 			key: 'btn-addArguments'

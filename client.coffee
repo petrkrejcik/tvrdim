@@ -7,6 +7,7 @@ thunk = require('redux-thunk').default
 appView = React.createFactory require './src/app/components/app'
 listener = require './src/lib/listener'
 {sync} = require './src/sync/syncTask'
+require('offline-plugin/runtime').install()
 
 store = createStore reducer, window.__PRELOADED_STATE__, compose(
 	applyMiddleware(thunk),

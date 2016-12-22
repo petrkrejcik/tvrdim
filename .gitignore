@@ -39,3 +39,4 @@ npm-debug.log
 webpack-assets.json
 project.sublime-workspace
 .env
+public/

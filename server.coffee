@@ -1,10 +1,6 @@
 express = require 'express'
 favicon = require 'serve-favicon'
 React = require 'react'
-webpack = require 'webpack'
-webpackConfig = require './webpack.config'
-webpackDevMiddleware = require 'webpack-dev-middleware'
-webpackHotMiddleware = require 'webpack-hot-middleware'
 {renderToString} = require 'react-dom/server'
 {Provider} = require 'react-redux'
 {createStore, applyMiddleware} = require 'redux'
@@ -13,11 +9,18 @@ appView = React.createFactory require './src/app/components/app'
 config = require('cson-config').load 'config.cson'
 users = require './src/user/repo'
 statementsRepo = require './src/statements/repo'
+reducer = require './rootReducer'
 {renderHtml} = require './index'
 
-reducer = require './rootReducer'
-
+if isProduction = process.env.NODE_ENV is 'production'
+	webpackConfig = require './webpack.production.config'
+else
+	webpackConfig = require './webpack.config'
+webpack = require 'webpack'
+webpackDevMiddleware = require 'webpack-dev-middleware'
+webpackHotMiddleware = require 'webpack-hot-middleware'
 compiler = webpack webpackConfig
+
 app = express()
 
 handleRender = (req, res) ->
@@ -64,7 +67,7 @@ handleRender = (req, res) ->
 
 
 
-app.use favicon './public/favicon.ico'
+app.use favicon './public/assets/favicon.ico'
 app.use express.static 'public'
 
 
@@ -129,12 +132,12 @@ app.get(
 
 
 
-
-# called always when server receives a request
-app.use webpackDevMiddleware compiler,
-	'noInfo': true
-	'publicPath': webpackConfig.output.publicPath
-app.use webpackHotMiddleware compiler
+unless isProduction
+	# called always when server receives a request
+	app.use webpackDevMiddleware compiler,
+		'noInfo': true
+		'publicPath': webpackConfig.output.publicPath
+	app.use webpackHotMiddleware compiler
 
 
 

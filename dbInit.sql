@@ -29,6 +29,5 @@ CREATE TABLE statement_closure (
     agree BOOLEAN
 );
 
-INSERT INTO statement_closure (ancestor, descendant, depth) VALUES
-('1', '1', 0);
+INSERT INTO statement_closure (ancestor, descendant, depth) VALUES ('1', '1', 0);
 

@@ -1,35 +1,9 @@
-webpack = require('webpack');
-path = require('path');
+var isProduction = process.env.NODE_ENV === 'production';
 
-module.exports = {
-	module: {
-		loaders: [
-			{test: /\.js$/, exclude: /(node_modules)/, loader: 'babel-loader?presets[]=es2015'},
-			{test: /\.coffee$/, loader: 'coffee-loader'},
-			{test: /\.scss$/, loader: 'style!css!sass'},
-			{test: /\.json$/, loader: 'json-loader'} // asi neni potreba
-		]
-	},
-	entry: [
-		'webpack-hot-middleware/client?reload=true',
-		'./src/app/components/app.scss',
-		// 'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
-		'./client'
-	],
-	'output': {
-		path: path.resolve('./public'),
-		// publicPath: path.resolve('./public/'), // tohle nechapu, nevim, co to dela
-		filename: 'bundle.js'
-	},
-	plugins: [
-		new webpack.optimize.OccurenceOrderPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NoErrorsPlugin()
-	],
-	externals: {
-		'react': 'React' // require => window.
-	},
-	resolve: {
-		extensions: [".coffee", ".js", ""]
-	}
+if (isProduction) {
+	 config = require('./webpack.production.config.js');
+} else {
+	 config = require('./webpack.dev.config.js');
 }
+
+module.exports = config;

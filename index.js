@@ -1,3 +1,9 @@
+var isProduction = process.env.NODE_ENV === 'production';
+var min = '';
+if (isProduction) {
+	min = '.min';
+}
+
 module.exports = ({
 	renderHtml: (body, state) =>
 		`
@@ -5,6 +11,7 @@ module.exports = ({
 			<html>
 				<head>
 					<title>Tvrdim</title>
+					<link rel="manifest" href="/manifest.json">
 					<script>if (window.location.hash && window.location.hash == '#_=_') {
 						if (window.history && history.pushState) {
 							window.history.pushState("", document.title, window.location.pathname);
@@ -21,8 +28,8 @@ module.exports = ({
 						}
 					}</script>
 					<script>window.__PRELOADED_STATE__ = ${JSON.stringify(state)}</script>
-					<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.js"></script>
-					<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.js"></script>
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react${min}.js"></script>
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom${min}.js"></script>
 					<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 				</head>
 				<body>

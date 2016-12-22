@@ -5,6 +5,11 @@ statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
 
 
+appState = (state, {opened}) ->
+	tree = state.statementsTree
+	childrenCount: tree[opened.id]?.length ? 0
+
+
 list = React.createClass
 
 	displayName: 'StatementOpened'
@@ -12,6 +17,7 @@ list = React.createClass
 
 	getDefaultProps: ->
 		opened: {}
+		childrenCount: 0
 
 	render: ->
 		cssClasses = ['statement-opened']
@@ -19,8 +25,8 @@ list = React.createClass
 			key: 'children'
 			className: 'children'
 		, [
-			@_renderChildren @props.opened.id, no
 			@_renderChildren @props.opened.id, yes
+			@_renderChildren @props.opened.id, no
 		]
 
 		React.DOM.div
@@ -30,6 +36,7 @@ list = React.createClass
 			Statement Object.assign {}, @props.opened,
 				key: "statement-#{parent.id}-opened"
 				isOpened: yes
+				childrenCount: @props.childrenCount
 			children
 		]
 
@@ -52,4 +59,4 @@ list = React.createClass
 		]
 
 
-module.exports = list
+module.exports = connect(appState) list

@@ -2,9 +2,11 @@
   "name": "tvrdim",
   "private": true,
   "scripts": {
-    "start": "ENV=test ./node_modules/coffee-script/bin/coffee server.coffee",
-    "build": "node_modules/webpack/bin/webpack.js -p --display-error-details",
-    "test": " ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
+    "start": "NODE_ENV=production ./node_modules/coffee-script/bin/coffee server.coffee",
+    "dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=test ./node_modules/coffee-script/bin/coffee server.coffee",
+    "buildDev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=test ./node_modules/webpack/bin/webpack.js",
+    "build": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p",
+    "test": " NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
   },
   "engines": {
     "node": ">=5"
@@ -37,6 +39,7 @@
     "json-loader": "^0.5.4",
     "mocha": "^3.1.2",
     "node-sass": "^3.13.0",
+    "offline-plugin": "^4.5.3",
     "react-addons-update": "^15.4.0",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
