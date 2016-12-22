@@ -26,7 +26,7 @@ module.exports = {
 			}
 		}),
 		new webpack.optimize.UglifyJsPlugin(),
-		new OfflinePlugin({,
+		new OfflinePlugin({
 			externals: [
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js',
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js',
