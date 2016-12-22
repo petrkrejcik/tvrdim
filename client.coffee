@@ -9,11 +9,12 @@ listener = require './src/lib/listener'
 {sync} = require './src/sync/syncTask'
 require('offline-plugin/runtime').install()
 
-store = createStore reducer, window.__PRELOADED_STATE__, compose(
-	applyMiddleware(thunk),
-	applyMiddleware(listener sync),
-	window.devToolsExtension && window.devToolsExtension()
-)
+middleware = [
+	applyMiddleware(thunk)
+	applyMiddleware(listener sync)
+]
+middleware.push window.devToolsExtension() if window.devToolsExtension
+store = createStore reducer, window.__PRELOADED_STATE__, compose(middleware...)
 
 provider =
 	React.createElement Provider, {store},
