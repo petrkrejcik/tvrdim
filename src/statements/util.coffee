@@ -15,6 +15,8 @@ module.exports =
 			roots.push id unless entity.ancestor
 
 		# make array of levels in tree
+		# loops over all entities and if an entity doesn't have an acestor it's ID is pushed into array at index 0
+		# if it has ancestor and it's ID in the array of current parents, it is pushed into array at index of current level
 		_makeRelations = (_entities, parentIds, depth) ->
 			return unless Object.keys(_entities).length
 			remaining = {}
@@ -23,7 +25,7 @@ module.exports =
 					# root
 					structure[0] ?= []
 					structure[0].push id
-				else if row.ancestor in parentIds or []
+				else if row.ancestor in (parentIds or [])
 					structure[depth] ?= []
 					structure[depth].push id
 				else
@@ -31,6 +33,9 @@ module.exports =
 			_makeRelations remaining, structure[depth], depth + 1
 
 		_makeRelations entities, roots, 1
+
+		# structure is like this:
+		# [ [ '2' ], [ '3', '4', '5' ] ]
 
 		# count scores
 		for ids in structure.reverse()

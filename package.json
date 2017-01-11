@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production ./node_modules/coffee-script/bin/coffee server.coffee",
-    "dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=test ./node_modules/coffee-script/bin/coffee server.coffee",
-    "buildDev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=test ./node_modules/webpack/bin/webpack.js",
+    "dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/coffee-script/bin/coffee server.coffee",
+    "buildDev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/webpack/bin/webpack.js",
     "build": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p",
     "test": " NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
   },
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.10.0",
     "cson-config": "^0.1.12",

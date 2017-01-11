@@ -1,3 +1,10 @@
+switch process.env.NODE_ENV
+	when 'production'
+		dbName = 'tvrdim'
+	when 'test'
+		dbName = 'tvrdim_dev_test'
+	else
+		dbName = 'tvrdim_dev'
 port: process.env.PORT or 3000
 db:
 	protocol: 'postgresql:'
@@ -5,7 +12,7 @@ db:
 	password: process.env.DB_PASSWORD
 	host: process.env.DB_HOST
 	port: process.env.DB_PORT or 5432
-	db: process.env.DB_NAME or if process.env.NODE_ENV is 'test' then 'tvrdim_dev_test' else 'tvrdim_dev'
+	db: process.env.DB_NAME or dbName
 	options: {}
 redis:
 	port: 6379

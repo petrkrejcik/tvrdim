@@ -2,7 +2,8 @@ DROP TABLE IF EXISTS statement_closure;
 DROP TABLE IF EXISTS statement;
 CREATE TABLE statement (
     id BIGSERIAL PRIMARY KEY,
-    text TEXT NOT NULL
+    text TEXT NOT NULL,
+    is_private BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 INSERT INTO statement (text) VALUES

@@ -31,3 +31,4 @@ CREATE TABLE statement_closure (
 
 INSERT INTO statement_closure (ancestor, descendant, depth) VALUES ('1', '1', 0);
 
+ALTER TABLE statement ADD COLUMN is_private BOOLEAN NOT NULL DEFAULT FALSE;

@@ -1,4 +1,6 @@
 repo = require '../src/statements/repo'
+setup = require './setup'
+expect = require('chai').expect
 
 getRandomString = (length = 7) ->
 	Math.random().toString(36).substring length
@@ -34,56 +36,49 @@ describe 'Statement API', ->
 
 	it 'adds new statement', (done) ->
 		rootId = null
-		A = null
-		AB = null
-		B = null
-		repo.add root1 # A
+		repo.add text: 'A'
+		.then (id) ->
+			expect(id).to.equal '2'
+			rootId = id
+			repo.add
+				ancestor: rootId
+				text: 'A.A'
+				agree: no
 		.then (result) ->
-			A = result
-			child1.ancestor = A
-			repo.add child1 # A.A
-		.then (result) ->
-			child2.ancestor = A
-			repo.add child2 # A.B
-		.then (result) ->
-			AB = result
-			child4.ancestor = AB
-			repo.add child4 # A.B.A
-		.then (result) ->
-			child5.ancestor = AB
-			repo.add child5 # A.B.B
-		.then -> repo.add root2 # B
-		.then (result) ->
-			B = result
-			child3.ancestor = B
-			repo.add child3 # B.A
-		.then -> repo.add rootC # C
-		.then -> repo.add rootD # D
-		.then (result) ->
-			D = result
-			childD.ancestor = D
-			repo.add childD # D.A
+			expect(result).to.equal '3'
+			repo.add
+				ancestor: result
+				text: 'A.A.A'
+				agree: no
+		.then (id) ->
+			repo.add
+				ancestor: rootId
+				text: 'A.B'
+				agree: yes
 		.then -> done()
 		.catch done
 		return
 
 	it 'selects all statements', (done) ->
-
-		# repo.getAll()
-		repo.filterBy parentIds: [3, 4]
+		repo.getAll()
+		# repo.filterBy parentIds: [3, 4]
 		.then (statements) ->
-			console.info 'got all'
-			console.log JSON.stringify(statements, null, 4)
-		.then -> done()
+			expect(statements.entities['2'].score, 'Score is wrong').to.equal 1
+			expect(statements.tree['2']).to.have.length 2
+			expect(statements.tree['2'][0]).to.equal '3'
+			expect(statements.tree['root']).to.have.length 1
+			expect(statements.tree['root'][0]).to.equal '2'
+			done()
 		.catch done
 		return
 
 	it 'removes statement', (done) ->
-
-		repo.remove 10, undefined, 2
+		repo.remove 2, undefined, 2
 		.then (ids) ->
 			console.info 'removed', ids
 		.then -> done()
-		.catch done
+		.catch (err) ->
+			console.info 'errr', err
+			done err
 		return
 
