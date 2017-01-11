@@ -50,7 +50,9 @@ statement = React.createClass
 		# else
 			# cssClasses.push "depth-#{@props.depth}"
 
-		title = React.DOM.span className: 'title', key: 'title', "#{@props.text} (id: #{@props.id})"
+		idDebug = ''
+		idDebug = "(id: #{@props.id})" if no
+		title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
 
 		React.DOM.div
 			className: (cssClasses.concat @props.customClassNames).join ' '
