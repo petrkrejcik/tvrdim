@@ -1,16 +1,10 @@
 express = require 'express'
 favicon = require 'serve-favicon'
-React = require 'react'
 {renderToString} = require 'react-dom/server'
-{Provider} = require 'react-redux'
-{createStore, applyMiddleware} = require 'redux'
-thunk = require('redux-thunk').default
-appView = React.createFactory require './src/app/components/app'
+index = require './index'
 config = require('cson-config').load 'config.cson'
 users = require './src/user/repo'
 statementsRepo = require './src/statements/repo'
-reducer = require './rootReducer'
-{renderHtml} = require './index'
 
 if isProduction = process.env.NODE_ENV is 'production'
 	webpackConfig = require './webpack.production.config'
@@ -20,12 +14,12 @@ webpack = require 'webpack'
 webpackDevMiddleware = require 'webpack-dev-middleware'
 webpackHotMiddleware = require 'webpack-hot-middleware'
 compiler = webpack webpackConfig
+{getAll} = require './src/statements/repo'
 
 app = express()
 
 handleRender = (req, res) ->
 	user = req.user
-	{getAll} = require './src/statements/repo'
 	query = {}
 	query = loggedUserId: user.id if user
 	queries = [getAll query]
@@ -46,13 +40,9 @@ handleRender = (req, res) ->
 						statementsTree.root = ids
 				else
 					statementsTree[parent] = ids
-
-		store = createStore reducer, {statements, statementsTree, user}, applyMiddleware thunk
-		state = store.getState()
-		body = renderToString \
-			React.createElement Provider, {store},
-				appView()
-		res.send renderHtml body, state
+		index.loadState {statements, statementsTree, user}
+		body = renderToString index.getApp()
+		res.send index.getHtml body
 		return
 	.catch (err) -> console.info 'error in app load', err
 	return

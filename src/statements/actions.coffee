@@ -18,10 +18,10 @@ actions = ->
 			id = Math.random().toString(36).substring(2)
 			statement = {id, ancestor, text, agree, isMine}
 			dispatch type: ADD_STATEMENT, statement: "#{id}": statement
-			dispatch type: SYNC_STATE_LOCAL
 			dispatch {type: st.ADD, statement}
 			dispatch {type: COUNT_SCORE, ancestor}
 			dispatch {type: l.STATEMENT_OPEN, statement} unless statement.ancestor
+			dispatch type: SYNC_STATE_LOCAL
 			dispatch type: SYNC_STATEMENT_REQUEST
 			return
 

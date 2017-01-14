@@ -1,23 +1,24 @@
-React = require 'react'
-ReactDOM = require 'react-dom'
-reducer = require './rootReducer'
-{createStore, applyMiddleware, compose} = require 'redux'
-{Provider} = require 'react-redux'
-thunk = require('redux-thunk').default
-appView = React.createFactory require './src/app/components/app'
-listener = require './src/lib/listener'
-{sync} = require './src/sync/syncTask'
-# require('offline-plugin/runtime').install()
+client = ->
+	ReactDOM = require 'react-dom'
+	index = require './index'
+	idb = require('./src/lib/idb')('tvrdim')
 
-middleware = [
-	applyMiddleware(thunk)
-	applyMiddleware(listener sync)
-]
-middleware.push window.devToolsExtension() if window.devToolsExtension
-store = createStore reducer, window.__PRELOADED_STATE__, compose(middleware...)
+	if window?
+		# in browser
+		console.info 'browser...'
+		if navigator.serviceWorker?
+			console.info 'registering sw...'
+			navigator.serviceWorker.register 'sw.js'
+		else
+			console.info 'serviwe workers not supported'
 
-provider =
-	React.createElement Provider, {store},
-		appView {}
+		idb.open()
+		.then ->
+			idb.insert 'state', window.__PRELOADED_STATE__
 
-ReactDOM.render provider, document.getElementById 'root'
+		index.loadState window.__PRELOADED_STATE__
+		ReactDOM.render index.getApp(), document.getElementById 'root'
+
+	{idb, index}
+
+module.exports = client()

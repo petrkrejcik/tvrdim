@@ -12,10 +12,8 @@ entities:
 	2...
 tree:
 	root: [1, 5] // without parent
-	2:
-		pos: [2, 3]
-		neg: [4]
-	6...
+	2: [2, 3]
+	6: ...
 ###
 router.get '/statements/mine', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
