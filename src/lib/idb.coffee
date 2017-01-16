@@ -1,4 +1,5 @@
-idb = (dbName) ->
+idb = do ->
+	dbName = 'tvrdim'
 	db = null
 	keyPath = 'state'
 	open = ->
@@ -21,32 +22,36 @@ idb = (dbName) ->
 
 	select = (key) ->
 		return new Promise (resolve, reject) ->
-			transaction = db.transaction [key], 'readwrite'
-			transaction.onerror = ->
-				reject transaction.error
-				return
-			objectStore = transaction.objectStore key
-			request = objectStore.get keyPath
-			request.onsuccess = ->
-				resolve request.result
-				return
-			request.onerror = ->
-				reject request.error
+			open().then ->
+				transaction = db.transaction [key], 'readwrite'
+				transaction.onerror = ->
+					reject transaction.error
+					return
+				objectStore = transaction.objectStore key
+				request = objectStore.get keyPath
+				request.onsuccess = ->
+					resolve request.result
+					return
+				request.onerror = ->
+					reject request.error
+					return
 				return
 			return
 
 
 	insert = (key, value) ->
 		return new Promise (resolve, reject) ->
-			transaction = db.transaction [key], 'readwrite'
-			transaction.onerror = ->
-				reject transaction.error
-				return
-			objectStore = transaction.objectStore key
-			request = objectStore.put value, key
-			request.onsuccess = resolve
-			request.onerror = ->
-				reject request.error
+			open().then ->
+				transaction = db.transaction [key], 'readwrite'
+				transaction.onerror = ->
+					reject transaction.error
+					return
+				objectStore = transaction.objectStore key
+				request = objectStore.put value, key
+				request.onsuccess = resolve
+				request.onerror = ->
+					reject request.error
+					return
 				return
 			return
 

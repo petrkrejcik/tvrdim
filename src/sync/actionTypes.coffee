@@ -3,3 +3,4 @@ module.exports =
 	SYNC_STATEMENT_SUCCESS: '/sync/statement/success'
 	SYNC_STATEMENT_FAIL: '/sync/statement/fail'
 	SYNC_STATE_LOCAL: '/sync/state/local'
+	SYNC_STATE_HYDRATE: '/sync/state/hydrate'

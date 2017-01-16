@@ -1,5 +1,5 @@
 update = require 'react-addons-update'
-{LOGOUT} = require './actionTypes'
+{LOGOUT, LOGIN_SUCCESS} = require './actionTypes'
 
 module.exports =
 
@@ -7,8 +7,8 @@ module.exports =
 
 		switch action.type
 
-		# 	when t.LOGIN_SUCCESS
-		# 		update state, $isLogged: yes
+			when LOGIN_SUCCESS
+				update state, $set: action.user
 
 			when LOGOUT
 				{}

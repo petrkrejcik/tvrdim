@@ -18,43 +18,49 @@ compiler = webpack webpackConfig
 
 app = express()
 
-handleRender = (req, res) ->
-	user = req.user
-	query = {}
-	query = loggedUserId: user.id if user
-	queries = [getAll query]
-	query.userId = user.id if user
-	queries.push statementsRepo.filterBy query
-	Promise.all queries
-	.then (results) ->
-		statements = {}
-		statementsTree = {}
-		for result in results
-			# merge two result into one
-			Object.assign statements, result.entities
-			for parent, ids of result.tree
-				if parent is 'root'
-					if statementsTree.root
-						statementsTree.root.concat ids
+loadUserState = (user) ->
+	return new Promise (resolve, reject) ->
+		query = {}
+		query = loggedUserId: user.id if user
+		queries = [getAll query]
+		query.userId = user.id if user
+		queries.push statementsRepo.filterBy query
+		Promise.all queries
+		.then (results) ->
+			statements = {}
+			statementsTree = {}
+			for result in results
+				# merge two result into one
+				Object.assign statements, result.entities
+				for parent, ids of result.tree
+					if parent is 'root'
+						if statementsTree.root
+							statementsTree.root.concat ids
+						else
+							statementsTree.root = ids
 					else
-						statementsTree.root = ids
-				else
-					statementsTree[parent] = ids
-		index.loadState {statements, statementsTree, user}
+						statementsTree[parent] = ids
+			resolve {statements, statementsTree, user}
+			return
+		return
+
+handleRender = (req, res) ->
+	loadUserState req.user
+	.then (preloadedState) ->
+		index.loadState preloadedState
 		body = renderToString index.getApp()
 		res.send index.getHtml body
 		return
 	.catch (err) -> console.info 'error in app load', err
 	return
 
-
-
-# app.use (req, res, next) ->
-# 	console.info 'req', req
-# 	next()
-# 	return
-
-
+app.use '/', (req, res, next) ->
+	console.info 'BE request:', req.url
+	if req.user
+		console.info 'logged'
+	else console.info 'not logged'
+	next()
+	return
 
 
 app.use favicon './public/assets/favicon.ico'
@@ -94,7 +100,11 @@ app.use require('body-parser').urlencoded extended: true
 session = require 'express-session'
 redis = require('connect-redis')(session)
 redisOpts = config.redis
-app.use session secret: 'sdfuiasj83ljfa203fsdlkj', resave: true, saveUninitialized: true, store: new redis redisOpts
+app.use session
+	secret: 'sdfuiasj83ljfa203fsdlkj'
+	resave: true
+	saveUninitialized: true
+	store: new redis redisOpts
 
 # on each request; store id into req.user
 app.use passport.initialize()
@@ -115,7 +125,10 @@ app.get '/login/facebook', passport.authenticate 'facebook'
 app.get(
 	'/login/facebook/return',
 	passport.authenticate('facebook', failureRedirect: '/login'),
-	(req, res) -> res.redirect '/'
+	(req, res) ->
+		res.cookie 'user', req.user
+		res.cookie 'refreshState', '1'
+		res.redirect '/?refreshState=1'
 )
 
 ############### PASSPORT #################
@@ -135,12 +148,13 @@ unless isProduction
 
 
 
-app.use '/', (req, res, next) ->
-	if req.user
-		console.info 'logged'
-	else console.info 'not logged'
-	next()
+
+app.use '/api/0/state', (req, res, next) ->
+	loadUserState req.user
+	.then (resp) ->
+		res.json resp
 	return
+
 app.use '/api/0', require './src/statements/api'
 app.use '/()', handleRender
 app.use (req, res, next) ->

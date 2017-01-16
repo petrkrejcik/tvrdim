@@ -16,7 +16,6 @@ listener = require('./src/lib/listener')
 
 module.exports = do ->
 
-	state = {}
 	store = {}
 
 	loadState = (preloadedState) ->
@@ -27,11 +26,10 @@ module.exports = do ->
 		if window? and window.devToolsExtension
 			middleware.push window.devToolsExtension()
 
-		store = createStore(reducer, preloadedState, compose(middleware...))
-		state = store.getState()
+		store = createStore reducer, preloadedState, compose(middleware...)
 
-	getApp = () ->
-		return React.createElement(Provider, {store}, appView({}))
+	getApp = ->
+		React.createElement(Provider, {store}, appView({}))
 
 	getHtml = (body) ->
 		"""<!doctype html>
@@ -53,7 +51,7 @@ module.exports = do ->
 						document.body.scrollLeft = scroll.left;
 					}
 				}</script>
-				<script>window.__PRELOADED_STATE__ = #{JSON.stringify(state)}</script>
+				<script>window.__PRELOADED_STATE__ = #{JSON.stringify(store.getState())}</script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom-server#{min}.js"></script>

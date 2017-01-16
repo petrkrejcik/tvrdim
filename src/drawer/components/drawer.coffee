@@ -2,6 +2,7 @@ React = require 'react'
 {connect} = require 'react-redux'
 {logout} = require '../../user/actions'
 {closeDrawer} = require '../../layout/actions'
+{sync} = require '../../sync/actions'
 
 appState = (state) ->
 	user: state.user
@@ -10,6 +11,7 @@ appState = (state) ->
 dispatchToProps = (dispatch) ->
 	handleLogoutClick: ->
 		dispatch logout()
+		dispatch sync()
 		dispatch closeDrawer()
 
 
