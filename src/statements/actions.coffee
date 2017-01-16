@@ -72,7 +72,6 @@ actions = ->
 
 	getMine: ->
 		(dispatch) ->
-			dispatch type: GET_REQUEST # to by mel vypalit nekdo jinej, na miste, odkud se to vola
 			fetch '/api/0/statements/mine', credentials: 'same-origin'
 			.then (response) -> response.json response
 			.then ({error, entities, tree}) ->
@@ -80,7 +79,7 @@ actions = ->
 				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
 				dispatch type: GET_SUCCESS, statements: entities
 				dispatch type: st.UPDATE, tree: tree
+				dispatch type: SYNC_STATE_LOCAL
 				return
-			return
 
 module.exports = actions()

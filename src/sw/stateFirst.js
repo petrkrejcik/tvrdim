@@ -14,8 +14,8 @@ var stateFirst = function(request, values, options) {
 				statusText: "OK",
 				headers: {'Content-Type': 'text/html'}
 			};
-			if (refreshState) {
-				state.layout.statements.isFetching = true;
+			if (refreshState >= 0) {
+				state.layout.statements.isLoading = true;
 			}
 			tvr.index.loadState(state);
 			var body = ReactDOMServer.renderToString(tvr.index.getApp());

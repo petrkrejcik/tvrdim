@@ -13,6 +13,7 @@ appState = (state) ->
 	statements: state.statements
 	drawer: state.layout.drawer
 	tree: state.statementsTree
+	isStatementsLoading: state.layout.statements.isLoading
 
 
 app = React.createClass
@@ -25,13 +26,16 @@ app = React.createClass
 			content = statementOpened
 				opened: @props.statements[@props.opened]
 		else
+			loading = null
+			if @props.isStatementsLoading
+				loading = 'Loading....'
 			content = [
 				React.DOM.h3
 					key: 'sectionMine'
 					className: 'section'
 				, 'My statements'
 				newStatement key: 'addStatement'
-				statementFilter
+				loading ? statementFilter
 					key: 'statementFilterMine'
 					cssClasses: ['root']
 					filters: [
@@ -42,7 +46,7 @@ app = React.createClass
 					key: 'sectionOthers'
 					className: 'section'
 				, 'Other\'s statements'
-				statementFilter
+				loading ? statementFilter
 					key: 'statementFilterAll'
 					cssClasses: ['root']
 					filters: [

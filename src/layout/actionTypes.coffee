@@ -7,5 +7,6 @@ module.exports =
 	STATEMENT_GET_SUCCESS: 'layout/statement/get/request'
 	STATEMENT_ADD_REQUEST: 'layout/statement/add/request'
 	STATEMENT_ADD_SUCCESS: 'layout/statement/add/success'
+	STATEMENT_LOADING_END: 'layout/statement/get/request'
 	DRAWER_OPEN: 'layout/drawer/open'
 	DRAWER_CLOSE: 'layout/drawer/close'

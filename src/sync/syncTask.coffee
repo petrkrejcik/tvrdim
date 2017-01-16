@@ -1,6 +1,6 @@
 fetch = require 'isomorphic-fetch'
 {ADD_STATEMENT} = require '../statements/actionTypes'
-{SYNC_REMOTE_END} = require '../layout/actionTypes'
+{SYNC_REMOTE_END, STATEMENT_LOADING_END} = require '../layout/actionTypes'
 {
 	SYNC_STATEMENT_REQUEST
 	SYNC_STATEMENT_SUCCESS
@@ -9,6 +9,7 @@ fetch = require 'isomorphic-fetch'
 	SYNC_STATE_HYDRATE
 } = require './actionTypes'
 idb = require '../lib/idb'
+{getMine} = require '../statements/actions'
 
 sync = ->
 	_statementToServer = (statement) ->
@@ -22,7 +23,7 @@ sync = ->
 		.then (response) -> response.json response
 
 	_hydrate = ->
-		fetch '/api/0/state',
+		fetch '/api/0/statements/mine',
 			credentials: 'same-origin'
 			headers:
 				'Accept': 'application/json',
@@ -39,14 +40,15 @@ sync = ->
 				return dispatch type: SYNC_STATEMENT_FAIL if error
 				dispatch type: SYNC_STATEMENT_SUCCESS, oldId: oldId, newId: id
 		if action.type is SYNC_STATE_LOCAL
-			idb.insert 'state', state
+			{statements, statementsTree, user, sync} = state
+			storeState = {statements, statementsTree, user, sync}
+			storeState.layout = Object.assign {}, statements: {}, drawer: {} # nechci layout v SW, ale on tam zapisuje...
+			idb.insert 'state', storeState
 		if action.type is SYNC_STATE_HYDRATE
-			_hydrate()
-			.then (newState) ->
-				console.info 'newState', newState
-				# dispatch type: ADD_STATEMENT, statement: "#{id}": statement
-				# dispatch {type: st.ADD, statement}
-				# dispatch SYNC_STATE_LOCAL
+			getMine()(dispatch)
+			.then ->
+				dispatch type: STATEMENT_LOADING_END
+
 		return
 
 

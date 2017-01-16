@@ -1,10 +1,12 @@
 update = require 'react-addons-update'
 l = require './actionTypes'
 {SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
+{STATEMENT_LOADING_END} = require './actionTypes'
 
 defaultState =
 	statements:
 		opened: null
+		isLoading: no
 	drawer:
 		isOpened: no
 
@@ -32,6 +34,9 @@ module.exports =
 				if state.statements.opened is oldId
 					newState = update state, statements: opened: $set: newId
 				newState
+
+			when STATEMENT_LOADING_END
+				update state, statements: isLoading: $set: no
 
 			else
 				state

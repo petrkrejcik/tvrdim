@@ -19,7 +19,10 @@ client = ->
 			cookies = cookieParser document.cookie
 			if cookies.user
 				store.dispatch type: LOGIN_SUCCESS, user: cookies.user
-			# store.dispatch type: SYNC_STATE_HYDRATE
+				document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
+			if cookies.refreshState
+				document.cookie = 'refreshState=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
+				store.dispatch type: SYNC_STATE_HYDRATE
 
 		store.dispatch type: SYNC_STATE_LOCAL
 
