@@ -13,7 +13,14 @@ module.exports =
 		switch action.type
 
 			when a.UPDATE
-				update state, $merge: action.tree
+				newState = state
+				for keyId, ids of action.tree
+					unless state[keyId]
+						newState = update state, $merge: "#{keyId}": []
+					for id in ids
+						continue if id in state[keyId]
+						newState = update state, "#{keyId}": $push: [id]
+				newState
 
 			when a.ADD
 				ancestor = 'root' unless ancestor = action.statement.ancestor
