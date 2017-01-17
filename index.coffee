@@ -3,7 +3,7 @@
 # if (isProduction) {
 # 	min = '.min';
 # }
-min = ''
+min = '.min'
 
 {createStore, applyMiddleware, compose} = require 'redux'
 {Provider} = require('react-redux')
