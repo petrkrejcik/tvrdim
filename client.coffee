@@ -3,7 +3,7 @@ client = ->
 	index = require './index'
 	idb = require './src/lib/idb'
 	cookieParser = require './src/util/cookieParser'
-	{SYNC_STATE_LOCAL, SYNC_STATE_HYDRATE} = require './src/sync/actionTypes'
+	{SYNC_STATE_LOCAL, SYNC_STATE_HYDRATE, SYNC_STATEMENT_REQUEST} = require './src/sync/actionTypes'
 	{LOGIN_SUCCESS} = require './src/user/actionTypes'
 
 	if window?
@@ -25,6 +25,7 @@ client = ->
 				store.dispatch type: SYNC_STATE_HYDRATE
 
 		store.dispatch type: SYNC_STATE_LOCAL
+		store.dispatch type: SYNC_STATEMENT_REQUEST
 
 		ReactDOM.render index.getApp(), document.getElementById 'root'
 

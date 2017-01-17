@@ -39,6 +39,9 @@ sync = ->
 			.then ({error, id}) ->
 				return dispatch type: SYNC_STATEMENT_FAIL if error
 				dispatch type: SYNC_STATEMENT_SUCCESS, oldId: oldId, newId: id
+				dispatch type: SYNC_STATE_LOCAL
+				dispatch type: SYNC_STATEMENT_REQUEST
+				return
 		if action.type is SYNC_STATE_LOCAL
 			{statements, statementsTree, user, sync} = state
 			storeState = {statements, statementsTree, user, sync}
