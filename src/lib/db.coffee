@@ -1,5 +1,5 @@
 pg = require 'easy-pg'
-config = require('cson-config').load "#{__dirname}/../../config.cson"
+config = require '../../config'
 
 db = ->
 	client = pg config.db

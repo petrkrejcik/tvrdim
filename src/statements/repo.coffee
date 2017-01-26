@@ -21,13 +21,16 @@ repo = ->
 		tree
 
 	_getRoot = (query = {}) ->
-		{userId} = query
+		{userId, isLogged} = query
 		params = []
 		user = ''
+		onlyPublic = ''
 		if userId
 			params.push userId
 			i = params.length
 			user = "AND s.user_id = $#{i}"
+		unless isLogged
+			onlyPublic = "AND s.is_private IS NULL"
 		new Promise (resolve, reject) ->
 			db.queryAll "
 				SELECT s.id, s.text
@@ -38,6 +41,7 @@ repo = ->
 					sc.descendant <> 1 AND
 					sc.depth = 1
 					#{user}
+					#{onlyPublic}
 				ORDER BY s.created_time DESC;
 			", params, (err, res) ->
 				return reject err if err
@@ -75,9 +79,10 @@ repo = ->
 
 	_select = (query = {}) ->
 		{userId, loggedUserId} = query
+		isLogged = loggedUserId and (userId is loggedUserId)
 		new Promise (resolve, reject) ->
-			dbEntities = {}
-			_getRoot({userId})
+			dbEntities = {} # contains all statement's atributes
+			_getRoot({userId, isLogged})
 			.then (roots) ->
 				rootIds = Object.keys roots.entities
 				_getChildrenEntities rootIds, yes
@@ -90,6 +95,7 @@ repo = ->
 					entity.text = dbEntities[id].text
 					entity.createdTime = dbEntities[id].created_time
 					entity.isMine = yes if dbEntities[id].user_id is loggedUserId
+					entity.isPrivate = yes if dbEntities[id].is_private
 					if entity.agree is null
 						# is root
 						delete entity.ancestor
@@ -102,36 +108,31 @@ repo = ->
 			return
 
 	_validate = (filter = {}) ->
-		errors = null
 		if filter.parentIds and !Array.isArray filter.parentIds
-			errors ?= []
-			errors.push
-				'error': "Filter error. ParentIds has to be an array: '#{filter.parentIds}'"
+			return 'error': "Filter error. ParentIds has to be an array: '#{filter.parentIds}'"
 		if filter.userId and !Number.isInteger filter.userId
-			errors ?= []
-			errors.push
-				'error': "Filter error. UserId has to be an integer: '#{filter.userId}'"
+			return 'error': "Filter error. UserId has to be an integer: '#{filter.userId}'"
 		if filter.loggedUserId and !Number.isInteger filter.loggedUserId
-			errors ?= []
-			errors.push
-				'error': "Filter error. LoggedUserId has to be an integer: '#{filter.loggedUserId}'"
-		errors
+			return 'error': "Filter error. LoggedUserId has to be an integer: '#{filter.loggedUserId}'"
+		return
 
 
-	add: (data, done) ->
-		addNew = (data) ->
+	### @todo use insert() ###
+	add: (data) ->
+		_insert = (data) ->
 			new Promise (resolve, reject) ->
 				row =
 					text: data.text
 					user_id: data.userId
 					created_time: 'NOW'
+					is_private: yes if data.isPrivate
 				db.insert 'statement', row, (err, res) ->
 					return reject err if err
 					{id} = res[0]
 					resolve id
 				return
 
-		addSelfToClosure = (id) ->
+		_insertToTree = (id) ->
 			new Promise (resolve, reject) ->
 				self =
 					ancestor: id
@@ -142,7 +143,7 @@ repo = ->
 					resolve id
 				return
 
-		addSelfToParent = (id) ->
+		_insertToTreeParent = (id) ->
 			new Promise (resolve, reject) ->
 				{ancestor, agree} = data
 				agree = null unless agree?
@@ -161,9 +162,9 @@ repo = ->
 		new Promise (resolve, reject) ->
 			db.begin (err, res) ->
 				return reject err if err
-				addNew data
-				.then addSelfToClosure
-				.then addSelfToParent
+				_insert data
+				.then _insertToTree
+				.then _insertToTreeParent
 				.then (id) ->
 					db.commit (err, res) ->
 						return reject err if err
@@ -173,21 +174,19 @@ repo = ->
 					reject error
 				return
 
-	getAll: (query) ->
-		_select query
-
-	filterBy: (filter = {}) ->
+	select: (query = {}) ->
 		new Promise (resolve, reject) ->
-			return reject errors if errors = _validate filter
-			if filter.parentIds
-				_getChildrenEntities filter.parentIds
+			if errors = _validate query
+				return reject errors
+			if query.parentIds
+				_getChildrenEntities query.parentIds
 				.then (children) ->
 					tree = _makeTree children.entities
 					entities = children.entities
 					resolve {entities, tree}
 				.catch reject
 			else
-				resolve _select filter
+				resolve _select query
 			return
 
 	###

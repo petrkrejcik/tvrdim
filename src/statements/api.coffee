@@ -19,7 +19,7 @@ router.get '/statements/mine', (req, res) ->
 	res.setHeader 'Content-Type', 'application/json'
 	unless user = req.user
 		return res.json error: 'Not logged'
-	repo.filterBy userId: user.id, loggedUserId: user.id
+	repo.select userId: user.id, loggedUserId: user.id
 	.then (result) ->
 		res.json result
 	.catch (error) ->
@@ -35,7 +35,7 @@ router.get '/statements?', (req, res) ->
 		filter = {}
 	if user = req.user
 		filter.loggedUserId = user.id
-	repo.filterBy filter
+	repo.select filter
 	.then (result) ->
 		res.json result
 	.catch (error) ->

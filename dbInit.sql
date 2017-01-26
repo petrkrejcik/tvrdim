@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS statement_closure;
-DROP TABLE IF EXISTS statement;
--- DROP TABLE IF EXISTS users;
-
-
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     social_id BIGINT,
@@ -10,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 
-CREATE TABLE statement (
+CREATE TABLE IF NOT EXISTS statement (
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     user_id INTEGER REFERENCES users (id),
@@ -21,7 +16,7 @@ INSERT INTO statement (text, created_time) VALUES
 ('__ROOT__', 'NOW'); -- root for all
 
 
-CREATE TABLE statement_closure (
+CREATE TABLE IF NOT EXISTS statement_closure (
     id BIGSERIAL PRIMARY KEY,
     ancestor INTEGER REFERENCES statement (id) ON DELETE CASCADE,
     descendant INTEGER REFERENCES statement (id) ON DELETE CASCADE,
@@ -32,3 +27,7 @@ CREATE TABLE statement_closure (
 INSERT INTO statement_closure (ancestor, descendant, depth) VALUES ('1', '1', 0);
 
 ALTER TABLE statement ADD COLUMN is_private BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE statement ALTER COLUMN is_private DROP NOT NULL;
+ALTER TABLE statement ALTER COLUMN is_private SET DEFAULT NULL;
+UPDATE statement SET is_private = NULL WHERE is_private = FALSE;

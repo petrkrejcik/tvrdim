@@ -87,7 +87,7 @@ run = ->
 
 hook()
 .then run
-.then -> repo.getAll()
+.then -> repo.select()
 .then (result) -> console.info result
 .then -> process.exit 1
 .catch -> process.exit 1

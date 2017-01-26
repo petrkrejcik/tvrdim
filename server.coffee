@@ -2,10 +2,8 @@ express = require 'express'
 favicon = require 'serve-favicon'
 {renderToString} = require 'react-dom/server'
 index = require './index'
-config = require('cson-config').load 'config.cson'
+config = require './config'
 users = require './src/user/repo'
-statementsRepo = require './src/statements/repo'
-
 if isProduction = process.env.NODE_ENV is 'production'
 	webpackConfig = require './webpack.production.config'
 else
@@ -14,35 +12,9 @@ webpack = require 'webpack'
 webpackDevMiddleware = require 'webpack-dev-middleware'
 webpackHotMiddleware = require 'webpack-hot-middleware'
 compiler = webpack webpackConfig
-{getAll} = require './src/statements/repo'
+{loadUserState} = require './src/statements/queries'
 
 app = express()
-
-loadUserState = (user) ->
-	return new Promise (resolve, reject) ->
-		query = {}
-		query = loggedUserId: user.id if user
-		queries = [getAll query]
-		query.userId = user.id if user
-		queries.push statementsRepo.filterBy query
-		Promise.all queries
-		.then (results) ->
-			statements = {}
-			statementsTree = {}
-			for result in results
-				# merge two result into one
-				Object.assign statements, result.entities
-				for parent, ids of result.tree
-					if parent is 'root'
-						if statementsTree.root
-							statementsTree.root.concat ids
-						else
-							statementsTree.root = ids
-					else
-						statementsTree[parent] = ids
-			resolve {statements, statementsTree, user}
-			return
-		return
 
 handleRender = (req, res) ->
 	loadUserState req.user
