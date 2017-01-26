@@ -103,13 +103,14 @@ statement = React.createClass
 
 	_renderMenuButton: ->
 		return null unless @props.isMine
+		icon = if @props.isMenuOpened then 'expand_less' else 'expand_more'
 		React.DOM.span
 			key: 'menu'
 			className: 'button button-narrow'
 			onClick: @_handleMenuToggle
 		, React.DOM.i
 			key: 'expand-more'
-			className: 'material-icons', 'expand_more'
+			className: 'material-icons', icon
 
 	_handleMenuToggle: ->
 		if @props.isMenuOpened

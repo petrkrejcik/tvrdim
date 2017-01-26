@@ -42,22 +42,7 @@ Menu = React.createClass
 				key: 'column1'
 				className: 'column'
 			, [
-				React.DOM.div
-					key: 'private'
-					className: 'private'
-					onClick: @_handleIsPrivateToggle
-				, [
-					React.DOM.input
-						key: 'checkbox'
-						type: 'checkbox'
-						readOnly: yes
-						checked: @state.isPrivate
-				,
-					React.DOM.span
-						key: 'privateLabel'
-						className: 'label'
-					, 'Private'
-				]
+				@_renderPrivateCheckbox()
 			]
 		,
 			React.DOM.div
@@ -67,6 +52,27 @@ Menu = React.createClass
 				@_renderRemoveBtn()
 				@_renderSaveButton()
 			]
+		]
+
+	_renderPrivateCheckbox: ->
+		cssClasses = ['private']
+		cssClasses.push 'disabled' if @props.ancestor
+		React.DOM.div
+			key: 'private'
+			className: cssClasses.join ' '
+			onClick: @_handleIsPrivateToggle
+		, [
+			React.DOM.input
+				key: 'checkbox'
+				type: 'checkbox'
+				readOnly: yes
+				checked: @state.isPrivate
+				disabled: !!@props.ancestor
+		,
+			React.DOM.span
+				key: 'privateLabel'
+				className: 'label'
+			, 'Private'
 		]
 
 	_renderSaveButton: ->
@@ -87,6 +93,7 @@ Menu = React.createClass
 		, 'Remove'
 
 	_handleIsPrivateToggle: ->
+		return if @props.ancestor
 		newState = !@state.isPrivate
 		@setState isPrivate: newState, @props.handlePrivateChange.bind @, newState
 		return
