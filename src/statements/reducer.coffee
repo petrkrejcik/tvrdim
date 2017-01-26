@@ -58,13 +58,15 @@ module.exports =
 			when LOGOUT
 				changed = []
 				for id, statement of state
-					continue unless statement.isMine
+					continue if not statement.isMine
 					newStatement = Object.assign {}, statement
 					delete newStatement.isMine
 					changed.push newStatement
 				newState = state
 				for change in changed
 					newState = update newState, "#{change.id}": $set: change
+				for id, statement of state when statement.isPrivate
+					delete newState[id] # how else? use immutable.js
 				newState
 			else
 				state

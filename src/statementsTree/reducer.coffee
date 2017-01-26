@@ -1,6 +1,7 @@
 update = require 'react-addons-update'
 a = require './actionTypes'
 {SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
+{LOGOUT} = require '../user/actionTypes'
 
 defaultState =
 	root: []
@@ -40,6 +41,17 @@ module.exports =
 						index = childrenIds.indexOf oldId
 						newState = update newState, "#{id}": $splice: [[index, 1, newId]]
 				delete newState[oldId] # how else?
+				newState
+
+			when LOGOUT
+				newState = state
+				for id, childrenIds of state
+					for privateId in action.privateStatements
+						index = childrenIds.indexOf privateId
+						continue if index is -1
+						newState = update newState, "#{id}": $splice: [[index, 1]]
+					if id is privateId
+						delete newState[id] # how else? use immutable.js
 				newState
 
 			else
