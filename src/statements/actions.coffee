@@ -12,11 +12,12 @@ actions = ->
 	# 	fetch "/api/0/statements?q=#{params}"
 	# 	.then (response) -> response.json response
 
-	addStatement: (ancestor, text, agree, userId) ->
+	addStatement: (ancestor, text, agree, userId, isPrivate) ->
 		(dispatch) ->
+			debugger
 			isMine = yes
 			id = Math.random().toString(36).substring(2)
-			statement = {id, ancestor, text, agree, isMine}
+			statement = {id, ancestor, text, agree, isMine, isPrivate}
 			dispatch type: ADD_STATEMENT, statement: "#{id}": statement
 			dispatch {type: st.ADD, statement}
 			dispatch {type: COUNT_SCORE, ancestor}

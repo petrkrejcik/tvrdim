@@ -10,3 +10,5 @@ module.exports =
 	STATEMENT_LOADING_END: 'layout/statement/get/request'
 	DRAWER_OPEN: 'layout/drawer/open'
 	DRAWER_CLOSE: 'layout/drawer/close'
+	STATEMENT_MENU_OPEN: 'layout/statement/menu/open'
+	STATEMENT_MENU_CLOSE: 'layout/statement/menu/close'

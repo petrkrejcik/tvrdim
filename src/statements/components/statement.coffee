@@ -3,7 +3,8 @@ React = require 'react'
 newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
 {addStatement, remove} = require '../actions'
-{open, close, openRoot} = layoutActions
+{open, close, openRoot, openMenu, closeMenu} = layoutActions
+Menu = React.createFactory require './statementMenu'
 
 
 dispatchToProps = (dispatch) ->
@@ -20,6 +21,15 @@ dispatchToProps = (dispatch) ->
 	handleRemove: (id, ancestor) ->
 		dispatch remove id, ancestor
 
+	handleMenuOpen: (id) ->
+		dispatch openMenu id
+
+	handleMenuClose: ->
+		dispatch closeMenu()
+
+
+appState = (state, {id}) ->
+	isMenuOpened: id is state.layout.statements.menuOpened
 
 
 statement = React.createClass
@@ -39,6 +49,11 @@ statement = React.createClass
 		customClassNames: []
 		isOpened: no
 		childrenCount: 0
+
+	propTypes:
+		isMenuOpened: React.PropTypes.bool
+		isPrivate: React.PropTypes.bool
+		childrenCount: React.PropTypes.number
 
 	render: ->
 		cssClasses = ['statement']
@@ -62,8 +77,9 @@ statement = React.createClass
 				className: 'top'
 			, [
 				title
-				@_renderRemoveBtn()
+				@_renderMenuButton()
 			]
+			@_renderMenu()
 			@_renderBar()
 			React.DOM.div key: 'buttons', className: 'actions', [
 				@_renderGoToParentBtn()
@@ -85,16 +101,32 @@ statement = React.createClass
 		React.DOM.div key: 'bar', className: "bar #{cssNeutral}",
 			React.DOM.div key: 'bar-accept', className: 'bar accept', style: style
 
-	_renderRemoveBtn: ->
+	_renderMenuButton: ->
 		return null unless @props.isMine
 		React.DOM.span
-			key: 'remove'
-			className: 'remove button button-narrow'
-			onClick: @props.handleRemove.bind @, @props.id, @props.ancestor
+			key: 'menu'
+			className: 'button button-narrow'
+			onClick: @_handleMenuToggle
 		, React.DOM.i
-			key: 'icon-vert'
-			className: 'material-icons', 'delete'
+			key: 'expand-more'
+			className: 'material-icons', 'expand_more'
 
+	_handleMenuToggle: ->
+		if @props.isMenuOpened
+			@props.handleMenuClose()
+		else
+			@props.handleMenuOpen @props.id
+		return
+
+	_renderMenu: ->
+		return null unless @props.isMenuOpened
+		Menu
+			key: 'menu'
+			id: @props.id
+			isPrivate: @props.isPrivate
+			showSaveButton: yes
+			isMine: @props.isMine
+			ancestor: @props.ancestor
 
 	_renderShowArgumentsBtn: ->
 		return if @props.isOpened
@@ -129,4 +161,4 @@ statement = React.createClass
 		,	'Up'
 
 
-module.exports = connect(null, dispatchToProps) statement
+module.exports = connect(appState, dispatchToProps) statement

@@ -27,12 +27,6 @@
 		border-top: 1px solid rgba(0,0,0,.1);
 	}
 
-	&.empty {
-		padding: 10px;
-		display: flex;
-		justify-content: space-between;
-	}
-
 	.bar {
 		position: relative;
 		height: 3px;
@@ -44,6 +38,16 @@
 		&.neutral {
 			background-color: rgba(173, 173, 173, 0.78);
 
+		}
+	}
+
+	&.empty {
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+
+		.top {
+			width: 100%;
 		}
 	}
 }

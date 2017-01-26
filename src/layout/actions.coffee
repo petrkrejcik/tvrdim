@@ -13,6 +13,17 @@ module.exports =
 			id
 		}
 
+	openMenu: (statementId) ->
+		{
+			type: l.STATEMENT_MENU_OPEN
+			data: {statementId}
+		}
+
+	closeMenu: ->
+		{
+			type: l.STATEMENT_MENU_CLOSE
+		}
+
 	openRoot: ->
 		{
 			type: l.STATEMENT_OPEN_ROOT
