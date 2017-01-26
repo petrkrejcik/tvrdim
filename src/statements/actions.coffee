@@ -14,7 +14,6 @@ actions = ->
 
 	addStatement: (ancestor, text, agree, userId, isPrivate) ->
 		(dispatch) ->
-			debugger
 			isMine = yes
 			id = Math.random().toString(36).substring(2)
 			statement = {id, ancestor, text, agree, isMine, isPrivate}

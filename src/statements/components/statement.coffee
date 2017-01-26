@@ -124,7 +124,6 @@ statement = React.createClass
 			key: 'menu'
 			id: @props.id
 			isPrivate: @props.isPrivate
-			showSaveButton: yes
 			isMine: @props.isMine
 			ancestor: @props.ancestor
 

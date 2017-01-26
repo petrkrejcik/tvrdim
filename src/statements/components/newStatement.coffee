@@ -25,7 +25,7 @@ statement = React.createClass
 
 	getInitialState: ->
 		text: ''
-		isMenuOpened: yes
+		isMenuOpened: no
 		isPrivate: no
 
 	render: ->
@@ -39,6 +39,7 @@ statement = React.createClass
 
 		React.DOM.div
 			className: 'statement empty'
+			onClick: => @setState isMenuOpened: yes
 		, [
 			React.DOM.div
 				className: 'top'
@@ -50,22 +51,6 @@ statement = React.createClass
 					value: @state.text
 					className: 'long'
 					onChange: (e) => return @setState text: e.target.value
-					onFocus: => @setState isMenuOpened: yes
-					# onBlur: => @setState isMenuOpened: no
-				React.DOM.button
-					key: 'add'
-					className: btnClass.join ' '
-					onClick: =>
-						return unless @state.text
-						newStatement =
-							text: @state.text
-							agree: @props.agree
-							ancestor: @props.ancestor
-							user: @props.user
-							isPrivate: @state.isPrivate
-						@props.handleSave newStatement, @setState text: ''
-						return
-				, 'Add'
 			]
 		,
 			@_renderMenu()
@@ -76,7 +61,21 @@ statement = React.createClass
 		Menu
 			key: 'menu'
 			isPrivate: @state.isPrivate
+			saveButtonEnabled: !!@state.text
 			handlePrivateChange: (isChecked) => @setState isPrivate: isChecked
+			handleSave: @_handleSave
+
+	_handleSave: ->
+		return unless @state.text
+		newStatement =
+			text: @state.text
+			agree: @props.agree
+			ancestor: @props.ancestor
+			user: @props.user
+			isPrivate: @state.isPrivate
+		@props.handleSave newStatement
+		@setState text: '', isMenuOpened: no
+		return
 
 module.exports = connect(appState, dispatchToProps) statement
 

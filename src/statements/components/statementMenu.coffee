@@ -28,6 +28,7 @@ Menu = React.createClass
 		showSaveButton: React.PropTypes.bool
 		isMine: React.PropTypes.bool
 		ancestor: React.PropTypes.string
+		saveButtonEnabled: React.PropTypes.bool
 		# handlePrivateChange: React.PropTypes.fn
 
 	getInitialState: ->
@@ -38,31 +39,42 @@ Menu = React.createClass
 			className: 'statementMenu'
 		, [
 			React.DOM.div
-				key: 'private'
-				className: 'private'
-				onClick: @_handleIsPrivateToggle
+				key: 'column1'
+				className: 'column'
 			, [
-				React.DOM.input
-					key: 'checkbox'
-					type: 'checkbox'
-					readOnly: yes
-					checked: @state.isPrivate
-			,
-				React.DOM.span
-					key: 'privateLabel'
-					className: 'label'
-				, 'Private'
+				React.DOM.div
+					key: 'private'
+					className: 'private'
+					onClick: @_handleIsPrivateToggle
+				, [
+					React.DOM.input
+						key: 'checkbox'
+						type: 'checkbox'
+						readOnly: yes
+						checked: @state.isPrivate
+				,
+					React.DOM.span
+						key: 'privateLabel'
+						className: 'label'
+					, 'Private'
+				]
 			]
 		,
-			@_renderRemoveBtn()
-			@_renderSaveButton()
+			React.DOM.div
+				key: 'buttons'
+				className: 'buttons column'
+			, [
+				@_renderRemoveBtn()
+				@_renderSaveButton()
+			]
 		]
 
 	_renderSaveButton: ->
-		return unless @props.showSaveButton
+		btnClass = ['button button-raised']
+		btnClass.push ['button-colored'] if @props.saveButtonEnabled
 		React.DOM.button
 			key: 'save'
-			className: ['button button-raised button-colored']
+			className: btnClass.join ' '
 			onClick: @_handleSave
 		, 'Save'
 
@@ -70,7 +82,7 @@ Menu = React.createClass
 		return null unless @props.isMine
 		React.DOM.button
 			key: 'remove'
-			className: ['button button-raised']
+			className: 'button'
 			onClick: @_handleRemoveClick
 		, 'Remove'
 
@@ -84,14 +96,9 @@ Menu = React.createClass
 			@props.handleRemove @props.id, @props.ancestor
 		return
 
-	_handleSave: =>
-		return
-		newStatement =
-			text: @state.text
-			agree: @props.agree
-			ancestor: @props.ancestor
-			user: @props.user
-		@props.handleEdit newStatement, @setState text: ''
+	_handleSave: (e) ->
+		e.stopPropagation()
+		@props.handleSave()
 		return
 
 module.exports = connect(null, dispatchToProps) Menu
