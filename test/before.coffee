@@ -20,12 +20,14 @@ before = ->
 			if config.env is 'test'
 				return dropTable 'users'
 			else
-				return new Promise.resolve()
+				return Promise.resolve()
 		.then ->
 			query = fs.readFileSync(path.resolve 'dbInit.sql').toString()
 			db.query query, (err, res) ->
 				return reject err if err
 				resolve()
+		.catch (err) ->
+			console.info 'Error in before', err
 		return
 
 module.exports = before
