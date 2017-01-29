@@ -1,6 +1,5 @@
 React = require 'react'
 {connect} = require 'react-redux'
-newStatement = React.createFactory require './newStatement'
 layoutActions = require '../../layout/actions'
 {addStatement, remove} = require '../actions'
 {open, close, openRoot, openMenu, closeMenu} = layoutActions
@@ -17,6 +16,9 @@ dispatchToProps = (dispatch) ->
 
 	handleSave: ({statementId, text, agree}) ->
 		dispatch addStatement statementId, text, agree
+
+	handleEdit: () ->
+		console.info 'save editing'
 
 	handleRemove: (id, ancestor) ->
 		dispatch remove id, ancestor
@@ -124,9 +126,10 @@ statement = React.createClass
 		Menu
 			key: 'menu'
 			id: @props.id
-			isPrivate: @props.isPrivate
 			isMine: @props.isMine
 			ancestor: @props.ancestor
+			isPrivate: @props.isPrivate
+			handleSave: @props.handleEdit
 
 	_renderShowArgumentsBtn: ->
 		return if @props.isOpened

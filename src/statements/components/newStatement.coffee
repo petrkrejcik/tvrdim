@@ -20,16 +20,16 @@ statement = React.createClass
 	getDefaultProps: ->
 		ancestor: null
 		agree: null
-		handleClickSave: ->
 		user: {}
+		isPrivate: no
+		handleClickSave: ->
 
 	getInitialState: ->
 		text: ''
 		isMenuOpened: no
-		isPrivate: no
+		isPrivate: @props.isPrivate
 
 	render: ->
-		ancestor = @props.ancestor
 		btnClass = ['button button-raised']
 		btnClass.push ['button-colored'] if @state.text
 		placeholder = if @props.agree
@@ -60,10 +60,12 @@ statement = React.createClass
 		return unless @state.isMenuOpened
 		Menu
 			key: 'menu'
+			ancestor: @props.ancestor
 			isPrivate: @state.isPrivate
-			saveButtonEnabled: !!@state.text
-			handlePrivateChange: (isChecked) => @setState isPrivate: isChecked
 			handleSave: @_handleSave
+			saveButtonEnabled: !!@state.text
+			handlePrivateChange: =>
+				@setState isPrivate: !@state.isPrivate
 
 	_handleSave: ->
 		return unless @state.text
@@ -72,7 +74,7 @@ statement = React.createClass
 			agree: @props.agree
 			ancestor: @props.ancestor
 			user: @props.user
-			isPrivate: @state.isPrivate
+			isPrivate: @state.isPrivate or !!@props.ancestor
 		@props.handleSave newStatement
 		@setState text: '', isMenuOpened: no
 		return

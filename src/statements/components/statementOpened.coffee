@@ -46,6 +46,7 @@ list = React.createClass
 			key: 'empty-statement'
 			agree: agree
 			ancestor: @props.opened.id
+			isPrivate: @props.opened.isPrivate
 		if agree
 			sectionText = 'Yes, that\'s true, because...'
 		else

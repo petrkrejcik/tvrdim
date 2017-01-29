@@ -23,16 +23,12 @@ Menu = React.createClass
 		handlePrivateChange: ->
 
 	propTypes:
-		id: React.PropTypes.string
-		isPrivate: React.PropTypes.bool
-		showSaveButton: React.PropTypes.bool
-		isMine: React.PropTypes.bool
 		ancestor: React.PropTypes.string
+		id: React.PropTypes.string
+		isMine: React.PropTypes.bool
+		isPrivate: React.PropTypes.bool
 		saveButtonEnabled: React.PropTypes.bool
-		# handlePrivateChange: React.PropTypes.fn
-
-	getInitialState: ->
-		isPrivate: @props.isPrivate
+		showSaveButton: React.PropTypes.bool
 
 	render: ->
 		React.DOM.div
@@ -66,7 +62,7 @@ Menu = React.createClass
 				key: 'checkbox'
 				type: 'checkbox'
 				readOnly: yes
-				checked: @state.isPrivate
+				checked: @props.isPrivate
 				disabled: !!@props.ancestor
 		,
 			React.DOM.span
@@ -94,8 +90,7 @@ Menu = React.createClass
 
 	_handleIsPrivateToggle: ->
 		return if @props.ancestor
-		newState = !@state.isPrivate
-		@setState isPrivate: newState, @props.handlePrivateChange.bind @, newState
+		@props.handlePrivateChange()
 		return
 
 	_handleRemoveClick: ->
