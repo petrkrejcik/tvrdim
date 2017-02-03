@@ -6,7 +6,8 @@ module.exports = do ->
 		for id, entity of entities
 			result[id] = {}
 			for key, value of entity
-				result[id][key] = value if value
+				result[id][key] = value if value?
+				result[id].score = 0 if result[id].score?
 			roots.push id unless entity.ancestor
 
 		structure = makeStructure entities, roots, 1
