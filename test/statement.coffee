@@ -5,6 +5,11 @@ setup = require './setup'
 expect = require('chai').expect
 cleanDb = require './before'
 userRepo = require '../src/user/repo'
+chai = require 'chai'
+chaiAsPromised = require 'chai-as-promised'
+
+chai.use chaiAsPromised
+chai.should()
 
 getRandomString = (length = 7) ->
 	Math.random().toString(36).substring length
@@ -111,7 +116,7 @@ describe 'Statement API', ->
 			done error
 		return
 
-	it.only 'loads default user state when logged', (done) ->
+	it 'loads default user state when logged', (done) ->
 		userIdMine = null
 		userIdSomebody = null
 		cleanDb()
@@ -163,8 +168,62 @@ describe 'Statement API', ->
 			expect(result.statementsTree).to.deep.equal '3': ['4'], '4': ['5'], root: ['2', '6', '3']
 			expect(Object.getOwnPropertyNames(result.statements).length).to.equal 5
 			expect(result.user['id']).to.equal 2
-			expect(result.statements['4'].isChildOfPrivate).to.be.true
-			expect(result.statements['5'].isChildOfPrivate).to.be.true
+			done()
+		.catch (error) ->
+			done error
+		return
+
+	it 'updates', (done) ->
+		userIdMine = null
+		userIdSomebody = null
+		statementIdMine = null
+		statementIdSomebody = null
+		childId = null
+		cleanDb()
+		.then ->
+			userRepo.insert socialId: 98765, socialNetwork: 'facebook'
+		.then (inserted) ->
+			userIdSomebody = inserted
+			userRepo.insert socialId: 88989, socialNetwork: 'facebook'
+		.then (inserted) ->
+			userIdMine = inserted
+			repo.add
+				text: 'mine'
+				userId: userIdMine
+		.then (inserted) ->
+			statementIdMine = inserted
+			repo.add
+				text: 'mine child'
+				userId: userIdMine
+				ancestor: inserted
+				agree: yes
+		.then (inserted) ->
+			childId = inserted
+			repo.add
+				text: 'not mine'
+				userId: userIdSomebody
+		.then (inserted) ->
+			statementIdSomebody = inserted
+			repo.update
+				statementId: statementIdMine
+				loggedUserId: userIdMine
+				text: 'mine updated'
+				isPrivate: yes
+		.then (id) ->
+			expect(id).to.be.equal statementIdMine
+			repo.update
+				statementId: statementIdSomebody
+				loggedUserId: userIdMine
+				text: 'should be error Not found'
+			.should.be.rejectedWith 'Not found'
+		.then ->
+			repo.select()
+		.then (result) ->
+			expect(result.entities[statementIdSomebody].text).to.be.equal 'not mine'
+			repo.select userId: userIdMine, loggedUserId: userIdMine
+		.then (result) ->
+			expect(result.entities[statementIdMine].text).to.be.equal 'mine updated'
+			expect(result.entities[childId].text).to.be.equal 'mine child'
 			done()
 		.catch (error) ->
 			done error

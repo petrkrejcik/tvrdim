@@ -1,13 +1,13 @@
 {
-	SYNC_STATEMENT_REQUEST
+	SYNC_REQUEST
 	SYNC_STATEMENT_SUCCESS
 	SYNC_STATEMENT_FAIL
-	SYNC_STATE_LOCAL
+	SAVE_STATE
 } = require './actionTypes'
 
 module.exports =
 
 	sync: ->
 		{
-			type: SYNC_STATE_LOCAL
+			type: SAVE_STATE
 		}

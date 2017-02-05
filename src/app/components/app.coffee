@@ -6,11 +6,18 @@ header = React.createFactory require '../../header/components/header'
 drawer = React.createFactory require '../../drawer/components/drawer'
 drawerOverlay = React.createFactory require '../../drawer/components/drawerOverlay'
 {connect} = require 'react-redux'
+{getRoot} = require '../../statements/util'
 
 
 appState = (state) ->
-	opened: state.layout.statements.opened
-	statements: state.statements
+	if openedId = state.layout.statements.opened
+		opened = {}
+		Object.assign opened, state.statements[openedId]
+		rootId = getRoot openedId, state.statementsTree
+		root = state.statements[rootId]
+		isPrivate = root.isPrivate
+		opened.isPrivate = yes if isPrivate
+	opened: opened or null
 	drawer: state.layout.drawer
 	tree: state.statementsTree
 	isStatementsLoading: state.layout.statements.isLoading
@@ -24,7 +31,7 @@ app = React.createClass
 	render: ->
 		if @props.opened
 			content = statementOpened
-				opened: @props.statements[@props.opened]
+				opened: @props.opened
 		else
 			loading = null
 			if @props.isStatementsLoading

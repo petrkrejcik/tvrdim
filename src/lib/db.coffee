@@ -3,9 +3,7 @@ config = require '../../config'
 
 db = ->
 	client = pg config.db
-	client.on 'ready', ->
-		console.info 'db ready'
-		return
+	client.on 'ready', -> return
 	client.on 'end', ->
 		console.info 'db disconnected'
 		return

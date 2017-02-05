@@ -1,5 +1,13 @@
-{ADD_STATEMENT, GET_SUCCESS, COUNT_SCORE, GET_REQUEST, GET_FAILURE, ADD_FAILURE} = require './actionTypes'
-{SYNC_STATEMENT_REQUEST, SYNC_STATE_LOCAL} = require '../sync/actionTypes'
+{
+	ADD_STATEMENT
+	UPDATE_STATEMENT
+	GET_SUCCESS
+	COUNT_SCORE
+	GET_REQUEST
+	GET_FAILURE
+	ADD_FAILURE
+} = require './actionTypes'
+{SYNC_REQUEST, SAVE_STATE} = require '../sync/actionTypes'
 l = require '../layout/actionTypes'
 st = require '../statementsTree/actionTypes'
 fetch = require 'isomorphic-fetch'
@@ -16,13 +24,24 @@ actions = ->
 		(dispatch) ->
 			isMine = yes
 			id = Math.random().toString(36).substring(2)
-			statement = {id, ancestor, text, agree, isMine, isPrivate}
-			dispatch type: ADD_STATEMENT, statement: "#{id}": statement
+			statement = {id, ancestor, text, agree, isMine} # is id necessary for storing into DB?
+			statement.isPrivate = isPrivate if isPrivate
+			dispatch type: ADD_STATEMENT, data: statement
 			dispatch {type: st.ADD, statement}
 			dispatch {type: COUNT_SCORE, ancestor}
 			dispatch {type: l.STATEMENT_OPEN, statement} unless statement.ancestor
-			dispatch type: SYNC_STATE_LOCAL
-			dispatch type: SYNC_STATEMENT_REQUEST
+			dispatch type: SAVE_STATE
+			dispatch type: SYNC_REQUEST
+			return
+
+	update: ({id, text, isPrivate, ancestor}) ->
+		(dispatch) ->
+			data = {id}
+			data.text = text if text
+			data.isPrivate = isPrivate if isPrivate?
+			dispatch {type: UPDATE_STATEMENT, data}
+			dispatch type: SAVE_STATE
+			dispatch type: SYNC_REQUEST
 			return
 
 	getAll: ->
@@ -79,7 +98,7 @@ actions = ->
 				Object.keys(entities).map (id) -> tree[id] = [] unless tree[id]
 				dispatch type: GET_SUCCESS, statements: entities
 				dispatch type: st.UPDATE, tree: tree
-				dispatch type: SYNC_STATE_LOCAL
+				dispatch type: SAVE_STATE
 				return
 
 module.exports = actions()

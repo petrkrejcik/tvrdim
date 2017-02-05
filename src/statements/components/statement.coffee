@@ -1,7 +1,7 @@
 React = require 'react'
 {connect} = require 'react-redux'
 layoutActions = require '../../layout/actions'
-{addStatement, remove} = require '../actions'
+{remove, update} = require '../actions'
 {open, close, openRoot, openMenu, closeMenu} = layoutActions
 Menu = React.createFactory require './statementMenu'
 
@@ -14,11 +14,9 @@ dispatchToProps = (dispatch) ->
 	handleOpenRoot: ->
 		dispatch openRoot()
 
-	handleSave: ({statementId, text, agree}) ->
-		dispatch addStatement statementId, text, agree
-
-	handleEdit: () ->
+	handleEdit: (data) ->
 		console.info 'save editing'
+		dispatch update data
 
 	handleRemove: (id, ancestor) ->
 		dispatch remove id, ancestor
@@ -51,11 +49,17 @@ statement = React.createClass
 		customClassNames: []
 		isOpened: no
 		childrenCount: 0
+		isPrivate: no
+
+	getInitialState: ->
+		text: ''
+		isMenuOpened: no
+		isPrivate: @props.isPrivate
 
 	propTypes:
+		childrenCount: React.PropTypes.number
 		isMenuOpened: React.PropTypes.bool
 		isPrivate: React.PropTypes.bool
-		childrenCount: React.PropTypes.number
 
 	render: ->
 		cssClasses = ['statement']
@@ -68,7 +72,7 @@ statement = React.createClass
 			# cssClasses.push "depth-#{@props.depth}"
 
 		idDebug = ''
-		idDebug = "(id: #{@props.id})" if no
+		idDebug = "(id: #{@props.id})" if yes
 		title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
 
 		React.DOM.div
@@ -128,8 +132,13 @@ statement = React.createClass
 			id: @props.id
 			isMine: @props.isMine
 			ancestor: @props.ancestor
-			isPrivate: @props.isPrivate
-			handleSave: @props.handleEdit
+			isPrivate: @state.isPrivate
+			handleSave: => @props.handleEdit
+				id: @props.id
+				text: @props.text
+				isPrivate: @state.isPrivate
+				ancestor: @props.ancestor
+			handlePrivateChange: => @setState isPrivate: !@state.isPrivate
 
 	_renderShowArgumentsBtn: ->
 		return if @props.isOpened

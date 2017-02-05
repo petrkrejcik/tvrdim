@@ -107,6 +107,19 @@ repo = ->
 			.catch reject
 			return
 
+	_update = (params = {}) ->
+		{statementId, loggedUserId, text, isPrivate} = params
+		query = {}
+		query.text = params.text if params.text
+		query.is_private = params.isPrivate if params.isPrivate?
+		where = [statementId, loggedUserId]
+		new Promise (resolve, reject) ->
+			db.updateOne 'statement', query, 'id = $1 AND user_id = $2', where, (err, res) ->
+				return reject err if err
+				return reject 'Not found' unless res
+				resolve res.id.toString()
+			return
+
 	_validate = (filter = {}) ->
 		if filter.parentIds and !Array.isArray filter.parentIds
 			return 'error': "Filter error. ParentIds has to be an array: '#{filter.parentIds}'"
@@ -243,5 +256,14 @@ repo = ->
 						reject err
 			.catch (err) -> reject err
 			return
+
+	update: (params) ->
+		new Promise (resolve, reject) ->
+			if errors = _validate params
+				return reject errors
+			else
+				resolve _update params
+			return
+
 
 module.exports = repo()

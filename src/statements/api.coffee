@@ -58,6 +58,22 @@ router.post '/statements', jsonParser, (req, res) ->
 		res.status(500).send error: 'Add statement error'
 	return
 
+router.put '/statements?', (req, res) ->
+	unless user = req.user
+		return res.status(403).send error: 'Not logged'
+	res.setHeader 'Content-Type', 'application/json'
+	data = {}
+	Object.assign data, req.body
+	data.loggedUserId = req.user.id
+	repo.update data
+	.then (updated) ->
+		return res.status(404).send error: 'Statement not found' unless updated
+		res.json updated
+	.catch (err) ->
+		console.info 'update error', err
+		return res.status(500).send error: 'Error when updating.'
+	return
+
 router.delete '/statements/:id/:ancestor?', (req, res) ->
 	unless user = req.user
 		return res.status(403).send error: 'Not logged'

@@ -1,9 +1,10 @@
 client = ->
+	polyf = require './src/util/polyfills'
 	ReactDOM = require 'react-dom'
 	index = require './index'
 	idb = require './src/lib/idb'
 	cookieParser = require './src/util/cookieParser'
-	{SYNC_STATE_LOCAL, SYNC_STATE_HYDRATE, SYNC_STATEMENT_REQUEST} = require './src/sync/actionTypes'
+	{SAVE_STATE, SYNC_STATE_HYDRATE, SYNC_REQUEST} = require './src/sync/actionTypes'
 	{LOGIN_SUCCESS} = require './src/user/actionTypes'
 
 	if window?
@@ -24,8 +25,8 @@ client = ->
 				document.cookie = 'refreshState=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/'
 				store.dispatch type: SYNC_STATE_HYDRATE
 
-		store.dispatch type: SYNC_STATE_LOCAL
-		store.dispatch type: SYNC_STATEMENT_REQUEST
+		store.dispatch type: SAVE_STATE
+		store.dispatch type: SYNC_REQUEST
 
 		ReactDOM.render index.getApp(), document.getElementById 'root'
 

@@ -1,6 +1,6 @@
 module.exports =
-	SYNC_STATEMENT_REQUEST: '/sync/statement/request'
+	SYNC_REQUEST: '/sync/statement/request'
 	SYNC_STATEMENT_SUCCESS: '/sync/statement/success'
 	SYNC_STATEMENT_FAIL: '/sync/statement/fail'
-	SYNC_STATE_LOCAL: '/sync/state/local'
+	SAVE_STATE: '/sync/state/save'
 	SYNC_STATE_HYDRATE: '/sync/state/hydrate'

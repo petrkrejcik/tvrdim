@@ -1,5 +1,5 @@
 {LOGOUT} = require './actionTypes'
-{SYNC_STATE_LOCAL} = require '../sync/actionTypes'
+{SAVE_STATE} = require '../sync/actionTypes'
 
 module.exports =
 
@@ -10,4 +10,4 @@ module.exports =
 				privateStatements.push id
 			fetch '/logout', credentials: 'same-origin'
 			dispatch {type: LOGOUT, privateStatements}
-			dispatch type: SYNC_STATE_LOCAL
+			dispatch type: SAVE_STATE

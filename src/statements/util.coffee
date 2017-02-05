@@ -2,18 +2,13 @@ module.exports = do ->
 
 	countScore = (entities) ->
 		result = {}
-		roots = []
 		for id, entity of entities
 			result[id] = {}
 			for key, value of entity
+				continue if key in ['score']
 				result[id][key] = value if value?
-				result[id].score = 0 if result[id].score?
-			roots.push id unless entity.ancestor
 
-		structure = makeStructure entities, roots, 1
-
-		for id in privateChildrenIds = findPrivate result, structure
-			result[id].isChildOfPrivate = yes
+		structure = makeStructure entities
 
 		for ids in structure.reverse()
 			for id in ids
@@ -35,9 +30,12 @@ module.exports = do ->
 	# structure is like this:
 	# [ [ '2' ], [ '3', '4', '5' ], ['6'] ]
 	# '2' is root, '3', '4', '5' are 1st level children, '6' is 2nd level child
-	makeStructure = (entities, parentIds, depth, structure = []) ->
+	makeStructure = (entities, parentIds = null, depth = 1, structure = []) ->
 		return structure unless Object.keys(entities).length
 		remaining = {}
+		parentIds or= []
+		for id, entity of entities
+			parentIds.push id unless entity.ancestor
 		for id, row of entities
 			unless row.ancestor
 				# root
@@ -51,14 +49,20 @@ module.exports = do ->
 		makeStructure remaining, structure[depth], depth + 1, structure
 
 
-	findPrivate = (entities, structure) ->
-		privateIds = []
-		for ids, level in structure when level > 0 # skip root
-			for id in ids
-				ancestorId = entities[id].ancestor
-				ancestor = entities[ancestorId]
-				isPrivate = ancestor.isPrivate or ancestor.id in privateIds
-				privateIds.push id if isPrivate
-		privateIds
+	# findPrivate = (entities, structure) ->
+	# 	privateIds = []
+	# 	for ids, level in structure when level > 0 # skip root
+	# 		for id in ids
+	# 			ancestorId = entities[id].ancestor
+	# 			ancestor = entities[ancestorId]
+	# 			isPrivate = ancestor.isPrivate or ancestor.id in privateIds
+	# 			privateIds.push id if isPrivate
+	# 	privateIds
 
-	{countScore, makeStructure}
+	getRoot = (childId, statementsTree) ->
+		return childId if childId in statementsTree.root
+		for id, childIds of statementsTree when childId isnt id
+			if childId in childIds
+				return getRoot id, statementsTree
+
+	{countScore, makeStructure, getRoot}

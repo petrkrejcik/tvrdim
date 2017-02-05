@@ -64,8 +64,7 @@ statement = React.createClass
 			isPrivate: @state.isPrivate
 			handleSave: @_handleSave
 			saveButtonEnabled: !!@state.text
-			handlePrivateChange: =>
-				@setState isPrivate: !@state.isPrivate
+			handlePrivateChange: => @setState isPrivate: !@state.isPrivate
 
 	_handleSave: ->
 		return unless @state.text
@@ -74,7 +73,7 @@ statement = React.createClass
 			agree: @props.agree
 			ancestor: @props.ancestor
 			user: @props.user
-			isPrivate: @state.isPrivate or !!@props.ancestor
+		newStatement.isPrivate = @state.isPrivate unless @props.ancestor # save isPrivate only for root
 		@props.handleSave newStatement
 		@setState text: '', isMenuOpened: no
 		return

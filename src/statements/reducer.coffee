@@ -1,6 +1,6 @@
 update = require 'react-addons-update'
 t = require './actionTypes'
-{countScore} = require './util'
+{countScore, makeStructure} = require './util'
 {LOGOUT} = require '../user/actionTypes'
 {SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
 
@@ -25,7 +25,17 @@ module.exports =
 				update state, $merge: action.statements
 
 			when t.ADD_STATEMENT
-				update state, $merge: action.statement
+				statement = action.data
+				update state, $merge: "#{statement.id}": statement
+
+			when t.UPDATE_STATEMENT
+				{id, text, isPrivate} = action.data
+				newState = state
+				newState = update newState, "#{id}": text: $set: text if text
+				if isPrivate
+					newState = update newState, "#{id}": isPrivate: $set: yes
+				else
+					delete newState[id].isPrivatenewState
 
 			when t.ADD_FAILURE
 				{error} = action
