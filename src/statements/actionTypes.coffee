@@ -6,3 +6,4 @@ module.exports =
 	UPDATE_STATEMENT: '/statement/update'
 	ADD_FAILURE: '/statement/add/failure'
 	COUNT_SCORE: '/statement/count-score'
+	UPDATE_STATEMENT_ID: '/statement/update-id'

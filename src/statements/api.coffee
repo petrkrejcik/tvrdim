@@ -58,7 +58,7 @@ router.post '/statements', jsonParser, (req, res) ->
 		res.status(500).send error: 'Add statement error'
 	return
 
-router.put '/statements?', (req, res) ->
+router.put '/statements?', jsonParser, (req, res) ->
 	unless user = req.user
 		return res.status(403).send error: 'Not logged'
 	res.setHeader 'Content-Type', 'application/json'

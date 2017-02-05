@@ -205,14 +205,14 @@ describe 'Statement API', ->
 		.then (inserted) ->
 			statementIdSomebody = inserted
 			repo.update
-				statementId: statementIdMine
+				id: statementIdMine
 				loggedUserId: userIdMine
 				text: 'mine updated'
 				isPrivate: yes
 		.then (id) ->
 			expect(id).to.be.equal statementIdMine
 			repo.update
-				statementId: statementIdSomebody
+				id: statementIdSomebody
 				loggedUserId: userIdMine
 				text: 'should be error Not found'
 			.should.be.rejectedWith 'Not found'

@@ -1,10 +1,10 @@
 fetch = require 'isomorphic-fetch'
-{ADD_STATEMENT} = require '../statements/actionTypes'
+{ADD_STATEMENT, UPDATE_STATEMENT, UPDATE_STATEMENT_ID} = require '../statements/actionTypes'
 {SYNC_REMOTE_END, STATEMENT_LOADING_END} = require '../layout/actionTypes'
+{SYNC_SUCCESS} = require '../sync/actionTypes'
 {
 	SYNC_REQUEST
-	SYNC_STATEMENT_SUCCESS
-	SYNC_STATEMENT_FAIL
+	SYNC_FAIL
 	SAVE_STATE
 	SYNC_STATE_HYDRATE
 } = require './actionTypes'
@@ -49,11 +49,22 @@ sync = ->
 					statement = action.data
 					_insertStatementToServer statement
 					.then ({error, id}) ->
-						return dispatch type: SYNC_STATEMENT_FAIL if error
-						dispatch type: SYNC_STATEMENT_SUCCESS, oldId: statement.id, newId: id
+						return dispatch type: SYNC_FAIL if error
+						dispatch type: SYNC_SUCCESS
+						dispatch type: UPDATE_STATEMENT_ID, oldId: statement.id, newId: id
 						dispatch type: SAVE_STATE
 						dispatch type: SYNC_REQUEST
 						return
+				when UPDATE_STATEMENT
+					statement = action.data
+					_updateStatementToServer statement
+					.then ({error}) ->
+						return dispatch type: SYNC_FAIL if error
+						dispatch type: SYNC_SUCCESS
+						dispatch type: SAVE_STATE
+						dispatch type: SYNC_REQUEST
+						return
+
 		if action.type is SAVE_STATE
 			{statements, statementsTree, user, sync} = state
 			storeState = {statements, statementsTree, user, sync}

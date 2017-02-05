@@ -108,11 +108,11 @@ repo = ->
 			return
 
 	_update = (params = {}) ->
-		{statementId, loggedUserId, text, isPrivate} = params
+		{id, loggedUserId, text, isPrivate} = params
 		query = {}
 		query.text = params.text if params.text
-		query.is_private = params.isPrivate if params.isPrivate?
-		where = [statementId, loggedUserId]
+		query.is_private = if params.isPrivate then yes else null
+		where = [id, loggedUserId]
 		new Promise (resolve, reject) ->
 			db.updateOne 'statement', query, 'id = $1 AND user_id = $2', where, (err, res) ->
 				return reject err if err

@@ -15,7 +15,6 @@ dispatchToProps = (dispatch) ->
 		dispatch openRoot()
 
 	handleEdit: (data) ->
-		console.info 'save editing'
 		dispatch update data
 
 	handleRemove: (id, ancestor) ->

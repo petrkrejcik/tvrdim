@@ -1,8 +1,7 @@
 update = require 'react-addons-update'
-t = require './actionTypes'
+{GET_SUCCESS, ADD_STATEMENT, UPDATE_STATEMENT, UPDATE_STATEMENT_ID, ADD_FAILURE, COUNT_SCORE, GET_FAILURE} = require './actionTypes'
 {countScore, makeStructure} = require './util'
 {LOGOUT} = require '../user/actionTypes'
-{SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
 
 
 module.exports =
@@ -21,38 +20,39 @@ module.exports =
 
 		switch action.type
 
-			when t.GET_SUCCESS
+			when GET_SUCCESS
 				update state, $merge: action.statements
 
-			when t.ADD_STATEMENT
+			when ADD_STATEMENT
 				statement = action.data
 				update state, $merge: "#{statement.id}": statement
 
-			when t.UPDATE_STATEMENT
+			when UPDATE_STATEMENT
 				{id, text, isPrivate} = action.data
 				newState = state
 				newState = update newState, "#{id}": text: $set: text if text
 				if isPrivate
 					newState = update newState, "#{id}": isPrivate: $set: yes
 				else
-					delete newState[id].isPrivatenewState
+					delete newState[id].isPrivate
+				newState
 
-			when t.ADD_FAILURE
+			when ADD_FAILURE
 				{error} = action
 				console.info 'adding statements failure:', error
 				state
 
-			when t.COUNT_SCORE
+			when COUNT_SCORE
 				ancestor = 'root' unless ancestor = action.ancestor
 				newState = _countParentScore ancestor, state, countScore state
 				newState
 
-			when t.GET_FAILURE
+			when GET_FAILURE
 				{error} = action
 				console.info 'failure for getting statements:', error
 				state
 
-			when SYNC_STATEMENT_SUCCESS
+			when UPDATE_STATEMENT_ID
 				{oldId, newId} = action
 				newState = state
 				for id, statement of state
@@ -61,7 +61,7 @@ module.exports =
 						newStatement.id = newId
 						newState = update newState, "#{newId}": $set: newStatement
 					if statement.ancestor is oldId
-						newState = update newState, "#{id}": id: $set: newId
+						newState = update newState, "#{id}": ancestor: $set: newId
 				delete newState[oldId] # how else?
 				newState
 

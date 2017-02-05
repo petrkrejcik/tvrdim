@@ -8,7 +8,7 @@
 	ADD_FAILURE
 } = require './actionTypes'
 {SYNC_REQUEST, SAVE_STATE} = require '../sync/actionTypes'
-l = require '../layout/actionTypes'
+{STATEMENT_OPEN, STATEMENT_MENU_CLOSE} = require '../layout/actionTypes'
 st = require '../statementsTree/actionTypes'
 fetch = require 'isomorphic-fetch'
 
@@ -29,7 +29,7 @@ actions = ->
 			dispatch type: ADD_STATEMENT, data: statement
 			dispatch {type: st.ADD, statement}
 			dispatch {type: COUNT_SCORE, ancestor}
-			dispatch {type: l.STATEMENT_OPEN, statement} unless statement.ancestor
+			dispatch {type: STATEMENT_OPEN, statement} unless statement.ancestor
 			dispatch type: SAVE_STATE
 			dispatch type: SYNC_REQUEST
 			return
@@ -40,6 +40,7 @@ actions = ->
 			data.text = text if text
 			data.isPrivate = isPrivate if isPrivate?
 			dispatch {type: UPDATE_STATEMENT, data}
+			dispatch {type: STATEMENT_MENU_CLOSE}
 			dispatch type: SAVE_STATE
 			dispatch type: SYNC_REQUEST
 			return

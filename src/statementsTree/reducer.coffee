@@ -1,6 +1,6 @@
 update = require 'react-addons-update'
 a = require './actionTypes'
-{SYNC_STATEMENT_SUCCESS} = require '../sync/actionTypes'
+{UPDATE_STATEMENT_ID} = require '../statements/actionTypes'
 {LOGOUT} = require '../user/actionTypes'
 
 defaultState =
@@ -31,7 +31,7 @@ module.exports =
 					newState = update state, "#{ancestor}": $set: [action.statement.id]
 				update newState, "#{action.statement.id}": $set: []
 
-			when SYNC_STATEMENT_SUCCESS
+			when UPDATE_STATEMENT_ID
 				{oldId, newId} = action
 				newState = state
 				for id, childrenIds of state

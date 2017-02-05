@@ -7,7 +7,7 @@ idb = do ->
 			return resolve() if db
 			request = indexedDB.open dbName
 			request.onsuccess = ->
-				console.info 'connected to odb'
+				console.info 'connected to idb' if no
 				db = request.result
 				resolve()
 				return
