@@ -52,9 +52,9 @@ module.exports = do ->
 					}
 				}</script>
 				<script>window.__PRELOADED_STATE__ = #{JSON.stringify(store.getState())}</script>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react#{min}.js"></script>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom#{min}.js"></script>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom-server#{min}.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react#{min}.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom#{min}.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server#{min}.js"></script>
 				<link rel="stylesheet" href="/styles.css">
 				<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			</head>

@@ -36,9 +36,9 @@ module.exports = {
 			filename: 'sw.js',
 			stripPrefix: 'public/',
 			importScripts: [
-				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js',
-				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js',
-				'https://cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom-server.min.js',
+				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js',
+				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js',
+				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server.min.js',
 				'bundle.js'
 			],
 			staticFileGlobs: [
@@ -54,15 +54,15 @@ module.exports = {
 				handler: stateFromIdb,
 			},
 			{
-				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.3.1\/react.min.js/,
+				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.4.2\/react.min.js/,
 				handler: 'cacheFirst',
 			},
 			{
-				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.3.1\/react-dom.min.js/,
+				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.4.2\/react-dom.min.js/,
 				handler: 'cacheFirst',
 			},
 			{
-				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.3.1\/react-dom-server.min.js/,
+				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react\/15.4.2\/react-dom-server.min.js/,
 				handler: 'cacheFirst',
 			},
 			{
