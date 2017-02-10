@@ -3,14 +3,14 @@
 # if (isProduction) {
 # 	min = '.min';
 # }
-min = '.min'
+min = ''
 
 {createStore, applyMiddleware, compose} = require 'redux'
 {Provider} = require('react-redux')
 thunk = require('redux-thunk').default
 reducer = require('./rootReducer')
 React = require('react')
-appView = React.createFactory(require('./src/app/components/app'))
+appView = React.createFactory require './src/app/components/app'
 listener = require('./src/lib/listener')
 {sync} = require('./src/sync/syncTask')
 
@@ -29,7 +29,7 @@ module.exports = do ->
 		store = createStore reducer, preloadedState, compose(middleware...)
 
 	getApp = ->
-		React.createElement(Provider, {store}, appView({}))
+		React.createElement Provider, {store}, appView {}
 
 	getHtml = (body) ->
 		"""<!doctype html>
@@ -55,6 +55,7 @@ module.exports = do ->
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server#{min}.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.0.0-beta.5/react-router#{min}.js"></script>
 				<link rel="stylesheet" href="/styles.css">
 				<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			</head>

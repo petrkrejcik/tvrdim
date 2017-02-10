@@ -5,9 +5,13 @@ newStatement = React.createFactory require '../../statements/components/newState
 header = React.createFactory require '../../header/components/header'
 drawer = React.createFactory require '../../drawer/components/drawer'
 drawerOverlay = React.createFactory require '../../drawer/components/drawerOverlay'
+allStatements = React.createFactory require '../../statements/components/allStatements'
 {connect} = require 'react-redux'
 {getRoot} = require '../../statements/util'
-
+createHistory = require('history').createBrowserHistory
+{Route, Router} = require 'react-router-dom'
+Router = React.createFactory Router
+Route = React.createFactory Route
 
 appState = (state) ->
 	if openedId = state.layout.statements.opened
@@ -25,51 +29,22 @@ appState = (state) ->
 
 app = React.createClass
 
+	displayName: 'App'
+
 	getDefaultProps: ->
 		user: null
 
 	render: ->
-		if @props.opened
-			content = statementOpened
-				opened: @props.opened
-		else
-			loading = null
-			if @props.isStatementsLoading
-				loading = 'Loading....'
-			content = [
-				React.DOM.h3
-					key: 'sectionMine'
-					className: 'section'
-				, 'My statements'
-				newStatement key: 'addStatement'
-				loading ? statementFilter
-					key: 'statementFilterMine'
-					cssClasses: ['root']
-					filters: [
-						ancestor: 'root'
-					,	user: 'mine'
-					]
-				React.DOM.h3
-					key: 'sectionOthers'
-					className: 'section'
-				, 'Other\'s statements'
-				loading ? statementFilter
-					key: 'statementFilterAll'
-					cssClasses: ['root']
-					filters: [
-						ancestor: 'root'
-					,	user: 'notMine'
-					]
+		Router history: createHistory(),
+			React.DOM.div
+				className: 'app'
+			, [
+				header key: 'header'
+				drawer key: 'drawer' if @props.drawer.isOpened
+				drawerOverlay key: 'drawerOverlay'
+				Route path: '/', exact: yes, component: allStatements, key: 'route-all'
+				Route path: '/add', exact: yes, component: newStatement, key: 'route-add'
+				Route path: '/that/:id', component: statementOpened, key: 'route-opened'
 			]
-
-		React.DOM.div
-			className: 'app'
-		, [
-			header key: 'header'
-			drawer key: 'drawer' if @props.drawer.isOpened
-			React.DOM.main 'className': 'content', 'key': 'content', content
-			drawerOverlay key: 'drawerOverlay'
-		]
-
 
 module.exports = connect(appState) app

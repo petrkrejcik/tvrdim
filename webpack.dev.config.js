@@ -39,6 +39,7 @@ module.exports = {
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js',
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js',
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server.js',
+				'https://cdnjs.cloudflare.com/ajax/libs/react-router/4.0.0-beta.5/react-router.js',
 				'bundle.js'
 			],
 			staticFileGlobs: [
@@ -66,6 +67,10 @@ module.exports = {
 				handler: 'cacheFirst',
 			},
 			{
+				urlPattern: /^https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/react-router\/4.0.0-beta.5\/react-router.js/,
+				handler: 'cacheFirst',
+			},
+			{
 				urlPattern: /^https:\/\/fonts.googleapis.com\/icon\?family=Material\+Icons/,
 				handler: 'cacheFirst',
 			}
@@ -75,6 +80,7 @@ module.exports = {
 	externals: {
 		'react': 'React', // require => window.
 		'react-dom': 'ReactDOM',
+		'react-router-dom': 'ReactRouter',
 		'react-dom/server': 'ReactDOMServer',
 	},
 	resolve: {

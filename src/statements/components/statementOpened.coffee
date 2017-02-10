@@ -5,18 +5,21 @@ statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
 
 
-appState = (state, {opened}) ->
+appState = (state, {match}) ->
+	{id} = match.params
 	tree = state.statementsTree
-	childrenCount: tree[opened.id]?.length ? 0
+	childrenCount: tree[id]?.length ? 0
+	opened: state.statements[id]
 
 
 list = React.createClass
 
 	displayName: 'StatementOpened'
 
+	propTypes:
+		opened: React.PropTypes.object.isRequired
 
 	getDefaultProps: ->
-		opened: {}
 		childrenCount: 0
 
 	render: ->

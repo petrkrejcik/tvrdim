@@ -67,8 +67,10 @@ app.use '/api/0/state', (req, res, next) ->
 
 app.use '/api/0', require './src/statements/api'
 app.use '/()', handleRender
+app.use '/add', handleRender
+app.use '/ze/*', handleRender
 app.use (req, res, next) ->
-	res.status(404).send()
+	res.redirect '/'
 
 
 app.listen config.port, ->

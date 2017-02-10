@@ -74,8 +74,10 @@ statement = React.createClass
 		idDebug = "(id: #{@props.id})" if no
 		title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
 
-		React.DOM.div
+		# React.DOM.div
+		React.DOM.a
 			className: (cssClasses.concat @props.customClassNames).join ' '
+			href: "/that/#{@props.id}"
 		, [
 			React.DOM.div
 				key: 'top'
@@ -88,7 +90,7 @@ statement = React.createClass
 			@_renderBar()
 			React.DOM.div key: 'buttons', className: 'actions', [
 				@_renderGoToParentBtn()
-				@_renderShowArgumentsBtn()
+				# @_renderShowArgumentsBtn()
 			]
 		]
 
