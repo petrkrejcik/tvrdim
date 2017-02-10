@@ -31,3 +31,5 @@ ALTER TABLE statement ADD COLUMN is_private BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE statement ALTER COLUMN is_private DROP NOT NULL;
 ALTER TABLE statement ALTER COLUMN is_private SET DEFAULT NULL;
 UPDATE statement SET is_private = NULL WHERE is_private = FALSE;
+
+ALTER TABLE users ALTER COLUMN social_id TYPE TEXT;

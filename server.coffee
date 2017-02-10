@@ -3,7 +3,6 @@ favicon = require 'serve-favicon'
 {renderToString} = require 'react-dom/server'
 index = require './index'
 config = require './config'
-users = require './src/user/repo'
 if isProduction = process.env.NODE_ENV is 'production'
 	webpackConfig = require './webpack.production.config'
 else
@@ -13,6 +12,7 @@ webpackDevMiddleware = require 'webpack-dev-middleware'
 webpackHotMiddleware = require 'webpack-hot-middleware'
 compiler = webpack webpackConfig
 {loadUserState} = require './src/statements/queries'
+passportRoutes = require './src/lib/passport'
 
 app = express()
 
@@ -37,35 +37,6 @@ app.use '/', (req, res, next) ->
 
 app.use favicon './public/assets/favicon.ico'
 app.use express.static 'public'
-
-
-
-
-############### PASSPORT #################
-passport = require 'passport'
-fbStrategy = require('passport-facebook').Strategy
-
-passport.use new fbStrategy
-	clientID: process.env.FB_APP_ID,
-	clientSecret: process.env.FB_SECRET,
-	callbackURL: "#{config.httpProtocol}://#{config.domain}/login/facebook/return"
-,	(accessToken, refreshToken, profile, cb) ->
-	users.selectOrInsert socialId: profile.id, socialNetwork: 'facebook'
-	.then (userId) ->
-		user =
-			id: userId
-			providerId: profile.id
-			displayName: profile.displayName
-			provider: profile.provider
-		return cb null, user
-	return
-
-passport.serializeUser (user, cb) ->
-	cb null, user
-
-passport.deserializeUser (obj, cb) ->
-	cb null, obj
-
 app.use require('cookie-parser')()
 app.use require('body-parser').urlencoded extended: true
 
@@ -78,34 +49,7 @@ app.use session
 	saveUninitialized: true
 	store: new redis redisOpts
 
-# on each request; store id into req.user
-app.use passport.initialize()
-app.use passport.session()
-
-# app.use require('morgan')('combined')
-app.get '/logout', (req, res, next) ->
-	req.session.destroy()
-	req.logout()
-	res.sendStatus 200
-
-# app.use (req, res, next) ->
-# 	console.info 'req.session', req.session
-# 	next()
-# 	return
-
-app.get '/login/facebook', passport.authenticate 'facebook'
-app.get(
-	'/login/facebook/return',
-	passport.authenticate('facebook', failureRedirect: '/login'),
-	(req, res) ->
-		res.cookie 'user', req.user
-		res.cookie 'refreshState', '1'
-		res.redirect '/?refreshState=1'
-)
-
-############### PASSPORT #################
-
-
+app.use passportRoutes
 
 unless isProduction
 	# called always when server receives a request
@@ -113,12 +57,6 @@ unless isProduction
 		'noInfo': true
 		'publicPath': webpackConfig.output.publicPath
 	app.use webpackHotMiddleware compiler
-
-
-
-
-
-
 
 
 app.use '/api/0/state', (req, res, next) ->

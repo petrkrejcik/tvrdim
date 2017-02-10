@@ -27,6 +27,8 @@ drawer = React.createClass
 		isLogged = @props.user.id
 		items = [
 			@_createItem 'Home', 'home', 'person', @props.handleLogoutClick
+			@_createItem 'Sign in - Facebook', 'signInFb', 'person', null, '/login/facebook' unless isLogged
+			@_createItem 'Sign in - Google', 'signInG', 'person', null, '/login/google' unless isLogged
 			React.DOM.div key: 'spacer', className: 'nav-spacer'
 		]
 		content = [
@@ -41,12 +43,6 @@ drawer = React.createClass
 				className: 'drawer-username'
 			, @props.user.displayName
 			items.push @_createItem 'Logout', 'exit_to_app', 'exit_to_app', @props.handleLogoutClick
-		else
-			content.push React.DOM.a
-				key: 'drawer-username'
-				className: 'drawer-username button'
-				href: '/login/facebook'
-			, 'Facebook Login'
 
 		React.DOM.div
 			key: 'drawer'
@@ -62,11 +58,12 @@ drawer = React.createClass
 			, items
 		]
 
-	_createItem: (text, key, ico, handler) ->
+	_createItem: (text, key, ico, handler, href = '') ->
 		React.DOM.a
 			key: key
 			className: 'nav-item button'
 			onClick: handler
+			href: href
 		, [
 			React.DOM.i
 				key: ico

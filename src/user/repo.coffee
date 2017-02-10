@@ -21,7 +21,6 @@ repo = ->
 		return
 
 	selectOrInsert = ({socialId, socialNetwork}) -> new Promise (resolve, reject) ->
-
 		select socialId
 		.then (id) ->
 			return resolve id if id
