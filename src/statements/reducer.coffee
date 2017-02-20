@@ -1,6 +1,6 @@
 update = require 'react-addons-update'
 {GET_SUCCESS, ADD_STATEMENT, UPDATE_STATEMENT, UPDATE_STATEMENT_ID, ADD_FAILURE, COUNT_SCORE, GET_FAILURE} = require './actionTypes'
-{countScore, makeStructure} = require './util'
+{countScore} = require './util'
 {LOGOUT} = require '../user/actionTypes'
 
 

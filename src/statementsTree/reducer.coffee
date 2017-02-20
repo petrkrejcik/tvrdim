@@ -19,8 +19,8 @@ module.exports =
 					unless state[keyId]
 						newState = update state, $merge: "#{keyId}": []
 					for id in ids
-						continue if id in state[keyId]
-						newState = update state, "#{keyId}": $push: [id]
+						continue if id in newState[keyId]
+						newState = update newState, "#{keyId}": $push: [id]
 				newState
 
 			when a.ADD

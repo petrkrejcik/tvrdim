@@ -3,10 +3,7 @@ favicon = require 'serve-favicon'
 {renderToString} = require 'react-dom/server'
 index = require './index'
 config = require './config'
-if isProduction = process.env.NODE_ENV is 'production'
-	webpackConfig = require './webpack.production.config'
-else
-	webpackConfig = require './webpack.config'
+webpackConfig = require './webpack.config'
 webpack = require 'webpack'
 webpackDevMiddleware = require 'webpack-dev-middleware'
 webpackHotMiddleware = require 'webpack-hot-middleware'
@@ -51,7 +48,7 @@ app.use session
 
 app.use passportRoutes
 
-unless isProduction
+unless config.isProduction
 	# called always when server receives a request
 	app.use webpackDevMiddleware compiler,
 		'noInfo': true
@@ -68,7 +65,8 @@ app.use '/api/0/state', (req, res, next) ->
 app.use '/api/0', require './src/statements/api'
 app.use '/()', handleRender
 app.use '/add', handleRender
-app.use '/ze/*', handleRender
+app.use '/create', handleRender # TODO: remove when params can be optional
+app.use '/that/*', handleRender
 app.use (req, res, next) ->
 	res.redirect '/'
 

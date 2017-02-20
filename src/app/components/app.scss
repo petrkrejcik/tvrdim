@@ -3,6 +3,12 @@
 a {
 	text-decoration: none;
 }
+a:link, a:visited {
+    color: $color-dark;
+}
+a:hover {
+    color: $color-dark;
+}
 h3 {
 	color: $color-grey;
 }

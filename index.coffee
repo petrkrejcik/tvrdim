@@ -1,16 +1,13 @@
-# var isProduction = process.env.NODE_ENV === 'production';
-# var min = '';
-# if (isProduction) {
-# 	min = '.min';
-# }
+config = require './configClient'
 min = ''
+min = '.min' if config.isProduction
 
 {createStore, applyMiddleware, compose} = require 'redux'
-{Provider} = require('react-redux')
+{Provider} = require 'react-redux'
 thunk = require('redux-thunk').default
 reducer = require('./rootReducer')
 React = require('react')
-appView = React.createFactory require './src/app/components/app'
+App = React.createFactory require './src/app/components/app'
 listener = require('./src/lib/listener')
 {sync} = require('./src/sync/syncTask')
 
@@ -29,7 +26,7 @@ module.exports = do ->
 		store = createStore reducer, preloadedState, compose(middleware...)
 
 	getApp = ->
-		React.createElement Provider, {store}, appView {}
+		React.createElement Provider, {store}, App {}
 
 	getHtml = (body) ->
 		"""<!doctype html>
@@ -51,18 +48,20 @@ module.exports = do ->
 						document.body.scrollLeft = scroll.left;
 					}
 				}</script>
+				<script>if (typeof window.tvr !== 'object') {window.tvr = {};} window.tvr.config = #{JSON.stringify(config)}</script>
 				<script>window.__PRELOADED_STATE__ = #{JSON.stringify(store.getState())}</script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom#{min}.js"></script>
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server#{min}.js"></script>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.0.0-beta.5/react-router#{min}.js"></script>
-				<link rel="stylesheet" href="/styles.css">
+				<link rel="stylesheet" href="/styles#{min}.css">
 				<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			</head>
 			<body>
 				<div id="root">#{body}</div>
-				<script src="/bundle.js"></script>
+				<script src="/bundle#{min}.js"></script>
 			</body>
 		</html>"""
 
 	return {loadState, getApp, getHtml}
+				# <script src="https://unpkg.com/history@4.5.1/umd/history#{min}.js"></script>
+				# <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.0.0-beta.6/react-router#{min}.js"></script>

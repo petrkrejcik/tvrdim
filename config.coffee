@@ -1,16 +1,14 @@
 require('dotenv').config()
+{env, isProduction} = require './configClient'
 
 module.exports = do ->
-	switch process.env.NODE_ENV
+	switch env
 		when 'production'
 			dbName = 'tvrdim'
-			isProduction = yes
 		when 'test'
 			dbName = 'tvrdim_dev_test'
-			isProduction = no
 		else
 			dbName = 'tvrdim_dev'
-			isProduction = no
 
 	port: process.env.PORT or 3000
 	db:
@@ -25,6 +23,6 @@ module.exports = do ->
 		port: 6379
 	domain: process.env.DOMAIN ? "localhost:3000"
 	httpProtocol: process.env.HTTP_PROTOCOL ? 'http'
-	isProduction: isProduction
 	debug: process.env.DEBUG or no
-	env: process.env.NODE_ENV
+	isProduction: isProduction
+	env: env

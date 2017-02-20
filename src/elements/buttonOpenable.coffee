@@ -21,12 +21,12 @@ module.exports = React.createClass
 	render: ->
 		cssClasses = @props.cssClasses.concat ['button-openable']
 		hiddenButtons = if @state.isOpened then @props.children else null
-		hidden = React.DOM.div className: 'button-openable--hidden', hiddenButtons
-		React.DOM.div className: cssClasses.join(' '), [
+		hidden = React.DOM.div className: 'button-openable--hidden', key: 'buttons-hidden', hiddenButtons
+		React.DOM.div className: cssClasses.join(' '), key: 'button-openable-wrap', [
 			hidden
 			Button
+				key: 'button-openable'
+				cssClasses: ['button-fab', 'button-colored']
 				text: @props.text
-				handleClick: =>
-					console.info 'click'
-					@setState isOpened: !@state.isOpened
+				handleClick: => @setState isOpened: !@state.isOpened
 		]

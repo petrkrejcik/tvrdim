@@ -2,7 +2,8 @@ React = require 'react'
 statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
 {connect} = require 'react-redux'
-{BrowserRouter, Match, browserHistory, Route} = require 'react-router-dom'
+AddNewButton = React.createFactory require './addNewButton'
+Button = React.createFactory require '../../elements/button'
 
 appState = (state) ->
 	isStatementsLoading: state.layout.statements.isLoading
@@ -11,6 +12,10 @@ appState = (state) ->
 allStatements = React.createClass
 
 	displayName: 'All Statements'
+
+	getChildContext: -> push: @props.push
+	childContextTypes: push: React.PropTypes.func
+
 
 	render: ->
 		loading = null
@@ -21,7 +26,7 @@ allStatements = React.createClass
 				key: 'sectionMine'
 				className: 'section'
 			, 'My statements'
-			newStatement key: 'addStatement'
+
 			loading ? statementFilter
 				key: 'statementFilterMine'
 				cssClasses: ['root']
@@ -29,10 +34,12 @@ allStatements = React.createClass
 					ancestor: 'root'
 				,	user: 'mine'
 				]
+
 			React.DOM.h3
 				key: 'sectionOthers'
 				className: 'section'
 			, 'Other\'s statements'
+
 			loading ? statementFilter
 				key: 'statementFilterAll'
 				cssClasses: ['root']
@@ -40,8 +47,13 @@ allStatements = React.createClass
 					ancestor: 'root'
 				,	user: 'notMine'
 				]
+			Button
+				key: 'addNewButton'
+				cssClasses: ['button-fab', 'button-colored', 'button-cornered']
+				text: '+'
+				handleClick: => @props.push '/create'
 		]
 
-		React.DOM.main 'className': 'content', 'key': 'content', content
+		React.DOM.div 'key': 'allStatements', content
 
 module.exports = connect(appState) allStatements

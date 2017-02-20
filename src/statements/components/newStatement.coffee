@@ -4,8 +4,11 @@ React = require 'react'
 Menu = React.createFactory require './statementMenu'
 
 
-appState = (state) ->
+appState = (state, {match, location}) ->
+	{id} = match.params
+	ancestor: state.statements[id]
 	user: state.user
+	agree: location.state?.agree ? null
 
 dispatchToProps = (dispatch) ->
 	handleSave: ({ancestor, text, agree, user, isPrivate}) ->
@@ -17,8 +20,11 @@ statement = React.createClass
 
 	displayName: 'NewStatement'
 
+	propTypes:
+		ancestor: React.PropTypes.object
+		agree: React.PropTypes.bool
+
 	getDefaultProps: ->
-		ancestor: null
 		agree: null
 		user: {}
 		isPrivate: no
@@ -26,7 +32,7 @@ statement = React.createClass
 
 	getInitialState: ->
 		text: ''
-		isMenuOpened: no
+		isMenuOpened: yes
 		isPrivate: @props.isPrivate
 
 	render: ->
@@ -50,11 +56,16 @@ statement = React.createClass
 					placeholder: placeholder
 					value: @state.text
 					className: 'long'
+					ref: (input) => @input = input
 					onChange: (e) => return @setState text: e.target.value
 			]
 		,
 			@_renderMenu()
 		]
+
+	componentDidMount: ->
+		@input.focus()
+		return
 
 	_renderMenu: ->
 		return unless @state.isMenuOpened
@@ -71,11 +82,11 @@ statement = React.createClass
 		newStatement =
 			text: @state.text
 			agree: @props.agree
-			ancestor: @props.ancestor
+			ancestor: @props.ancestor?.id
 			user: @props.user
 		newStatement.isPrivate = @state.isPrivate unless @props.ancestor # save isPrivate only for root
 		@props.handleSave newStatement
-		@setState text: '', isMenuOpened: no
+		@props.goBack()
 		return
 
 module.exports = connect(appState, dispatchToProps) statement

@@ -2,7 +2,7 @@ React = require 'react'
 {connect} = require 'react-redux'
 Statement = React.createFactory require './statement'
 statementFilter = React.createFactory require '../containers/statementFilter'
-newStatement = React.createFactory require './newStatement'
+AddNewButton = React.createFactory require './addNewButton'
 
 
 appState = (state, {match}) ->
@@ -19,6 +19,9 @@ list = React.createClass
 	propTypes:
 		opened: React.PropTypes.object.isRequired
 
+	getChildContext: -> push: @props.push
+	childContextTypes: push: React.PropTypes.func
+
 	getDefaultProps: ->
 		childrenCount: 0
 
@@ -30,6 +33,7 @@ list = React.createClass
 		, [
 			@_renderChildren @props.opened.id, yes
 			@_renderChildren @props.opened.id, no
+			AddNewButton id: @props.opened.id, key: 'addNewButton'
 		]
 
 		React.DOM.div
@@ -45,11 +49,6 @@ list = React.createClass
 
 	_renderChildren: (ancestor, agree) ->
 		cssClass = if agree then 'agree' else 'disagree'
-		emptyStatement = newStatement
-			key: 'empty-statement'
-			agree: agree
-			ancestor: @props.opened.id
-			isPrivate: @props.opened.isPrivate
 		if agree
 			sectionText = 'Yes, that\'s true, because...'
 		else
@@ -63,7 +62,6 @@ list = React.createClass
 				key: 'sectionMine'
 				className: 'section'
 			, sectionText
-			emptyStatement
 			statementFilter
 				key: "statementFilter-#{ancestor}"
 				filters: [{ancestor}, {agree}]

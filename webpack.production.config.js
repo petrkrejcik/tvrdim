@@ -2,12 +2,11 @@ var webpack = require('webpack');
 var path = require('path');
 var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var stateFromIdb = require('./src/sw/stateFirst');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
 	module: {
 		loaders: [
-			{test: /\.js$/, exclude: /(node_modules)/, loader: 'babel-loader?presets[]=es2015'},
 			{test: /\.coffee$/, loader: 'coffee-loader'},
 			{test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css!sass')},
 			{test: /\.json$/, loader: 'json-loader'} // asi neni potreba
@@ -19,7 +18,7 @@ module.exports = {
 	],
 	'output': {
 		path: path.resolve('./public'),
-		filename: 'bundle.js',
+		filename: 'bundle.min.js',
 		library: 'tvr',
 		libraryTarget: 'var'
 	},
@@ -30,7 +29,7 @@ module.exports = {
 			}
 		}),
 		new webpack.optimize.UglifyJsPlugin(),
-		new ExtractTextPlugin('styles.css'),
+		new ExtractTextPlugin('styles.min.css'),
 		new SWPrecacheWebpackPlugin({
 			cacheId: 'tvrdim',
 			filename: 'sw.js',
@@ -39,11 +38,11 @@ module.exports = {
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js',
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js',
 				'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom-server.min.js',
-				'bundle.js'
+				'bundle.min.js',
 			],
 			staticFileGlobs: [
-				'public/bundle.js',
-				'public/styles.css',
+				'public/bundle.min.js',
+				'public/styles.min.css',
 				'public/manifest.json',
 				'public/assets/**',
 			],
@@ -78,6 +77,6 @@ module.exports = {
 		'react-dom/server': 'ReactDOMServer',
 	},
 	resolve: {
-		extensions: [".coffee", ".js", ""]
+		extensions: ['.coffee', '.js', '']
 	}
 }

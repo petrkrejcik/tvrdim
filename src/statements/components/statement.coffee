@@ -4,6 +4,8 @@ layoutActions = require '../../layout/actions'
 {remove, update} = require '../actions'
 {open, close, openRoot, openMenu, closeMenu} = layoutActions
 Menu = React.createFactory require './statementMenu'
+{Link} = require 'react-router-dom'
+Link = React.createFactory Link
 
 
 dispatchToProps = (dispatch) ->
@@ -35,8 +37,11 @@ statement = React.createClass
 
 	displayName: 'Statement'
 
-	getInitialState: ->
-		isAdding: no
+	propTypes:
+		childrenCount: React.PropTypes.number
+		isMenuOpened: React.PropTypes.bool
+		isPrivate: React.PropTypes.bool
+		ancestor: React.PropTypes.string
 
 	getDefaultProps: ->
 		id: null
@@ -55,11 +60,6 @@ statement = React.createClass
 		isMenuOpened: no
 		isPrivate: @props.isPrivate
 
-	propTypes:
-		childrenCount: React.PropTypes.number
-		isMenuOpened: React.PropTypes.bool
-		isPrivate: React.PropTypes.bool
-
 	render: ->
 		cssClasses = ['statement']
 		if @props.score
@@ -67,49 +67,31 @@ statement = React.createClass
 				cssClasses.push 'approved'
 		if @props.isOpened
 			cssClasses.push ['opened']
-		# else
-			# cssClasses.push "depth-#{@props.depth}"
 
 		idDebug = ''
 		idDebug = "(id: #{@props.id})" if no
 		title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
 
-		# React.DOM.div
-		React.DOM.a
-			className: (cssClasses.concat @props.customClassNames).join ' '
-			href: "/that/#{@props.id}"
-		, [
+		Link to: "/that/#{@props.id}",
 			React.DOM.div
-				key: 'top'
-				className: 'top'
+				className: (cssClasses.concat @props.customClassNames).join ' '
+				href: "/that/#{@props.id}"
 			, [
-				title
-				@_renderMenuButton()
+				React.DOM.div
+					key: 'top'
+					className: 'top'
+				, [
+					title
+					@_renderMenuButton()
+				]
+				@_renderMenu()
+				@_renderBar()
+				React.DOM.div key: 'buttons', className: 'actions'
 			]
-			@_renderMenu()
-			@_renderBar()
-			React.DOM.div key: 'buttons', className: 'actions', [
-				@_renderGoToParentBtn()
-				# @_renderShowArgumentsBtn()
-			]
-		]
-
-	_renderBar: ->
-		piece = @props.childrenCount
-		style = {}
-		if @props.score is 0
-			cssNeutral = 'neutral'
-		else
-			if @props.score > 0
-				width = 100
-			else
-				width = 0
-			style = width: "#{width}%"
-		React.DOM.div key: 'bar', className: "bar #{cssNeutral}",
-			React.DOM.div key: 'bar-accept', className: 'bar accept', style: style
 
 	_renderMenuButton: ->
 		return null unless @props.isMine
+		return null unless @props.isOpened
 		icon = if @props.isMenuOpened then 'expand_less' else 'expand_more'
 		React.DOM.span
 			key: 'menu'
@@ -141,37 +123,20 @@ statement = React.createClass
 				ancestor: @props.ancestor
 			handlePrivateChange: => @setState isPrivate: !@state.isPrivate
 
-	_renderShowArgumentsBtn: ->
-		return if @props.isOpened
-		if count = @props.childrenCount
-			text = "Show arguments (#{count})"
+	_renderBar: ->
+		piece = @props.childrenCount
+		style = {}
+		if @props.score is 0
+			cssNeutral = 'neutral'
 		else
-			text = 'Add argument'
-		React.DOM.button
-			className: 'btn-showArguments button'
-			key: 'btn-showArguments'
-			onClick: @props.handleOpen.bind @, @props.id
-		,	text
+			if @props.score > 0
+				width = 100
+			else
+				width = 0
+			style = width: "#{width}%"
+		React.DOM.div key: 'bar', className: "bar #{cssNeutral}",
+			React.DOM.div key: 'bar-accept', className: 'bar accept', style: style
 
-	_renderAddBtn: ->
-		return if @props.isOpened
-		React.DOM.button
-			className: 'btn-addArguments button'
-			key: 'btn-addArguments'
-			onClick: @props.handleOpen.bind @, @props.id
-		, "Add argument"
-
-	_renderGoToParentBtn: ->
-		return unless @props.isOpened
-		if @props.ancestor
-			onClick = @props.handleOpen.bind @, @props.ancestor
-		else
-			onClick = @props.handleOpenRoot.bind @
-		React.DOM.button
-			className: 'btn-goToParent button'
-			key: 'btn-goToParent'
-			onClick: onClick
-		,	'Up'
 
 
 module.exports = connect(appState, dispatchToProps) statement

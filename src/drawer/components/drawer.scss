@@ -14,6 +14,10 @@
 	background-color: $color-dark;
 	z-index: 3;
 
+	a, i, a:link, a:visited {
+		color: $color-grey-light;
+	}
+
 	.drawer-header {
 		padding: 16px;
 		height: 100px;
@@ -22,12 +26,8 @@
 		flex-direction: column;
 		color: $color-grey-light;
 
-		a, i {
-			color: $color-grey-light;
-		}
 		i {
 			font-size: 70px;
-
 		}
 	}
 

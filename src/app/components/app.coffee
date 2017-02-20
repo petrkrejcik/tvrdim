@@ -1,5 +1,4 @@
 React = require 'react'
-statementFilter = React.createFactory require '../../statements/containers/statementFilter'
 statementOpened = React.createFactory require '../../statements/components/statementOpened'
 newStatement = React.createFactory require '../../statements/components/newStatement'
 header = React.createFactory require '../../header/components/header'
@@ -8,10 +7,16 @@ drawerOverlay = React.createFactory require '../../drawer/components/drawerOverl
 allStatements = React.createFactory require '../../statements/components/allStatements'
 {connect} = require 'react-redux'
 {getRoot} = require '../../statements/util'
-createHistory = require('history').createBrowserHistory
-{Route, Router} = require 'react-router-dom'
-Router = React.createFactory Router
+{Route, BrowserRouter, StaticRouter} = require 'react-router-dom'
 Route = React.createFactory Route
+
+if window?
+	Router = React.createFactory BrowserRouter
+	routerParams = {}
+else
+	Router = React.createFactory StaticRouter
+	routerParams = context: {}
+
 
 appState = (state) ->
 	if openedId = state.layout.statements.opened
@@ -31,20 +36,19 @@ app = React.createClass
 
 	displayName: 'App'
 
-	getDefaultProps: ->
-		user: null
-
 	render: ->
-		Router history: createHistory(),
+		Router routerParams,
 			React.DOM.div
-				className: 'app'
-			, [
-				header key: 'header'
-				drawer key: 'drawer' if @props.drawer.isOpened
-				drawerOverlay key: 'drawerOverlay'
-				Route path: '/', exact: yes, component: allStatements, key: 'route-all'
-				Route path: '/add', exact: yes, component: newStatement, key: 'route-add'
-				Route path: '/that/:id', component: statementOpened, key: 'route-opened'
-			]
+				className: 'app', [
+					header key: 'header'
+					drawer key: 'drawer' if @props.drawer.isOpened
+					drawerOverlay key: 'drawerOverlay'
+					React.DOM.main 'className': 'content', 'key': 'content', [
+						Route path: '/', exact: yes, component: allStatements, key: 'route-all'
+						Route path: '/create', exact: yes, component: newStatement, key: 'route-create' # TODO: remove, use optional
+						Route path: '/add/:id', component: newStatement, key: 'route-add'
+						Route path: '/that/:id', component: statementOpened, key: 'route-opened'
+					]
+				]
 
 module.exports = connect(appState) app

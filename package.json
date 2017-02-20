@@ -3,9 +3,11 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production ./node_modules/coffee-script/bin/coffee server.coffee",
-    "dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/coffee-script/bin/coffee server.coffee",
-    "buildDev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/webpack/bin/webpack.js",
+    "start:dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/coffee-script/bin/coffee server.coffee",
+    "start:pre": "NODE_ENV=pre ./node_modules/coffee-script/bin/coffee server.coffee",
     "build": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p",
+    "build:dev": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=dev ./node_modules/webpack/bin/webpack.js",
+    "build:pre": "rm -rf ./public && mkdir public && cp ./src/manifest.json ./public/manifest.json && cp -r ./assets ./public/ && NODE_ENV=pre ./node_modules/webpack/bin/webpack.js -p",
     "test": " NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register"
   },
   "engines": {
@@ -18,7 +20,6 @@
     "dotenv": "^2.0.0",
     "easy-pg": "^2.0.2",
     "express-session": "^1.14.2",
-    "history": "^4.5.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "morgan": "^1.7.0",
@@ -29,8 +30,7 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^4.4.6",
-    "react-router": "^4.0.0-2",
-    "react-router-dom": "^4.0.0-beta.5",
+    "react-router-dom": "^4.0.0-beta.6",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "serve-favicon": "^2.3.2"

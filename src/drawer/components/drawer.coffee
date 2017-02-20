@@ -27,8 +27,8 @@ drawer = React.createClass
 		isLogged = @props.user.id
 		items = [
 			@_createItem 'Home', 'home', 'person', @props.handleLogoutClick
-			@_createItem 'Sign in - Facebook', 'signInFb', 'person', null, '/login/facebook' unless isLogged
-			@_createItem 'Sign in - Google', 'signInG', 'person', null, '/login/google' unless isLogged
+			@_createItem 'Sign in by Facebook', 'signInFb', 'person', null, '/login/facebook' unless isLogged
+			@_createItem 'Sign in by Google', 'signInG', 'person', null, '/login/google' unless isLogged
 			React.DOM.div key: 'spacer', className: 'nav-spacer'
 		]
 		content = [

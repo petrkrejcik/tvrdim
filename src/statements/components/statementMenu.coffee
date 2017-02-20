@@ -23,7 +23,7 @@ Menu = React.createClass
 		handlePrivateChange: ->
 
 	propTypes:
-		ancestor: React.PropTypes.string
+		ancestor: React.PropTypes.object
 		id: React.PropTypes.string
 		isMine: React.PropTypes.bool
 		isPrivate: React.PropTypes.bool
