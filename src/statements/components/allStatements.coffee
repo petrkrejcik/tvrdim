@@ -22,30 +22,11 @@ allStatements = React.createClass
 		if @props.isStatementsLoading
 			loading = 'Loading....'
 		content = [
-			React.DOM.h3
-				key: 'sectionMine'
-				className: 'section'
-			, 'My statements'
-
 			loading ? statementFilter
 				key: 'statementFilterMine'
 				cssClasses: ['root']
 				filters: [
 					ancestor: 'root'
-				,	user: 'mine'
-				]
-
-			React.DOM.h3
-				key: 'sectionOthers'
-				className: 'section'
-			, 'Other\'s statements'
-
-			loading ? statementFilter
-				key: 'statementFilterAll'
-				cssClasses: ['root']
-				filters: [
-					ancestor: 'root'
-				,	user: 'notMine'
 				]
 			Button
 				key: 'addNewButton'
