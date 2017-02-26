@@ -4,6 +4,7 @@ layoutActions = require '../../layout/actions'
 {remove, update} = require '../actions'
 {open, close, openRoot, openMenu, closeMenu} = layoutActions
 Menu = React.createFactory require './statementMenu'
+Bar = React.createFactory require './bar'
 {Link} = require 'react-router-dom'
 Link = React.createFactory Link
 
@@ -38,7 +39,7 @@ statement = React.createClass
 	displayName: 'Statement'
 
 	propTypes:
-		childrenCount: React.PropTypes.number
+		childrenCountable: React.PropTypes.array
 		isMenuOpened: React.PropTypes.bool
 		isPrivate: React.PropTypes.bool
 		ancestor: React.PropTypes.string
@@ -52,7 +53,7 @@ statement = React.createClass
 		score: 0
 		customClassNames: []
 		isOpened: no
-		childrenCount: 0
+		childrenCountable: []
 		isPrivate: no
 
 	getInitialState: ->
@@ -124,18 +125,11 @@ statement = React.createClass
 			handlePrivateChange: => @setState isPrivate: !@state.isPrivate
 
 	_renderBar: ->
-		piece = @props.childrenCount
-		style = {}
-		if @props.score is 0
-			cssNeutral = 'neutral'
-		else
-			if @props.score > 0
-				width = 100
-			else
-				width = 0
-			style = width: "#{width}%"
-		React.DOM.div key: 'bar', className: "bar #{cssNeutral}",
-			React.DOM.div key: 'bar-accept', className: 'bar accept', style: style
+		Bar
+			key: 'bar'
+			score: @props.score
+			agreeCount: @props.childrenCountable.filter((child) -> !!child.agree).length
+			disagreeCount: @props.childrenCountable.filter((child) -> !child.agree).length
 
 
 

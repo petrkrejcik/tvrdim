@@ -2,10 +2,8 @@ React = require 'react'
 {connect} = require 'react-redux'
 Statement = React.createFactory require './statement'
 
-appState = (state) ->
-	tree: state.statementsTree
 
-list = React.createClass
+module.exports = React.createClass
 
 	displayName: 'StatementList'
 
@@ -15,10 +13,7 @@ list = React.createClass
 
 	render: ->
 		cssClasses = @props.cssClasses.concat ['statement-list']
-		children = @props.statements.map (statement) =>
-			Statement Object.assign {}, statement,
-				key: "statement-#{statement.id}"
-				childrenCount: @props.tree[statement.id]?.length ? 0
+		children = @props.statements.map (statement) -> Statement statement
 
 		return @_empty() unless children.length
 
@@ -32,6 +27,3 @@ list = React.createClass
 			key: 'statement-list-empty'
 			className: 'warning'
 		, React.DOM.p key: 'warning-text', 'You don\'t have any statements. Add some!'
-
-
-module.exports = connect(appState) list

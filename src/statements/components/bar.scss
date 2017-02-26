@@ -1,0 +1,29 @@
+@import '../../util/style/variables.scss';
+
+.bar-container {
+	display: flex;
+	width: 250px;
+	align-items: center;
+
+	.num {
+		margin: 5px;
+		color: rgba(173, 173, 173, 0.78);
+
+	}
+	.bar {
+		flex-basis: 1;
+		width: 80%;
+		height: 10px;
+		border: 1px solid rgba(173, 173, 173, 0.78);
+		background-color: red;
+
+		&.neutral {
+			background-color: white;
+		}
+
+		.positive {
+			height: 100%;
+			background-color: green;
+		}
+	}
+}

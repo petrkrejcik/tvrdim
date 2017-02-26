@@ -20,6 +20,14 @@ filterByParentId = (statements, tree, ancestor) ->
 	return [] unless parent = tree[ancestor]
 	parent.map (id) -> statements[id]
 
+filterById = (statements, tree, id) ->
+	statements[id]
+
+filterCountable = (statements = []) ->
+	statements.filter (statement) ->
+		score = 0 unless statement.score
+		score >= 0
+
 mapStateToProps = (state, {cssClasses, filters}) ->
 	statements = state.statements
 	tree = state.statementsTree
@@ -29,7 +37,7 @@ mapStateToProps = (state, {cssClasses, filters}) ->
 		statements = \
 		if filter.ancestor then filterByParentId statements, tree, filter.ancestor
 		else if filter.agree? then filterByAgree statements, filter.agree
-		else if filter.user then filterByUser statements, filter.user
+		else if filter.id then [statements[filter.id]]
 		else statements
 	rootId = null
 	statements = statements.map (stateStatement) ->
@@ -39,6 +47,9 @@ mapStateToProps = (state, {cssClasses, filters}) ->
 		root = state.statements[rootId]
 		isPrivate = root.isPrivate
 		statement.isPrivate = yes if isPrivate
+		children = state.statementsTree[statement.id] ? []
+		statement.childrenCountable = filterCountable children.map (childId) -> state.statements[childId]
+		statement.key = statement.id
 		statement
 	{statements, cssClasses}
 

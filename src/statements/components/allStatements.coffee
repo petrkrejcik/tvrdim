@@ -2,7 +2,6 @@ React = require 'react'
 statementFilter = React.createFactory require '../containers/statementFilter'
 newStatement = React.createFactory require './newStatement'
 {connect} = require 'react-redux'
-AddNewButton = React.createFactory require './addNewButton'
 Button = React.createFactory require '../../elements/button'
 
 appState = (state) ->
