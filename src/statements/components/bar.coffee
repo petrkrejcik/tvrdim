@@ -27,7 +27,10 @@ module.exports = React.createClass
 			React.DOM.div
 				key: 'bar'
 				className: (cssClasses.concat @props.customClassNames).join ' '
-			, @_renderAgreeColor()
+			, [
+				@_renderAgreeColor()
+				React.DOM.div key: 'center', className: 'center'
+			]
 			React.DOM.div key: 'num-disagree', className: 'num disagree', @props.disagreeCount
 		]
 

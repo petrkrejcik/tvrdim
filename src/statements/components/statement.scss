@@ -1,18 +1,21 @@
 @import '../../util/style/variables.scss';
 
 .statement {
+	display: flex;
 	margin-bottom: 13px;
 	background-color: #fff;
-	padding: 10px 10px 0 10px;
 	box-shadow: $shadow;
+	padding-right: 10px;
 
 	.top {
 		display: flex;
+		width: 74%;
 		justify-content: space-between;
 		margin-bottom: 10px;
 
 		.title {
 			font-weight: bold;
+			padding: 10px 10px 0 10px;
 		}
 	}
 

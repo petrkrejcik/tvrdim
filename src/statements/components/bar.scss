@@ -2,7 +2,8 @@
 
 .bar-container {
 	display: flex;
-	width: 250px;
+	min-width: 90px;
+	width: 26%;
 	align-items: center;
 
 	.num {
@@ -11,11 +12,12 @@
 
 	}
 	.bar {
+		position: relative;
 		flex-basis: 1;
 		width: 80%;
 		height: 10px;
 		border: 1px solid rgba(173, 173, 173, 0.78);
-		background-color: red;
+		background-color: $button-colored;
 
 		&.neutral {
 			background-color: white;
@@ -24,6 +26,13 @@
 		.positive {
 			height: 100%;
 			background-color: green;
+		}
+		.center {
+			height: 18px;
+			position: absolute;
+			border-right: 1px solid rgba(173, 173, 173, 0.78);
+			left: 50%;
+			top: -4px;
 		}
 	}
 }
