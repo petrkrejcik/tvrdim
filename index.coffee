@@ -35,6 +35,7 @@ module.exports = do ->
 				<title>Tvrdim</title>
 				<link rel="manifest" href="/manifest.json">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+				<meta charset='UTF-8'>
 				<script>if (window.location.hash && window.location.hash == '#_=_') {
 					if (window.history && history.pushState) {
 						window.history.pushState("", document.title, window.location.pathname);
