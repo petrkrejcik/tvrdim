@@ -43,11 +43,7 @@ module.exports = React.createClass
 			style: width: "#{width}%"
 
 	_countPositiveWidth: (score, agreeCount, disagreeCount) ->
-		return 50 if score is 0
 		total = agreeCount + disagreeCount
 		piece = 100 / total
-		if score > 0
-			width = (total - score) * piece
-		else
-			width = (total + score) * piece
+		width = 100 - disagreeCount * piece
 		Math.floor width
