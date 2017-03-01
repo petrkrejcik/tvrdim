@@ -2,7 +2,7 @@ React = require 'react'
 {connect} = require 'react-redux'
 layoutActions = require '../../layout/actions'
 {remove, update} = require '../actions'
-{open, close, openRoot, openMenu, closeMenu} = layoutActions
+{close, openMenu, closeMenu} = layoutActions
 Menu = React.createFactory require './statementMenu'
 Bar = React.createFactory require './bar'
 {Link} = require 'react-router-dom'
@@ -10,12 +10,6 @@ Link = React.createFactory Link
 
 
 dispatchToProps = (dispatch) ->
-
-	handleOpen: (ancestorId) ->
-		dispatch open ancestorId
-
-	handleOpenRoot: ->
-		dispatch openRoot()
 
 	handleEdit: (data) ->
 		dispatch update data
@@ -57,38 +51,43 @@ statement = React.createClass
 		isPrivate: no
 
 	getInitialState: ->
-		text: ''
 		isMenuOpened: no
 		isPrivate: @props.isPrivate
+		textEdited: @props.text
 
 	render: ->
 		cssClasses = ['statement']
-		if @props.score
-			if @props.score > 0
-				cssClasses.push 'approved'
-		if @props.isOpened
-			cssClasses.push ['opened']
-
 		idDebug = ''
 		idDebug = "(id: #{@props.id})" if no
-		title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
+		if @props.isMenuOpened
+			title = React.DOM.textarea
+				ref: (input) => @_input = input
+				className: 'title edit'
+				key: 'title'
+				value: @state.textEdited
+				onChange: (e) => @setState textEdited: e.target.value
+		else
+			title = React.DOM.span className: 'title', key: 'title', "#{@props.text}#{idDebug}"
 
-		Link to: "/that/#{@props.id}",
+		statement = React.DOM.div
+			className: (cssClasses.concat @props.customClassNames).join ' '
+		, [
 			React.DOM.div
-				className: (cssClasses.concat @props.customClassNames).join ' '
-				href: "/that/#{@props.id}"
+				key: 'top'
+				className: 'top'
 			, [
-				React.DOM.div
-					key: 'top'
-					className: 'top'
-				, [
-					title
-					@_renderMenuButton()
-				]
-				@_renderMenu()
+				title
 				@_renderBar()
-				React.DOM.div key: 'buttons', className: 'actions'
+				React.DOM.div key: 'buttons', className: 'actions', @_renderMenuButton()
 			]
+			@_renderMenu()
+		]
+
+		if @props.isOpened
+			statement
+		else
+			Link to: "/that/#{@props.id}", statement
+
 
 	_renderMenuButton: ->
 		return null unless @props.isMine
@@ -104,6 +103,7 @@ statement = React.createClass
 
 	_handleMenuToggle: ->
 		if @props.isMenuOpened
+			@setState textEdited: @props.text, isPrivate: @props.isPrivate
 			@props.handleMenuClose()
 		else
 			@props.handleMenuOpen @props.id
@@ -117,9 +117,10 @@ statement = React.createClass
 			isMine: @props.isMine
 			ancestor: @props.ancestor
 			isPrivate: @state.isPrivate
+			saveButtonEnabled: @_validate()
 			handleSave: => @props.handleEdit
 				id: @props.id
-				text: @props.text
+				text: @state.textEdited
 				isPrivate: @state.isPrivate
 				ancestor: @props.ancestor
 			handlePrivateChange: => @setState isPrivate: !@state.isPrivate
@@ -131,6 +132,12 @@ statement = React.createClass
 			agreeCount: @props.childrenCountable.filter((child) -> !!child.agree).length
 			disagreeCount: @props.childrenCountable.filter((child) -> !child.agree).length
 
+	_validate: ->
+		return no unless @state.textEdited
+		sameText = @state.textEdited is @props.text
+		samePrivate = @state.isPrivate is @props.isPrivate
+		return no if sameText and samePrivate
+		yes
 
 
 module.exports = connect(appState, dispatchToProps) statement

@@ -43,6 +43,7 @@ router.get '/statements?', (req, res) ->
 		res.status(500).send error: 'Get statements error'
 	return
 
+# Insert
 router.post '/statements', jsonParser, (req, res) ->
 	unless user = req.user
 		return res.status(403).send error: 'Not logged'
@@ -58,6 +59,7 @@ router.post '/statements', jsonParser, (req, res) ->
 		res.status(500).send error: 'Add statement error'
 	return
 
+# Update
 router.put '/statements?', jsonParser, (req, res) ->
 	unless user = req.user
 		return res.status(403).send error: 'Not logged'

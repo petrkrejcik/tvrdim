@@ -41,6 +41,7 @@ list = React.createClass
 				filters: [
 					id: @props.id
 				]
+				openedId: @props.id
 			children
 		]
 

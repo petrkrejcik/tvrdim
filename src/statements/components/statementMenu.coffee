@@ -2,13 +2,9 @@ React = require 'react'
 {connect} = require 'react-redux'
 layoutActions = require '../../layout/actions'
 {addStatement, remove} = require '../actions'
-{open, close, openRoot} = layoutActions
 
 
 dispatchToProps = (dispatch) ->
-
-	handleOpen: (ancestorId) ->
-		dispatch open ancestorId
 
 	handleRemove: (id, ancestor) ->
 		dispatch remove id, ancestor
@@ -23,7 +19,7 @@ Menu = React.createClass
 		handlePrivateChange: ->
 
 	propTypes:
-		ancestor: React.PropTypes.object
+		ancestor: React.PropTypes.string
 		id: React.PropTypes.string
 		isMine: React.PropTypes.bool
 		isPrivate: React.PropTypes.bool

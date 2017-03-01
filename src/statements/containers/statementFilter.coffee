@@ -28,7 +28,7 @@ filterCountable = (statements = []) ->
 		score = 0 unless statement.score
 		score >= 0
 
-mapStateToProps = (state, {cssClasses, filters}) ->
+mapStateToProps = (state, {cssClasses, filters, openedId}) ->
 	statements = state.statements
 	tree = state.statementsTree
 	isChildren = no
@@ -50,6 +50,7 @@ mapStateToProps = (state, {cssClasses, filters}) ->
 		children = state.statementsTree[statement.id] ? []
 		statement.childrenCountable = filterCountable children.map (childId) -> state.statements[childId]
 		statement.key = statement.id
+		statement.isOpened = yes if statement.id is openedId
 		statement
 	{statements, cssClasses}
 

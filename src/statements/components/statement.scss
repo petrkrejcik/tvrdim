@@ -1,33 +1,35 @@
 @import '../../util/style/variables.scss';
 
 .statement {
-	display: flex;
 	margin-bottom: 13px;
 	background-color: #fff;
 	box-shadow: $shadow;
 	padding-right: 10px;
+	padding-left: 10px;
 
 	.top {
+		width: 100%;
 		display: flex;
-		width: 74%;
 		justify-content: space-between;
 		margin-bottom: 10px;
-
-		.title {
-			font-weight: bold;
-			padding: 10px 10px 0 10px;
-		}
 	}
 
-	.childrenToggle {
-		cursor: pointer;
-		&.agree {
-			float: right
-		}
+	.title {
+		display: flex;
+		width: 74%;
+		font-weight: bold;
+		padding: 10px 10px 10px 0;
+
+			&.edit {
+				font-weight: normal;
+				padding: 4px;
+			}
 	}
+
 
 	.actions {
-		border-top: 1px solid rgba(0,0,0,.1);
+		display: flex;
+		align-items: center;
 	}
 
 	&.empty {
