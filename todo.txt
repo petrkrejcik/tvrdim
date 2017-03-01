@@ -19,9 +19,9 @@ structure [ [ '2', '7', '9' ], [ '3', '4', '8' ], [ '5', '6' ] ]
 remove
 	smazat tohle id plus vsechny childy
 	pokud tohle id nebo nektery child existuje ve stromu i jinde, smazu to id pouze ze stromu
-	if parentId
+	if ancestor
 		id = 4
-		parentId = 2
+		ancestor = 2
 		children = select descendant where ancestor = 4 and depth = 1
 		children [5, 6]
 		delete from closure where ancestor is 2 and descendant = 4 OR descendant in children
@@ -57,15 +57,48 @@ statement
 	user_id - kazdy statement patri k jednomu uzivateli
 	- co kdyz chci sledovat statement?
 
-online
-	not logged
-		- muzu ukladat
-			- vytvorim statement bez userId
-				- to bude CSS viditelny
-			- dispatch sync action
-				- ulozi celou akci do stacku, ktery se provede az budu online/logged
-			- ukladam state do localStorage
-		- nemuzu ukladat
+				- vypalim SYNC_PENDING_ADD tu samou action jako pro ulozeni do db
+
+- ulozeni
+	- vygeneruju id
+	- vypalim ADD_STATEMENT => ulozim do state, mam string idcko
+	- vypalim SYNC_LOCAL => ulozim do local storage
+	- vypalim SYNC_SERVER =>
+		- shift ze sync pole
+		- fetch na tuhle action
+			- ok
+				vrati se mi idcko
+				vypalim SYNC_ID
+					projde vsechny states a zmeni tohle stary id za novy
+			- fail
+				vratim akci do sync pole na prvni misto
+
+	- dispatch sync action
+		- ulozi celou akci do stacku, ktery se provede az budu online/logged
+	- ukladam state do localStorage
+- nemuzu ukladat
+
+sync = [
+	{
+		action: STATEMENT_ADD
+		statement:
+			id: jiv582
+			text: bumbac
+	}
+,
+	{
+		action: STATEMENT_REMOVE
+		statementId: jiv582
+	}
+]
+
+dam sync a zavru browser
+	na server se to ulozi, ale v local storage to budu mit porad ve stacku pro syncovani
+		- budu to odebirat ze stacku a pri failu zase vracet
+neprihlasenej vytvorim statements
+prihlasim se
+syncuju... a userId se priradi na BE
+
 
 offline
 	logged
@@ -90,8 +123,110 @@ akce pro ukladani na server:
 		- zakazat zmenu udaju
 
 
+yP58)zx/q6/3NB{a
+
+
+0:0 => null
+1:1 => 0
+2:1 => 50
+
+- request na tvrdim.cz
+- stahne se HMTL a SW
+- offline
+- otevru tvrdim.cz
+- odpoved ze SW stejna jako ze serveru
+- neco pridam (upravim state)
+	- vypalim SYNC
+	- odchyti ji subscribe
+	- ulozim stav do idb
+				- posle post message s novym stavem
+- reload
+	- SW koukne do idb pro stav
+	- je stav
+		- SW vyrenderuje novou page
+	- neni stav
+		- vrati
+- smazu stav z idb
+- reload
+- SW sahne pro stav, nic nenajde, tak vrati stranku bez contentu
+- pridam statement
+- ulozim do idb
+
+- fetch eventa se koukne do idb
+- vrati rovnou page se stavem z idb
+- pusti request dal?
+
+- nejsem prihlasenej
+- pridat statements
+- prihlasim se
+- vsechny se syncnou
+
+- BE me po prihlaseni presmeruje na '/'
+
+sync je post request
+
+opo redirectu se nezobrazi to, co dostanu ze serveru jako odpoved
+zustane vyrenderovany to, co predtim
+protoze request na '/' (ten redirect) odchyti SW
+zobrazim
+
+pred redirectem se ulozi do cookie
+	user
+	refreshState = 1
+redirect na '/?refreshState=1' odchyti SW
+vrati rovnou HTML, s loaderem pro statements
+client.js pokud ma v cookie refreshState, tak posle request na API na /state
+	vypali se action sync/hydrate
+	musim vsechny statements a statementsTree z odpovedi prohnat ulozenim do state
+vypalim SAVE_STATE abych hydratovany state ulozil do idb
+
+
+Pokud otevru appku offline, uvidim moje statementy v My Statements?
+	asi zatim jo
+
+delete nemazze hned
+delete nema alert
+
+upravit sync state po akci UPDATE_STATEMENT_ID, aby vymenil vsechny stary idcka za novy
+
+
+
+a) mam v local storage stav
+
+b) nemam v local storage stav
+
+Private
+----------
+- private se nastavuje jen u root statementu
+- vsichni childi jsou private podle rootu
+- muzou byt private pro vic useru? kdo pridal statement do stromu, ma access?
+	- kdyz nekde argumentuju, nechci to ztratit
+	- private je private a hotovo
+is_private je NULL pro neroot statementy
+isChildOfPrivate: boolean
+potrebuju smazat IDcka ze statementsTree
+
+
+=============
+login page
+-------------
+/login
+=============
+
+=============
+routes
+-------------
+/login
+/add
+/ze/koureni-by-mel-byt-zakazano-123456
+=============
+
+TODO
+===========
+- ze serveru se musi renderovat i url na nejaky statement
+- mazani pokud mam children
 
 
 
 
-
+-
