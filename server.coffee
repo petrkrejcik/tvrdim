@@ -17,17 +17,15 @@ handleRender = (req, res) ->
 	loadUserState req.user
 	.then (preloadedState) ->
 		index.loadState preloadedState
-		body = renderToString index.getApp()
+		body = renderToString index.getApp location: req.originalUrl
 		res.send index.getHtml body
 		return
 	.catch (err) -> console.info 'error in app load', err
 	return
 
 app.use '/', (req, res, next) ->
-	console.info 'BE request:', req.url
-	if req.user
-		console.info 'logged'
-	else console.info 'not logged'
+	logged = if req.user then 'logged' else 'not logged'
+	console.info 'BE request:', req.url, '; ', logged
 	next()
 	return
 
@@ -63,10 +61,10 @@ app.use '/api/0/state', (req, res, next) ->
 	return
 
 app.use '/api/0', require './src/statements/api'
+app.use '/that/:id', handleRender
 app.use '/()', handleRender
 app.use '/add', handleRender
 app.use '/create', handleRender # TODO: remove when params can be optional
-app.use '/that/*', handleRender
 app.use (req, res, next) ->
 	res.redirect '/'
 

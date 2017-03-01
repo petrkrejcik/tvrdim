@@ -6,7 +6,6 @@ drawer = React.createFactory require '../../drawer/components/drawer'
 drawerOverlay = React.createFactory require '../../drawer/components/drawerOverlay'
 allStatements = React.createFactory require '../../statements/components/allStatements'
 {connect} = require 'react-redux'
-{getRoot} = require '../../statements/util'
 {Route, BrowserRouter, StaticRouter} = require 'react-router-dom'
 Route = React.createFactory Route
 
@@ -19,24 +18,22 @@ else
 
 
 appState = (state) ->
-	if openedId = state.layout.statements.opened
-		opened = {}
-		Object.assign opened, state.statements[openedId]
-		rootId = getRoot openedId, state.statementsTree
-		root = state.statements[rootId]
-		isPrivate = root.isPrivate
-		opened.isPrivate = yes if isPrivate
-	opened: opened or null
 	drawer: state.layout.drawer
-	tree: state.statementsTree
-	isStatementsLoading: state.layout.statements.isLoading
 
 
 app = React.createClass
 
 	displayName: 'App'
 
+	propTypes:
+		location: React.PropTypes.string
+
+	getDefaultProps: ->
+		location: null
+
 	render: ->
+		routerParams.location = @props.location if @props.location # For server rendering
+
 		Router routerParams,
 			React.DOM.div
 				className: 'app', [

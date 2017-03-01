@@ -25,8 +25,8 @@ module.exports = do ->
 
 		store = createStore reducer, preloadedState, compose(middleware...)
 
-	getApp = ->
-		React.createElement Provider, {store}, App {}
+	getApp = (props) ->
+		React.createElement Provider, {store}, App props
 
 	getHtml = (body) ->
 		"""<!doctype html>
