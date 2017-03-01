@@ -16,4 +16,4 @@ module.exports = React.createClass
 		React.DOM.button
 			className: cssClasses.concat(@props.cssClasses).join ' '
 			onClick: @props.handleClick
-		, @props.text
+		, @props.children

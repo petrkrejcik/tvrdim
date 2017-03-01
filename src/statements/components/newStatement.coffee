@@ -2,6 +2,7 @@ React = require 'react'
 {connect} = require 'react-redux'
 {addStatement} = require '../actions'
 Menu = React.createFactory require './statementMenu'
+ButtonBack = React.createFactory require '../../app/components/buttonBack'
 
 
 appState = (state, {match, location}) ->
@@ -19,6 +20,13 @@ dispatchToProps = (dispatch) ->
 statement = React.createClass
 
 	displayName: 'NewStatement'
+
+	getChildContext: ->
+		push: @props.push
+		goBack: @props.goBack
+	childContextTypes:
+		push: React.PropTypes.func
+		goBack: React.PropTypes.func
 
 	propTypes:
 		ancestor: React.PropTypes.object
@@ -43,24 +51,28 @@ statement = React.createClass
 		else if @props.ancestor then 'No, that\'s not true, because ...'
 		else 'Add new statement...'
 
-		React.DOM.div
-			className: 'statement empty'
-			onClick: => @setState isMenuOpened: yes
-		, [
+		React.DOM.div {}, [
+			ButtonBack key: 'back'
 			React.DOM.div
-				className: 'top'
-				key: 'top'
+				key: 'empty'
+				className: 'statement empty'
+				onClick: => @setState isMenuOpened: yes
 			, [
-				React.DOM.input
-					key: 'input'
-					placeholder: placeholder
-					value: @state.text
-					className: 'long'
-					ref: (input) => @input = input
-					onChange: (e) => return @setState text: e.target.value
+				React.DOM.div
+					className: 'top'
+					key: 'top'
+				, [
+					React.DOM.input
+						key: 'input'
+						placeholder: placeholder
+						value: @state.text
+						className: 'long'
+						ref: (input) => @input = input
+						onChange: (e) => return @setState text: e.target.value
+				]
+			,
+				@_renderMenu()
 			]
-		,
-			@_renderMenu()
 		]
 
 	componentDidMount: ->

@@ -3,6 +3,7 @@ React = require 'react'
 Statement = React.createFactory require './statement'
 statementFilter = React.createFactory require '../containers/statementFilter'
 AddNewButton = React.createFactory require './addNewButton'
+ButtonBack = React.createFactory require '../../app/components/buttonBack'
 
 
 appState = (state, {match}) ->
@@ -17,8 +18,12 @@ list = React.createClass
 	propTypes:
 		id: React.PropTypes.string.isRequired
 
-	getChildContext: -> push: @props.push
-	childContextTypes: push: React.PropTypes.func
+	getChildContext: ->
+		push: @props.push
+		goBack: @props.goBack
+	childContextTypes:
+		push: React.PropTypes.func
+		goBack: React.PropTypes.func
 
 	render: ->
 		cssClasses = ['statement-opened']
@@ -35,6 +40,7 @@ list = React.createClass
 			key: 'statementOpened'
 			className: cssClasses.join ' '
 		, [
+			ButtonBack key: 'back'
 			statementFilter
 				key: 'statementFilterMine'
 				cssClasses: ['root']

@@ -68,6 +68,7 @@ Menu = React.createClass
 		]
 
 	_renderSaveButton: ->
+		# TODO: use Button component
 		btnClass = ['button button-raised']
 		btnClass.push ['button-colored'] if @props.saveButtonEnabled
 		React.DOM.button

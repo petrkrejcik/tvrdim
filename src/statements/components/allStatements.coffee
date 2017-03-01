@@ -30,8 +30,8 @@ allStatements = React.createClass
 			Button
 				key: 'addNewButton'
 				cssClasses: ['button-fab', 'button-colored', 'button-cornered']
-				text: '+'
 				handleClick: => @props.push '/create'
+			, '+'
 		]
 
 		React.DOM.div 'key': 'allStatements', content

@@ -27,6 +27,6 @@ module.exports = React.createClass
 			Button
 				key: 'button-openable'
 				cssClasses: ['button-fab', 'button-colored']
-				text: @props.text
 				handleClick: => @setState isOpened: !@state.isOpened
+			, @props.text
 		]

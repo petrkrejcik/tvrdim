@@ -22,11 +22,11 @@ module.exports = React.createClass
 			Button
 				key: 'addNewAgree'
 				cssClasses: ['button-fab', 'button-colored']
-				text: 'Yes'
 				handleClick: => @context.push uri, agree: yes
+			, 'Yes'
 			Button
 				key: 'addNewDisagree'
 				cssClasses: ['button-fab', 'button-colored']
-				text: 'No'
 				handleClick: => @context.push uri, agree: no
+			, 'No'
 		]

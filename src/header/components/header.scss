@@ -24,14 +24,20 @@
 	}
 
 	.drawer-button {
+		position: absolute;
+		right: 0;
 		color: rgba(0, 0, 0, 0.54);
 		margin: 4px;
-		position: absolute;
 		height: 48px;
 		width: 48px;
 		text-align: center;
 		cursor: pointer;
 		line-height: 56px;
+	}
 
+	.logo {
+		font-size: 24px;
+		line-height: 56px;
+		margin-left: 16px;
 	}
 }

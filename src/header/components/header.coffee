@@ -1,6 +1,8 @@
 React = require 'react'
 {connect} = require 'react-redux'
 {openDrawer} = require '../../layout/actions'
+{Link} = require 'react-router-dom'
+Link = React.createFactory Link
 
 appState = (state) ->
 	{}
@@ -23,6 +25,11 @@ header = React.createClass
 			key: 'header'
 			className: 'header'
 		, [
+			Link
+				key: 'logo'
+				className: 'logo'
+				to: '/'
+			, 'Tvrdim'
 			React.DOM.div
 				key: 'drawer-button'
 				className: 'drawer-button'
@@ -30,13 +37,13 @@ header = React.createClass
 			, React.DOM.i
 				key: 'icon-vert'
 				className: 'material-icons', 'menu'
-			React.DOM.div
-				key: 'row'
-				className: 'row', [
-					# React.DOM.span
-					# 	key: 'search'
-					# 	className: 'search', 'Search'
-				]
+			# React.DOM.div
+			# 	key: 'row'
+			# 	className: 'row', [
+			# 		# React.DOM.span
+			# 		# 	key: 'search'
+			# 		# 	className: 'search', 'Search'
+			# 	]
 		]
 
 module.exports = connect(appState, dispatchToProps) header
